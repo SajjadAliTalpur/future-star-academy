@@ -89,6 +89,13 @@ footer b{color:#fff}
 .msg.ok{color:var(--green);font-weight:700}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 .form-grid .full{grid-column:1/-1}
+.slot-day{margin:24px 0 10px;color:var(--blue)}
+.slot{margin-bottom:12px}
+.slot .t{font-weight:800;color:var(--blue);font-size:1.05rem}
+.slot .meta{color:var(--muted);font-size:.92rem}
+.slot .students{margin:8px 0 0}
+.slot .students b{color:var(--ink)}
+.stu-dash h4{margin:18px 0 8px;color:var(--blue)}
 @media(max-width:720px){
 .brand{font-size:1rem}
 .logo{height:42px;width:42px}
@@ -111,6 +118,7 @@ footer b{color:#fff}
 <a href="#videos">Videos</a>
 <a href="#contact">Contact</a>
 <button class="btn small" id="btnAdmin" type="button">Admin</button>
+<button class="btn small outline" id="btnStudent" type="button">Student Login</button>
 </nav>
 </div>
 </header>
@@ -147,13 +155,8 @@ footer b{color:#fff}
 <h2 class="sec">Timetable</h2>
 <div class="bar"></div>
 <p class="sec-sub">Evening classes, Monday to Saturday from 4:00 PM. Sunday is closed.</p>
-<div class="table-scroll">
-<table>
-<thead><tr><th>Day</th><th>Boys</th><th>Girls</th><th>Time</th></tr></thead>
-<tbody id="timetableBody"></tbody>
-</table>
-</div>
-<p class="note">Exact class times are set by the admin.</p>
+<div id="timetableSlots"></div>
+<p class="note">Exact class times are set by the admin. Only student names are shown here — phone numbers are never published.</p>
 <div class="grid three" style="margin-top:18px">
 <div class="card"><h3 style="margin-top:0;color:var(--blue)">Special Courses</h3><p>One-to-one courses with a single teacher: Programming with Sir Sajjad Ali, and Graphics &amp; Office with Sir Ahmed Raza.</p></div>
 <div class="card"><h3 style="margin-top:0;color:var(--blue)">Science &amp; Maths</h3><p>Biology, Chemistry and Physics with Sir Waqar Abbasi, English with Sir Sumair, and Mathematics with Sir Mohsin. Timings are scheduled by the admin.</p></div>
@@ -248,6 +251,40 @@ footer b{color:#fff}
 </div>
 </div>
 
+<div class="modal" id="studentModal">
+<div class="modal-box">
+<h3>Student Login</h3>
+<p class="sec-sub">Log in with your phone number. Your default password is your phone number.</p>
+<label for="stPhone">Phone Number</label>
+<input id="stPhone" type="tel" placeholder="e.g. 03070000001" autocomplete="username">
+<label for="stPw">Password</label>
+<input id="stPw" type="password" placeholder="Password" autocomplete="current-password">
+<div class="msg err" id="studentLoginMsg"></div>
+<div style="display:flex;gap:10px;margin-top:12px">
+<button class="btn" id="studentLoginBtn" type="button">Log In</button>
+<button class="btn outline" id="studentLoginCancel" type="button">Cancel</button>
+</div>
+</div>
+</div>
+
+<div class="modal" id="studentPanel">
+<div class="modal-box wide">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<h3 style="margin:0">Student Dashboard</h3>
+<button class="btn small outline" id="stLogoutBtn" type="button">Log out</button>
+</div>
+<div id="studentDash" style="margin-top:14px"></div>
+<h4 style="margin:22px 0 6px">Change Password</h4>
+<div class="form-grid">
+<div><label for="stPwOld">Current Password</label><input id="stPwOld" type="password"></div>
+<div><label for="stPwNew">New Password</label><input id="stPwNew" type="password"></div>
+<div><label for="stPwNew2">Confirm New Password</label><input id="stPwNew2" type="password"></div>
+</div>
+<button class="btn small" id="stChangePwBtn" type="button" style="margin-top:10px">Change Password</button>
+<div class="msg" id="stPwMsg"></div>
+</div>
+</div>
+
 <div class="modal" id="adminPanel">
 <div class="modal-box wide">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -260,6 +297,7 @@ footer b{color:#fff}
 <button type="button" data-atab="announcements">Announcements</button>
 <button type="button" data-atab="results">Results</button>
 <button type="button" data-atab="groups">Groups</button>
+<button type="button" data-atab="students">Students</button>
 <button type="button" data-atab="notes">Notes</button>
 <button type="button" data-atab="videos">Videos</button>
 <button type="button" data-atab="settings">Settings</button>
@@ -267,13 +305,17 @@ footer b{color:#fff}
 
 <div class="atab on" id="atab-timetable">
 <div class="form-grid">
-<div><label for="ttDay">Day</label><input id="ttDay" type="text" placeholder="e.g. Monday"></div>
-<div><label for="ttTime">Time</label><input id="ttTime" type="text" placeholder="e.g. Evening · from 4:00 PM"></div>
-<div><label for="ttBoys">Boys</label><input id="ttBoys" type="text" placeholder="e.g. Programming (Sir Sajjad Ali)"></div>
-<div><label for="ttGirls">Girls</label><input id="ttGirls" type="text" placeholder="e.g. Office Automation (Sir Ahmed Raza)"></div>
+<div><label for="ttDay">Day</label><select id="ttDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+<div><label for="ttStart">Start Time</label><input id="ttStart" type="text" placeholder="e.g. 4:00 PM"></div>
+<div><label for="ttEnd">End Time</label><input id="ttEnd" type="text" placeholder="e.g. 5:00 PM"></div>
+<div><label for="ttSubject">Subject</label><input id="ttSubject" type="text" placeholder="e.g. Programming"></div>
+<div><label for="ttTeacher">Teacher</label><input id="ttTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
+<div><label for="ttSection">Section</label><select id="ttSection"><option>Boys</option><option>Girls</option></select></div>
+<div><label for="ttGroup">Group (optional)</label><input id="ttGroup" type="text" placeholder="e.g. Group A"></div>
+<div class="full"><label for="ttStudents">Students (names separated by commas)</label><textarea id="ttStudents" rows="2" placeholder="e.g. Azhar, Ahmed, Zia ur Rehman, Muhammad"></textarea></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
-<button class="btn small" id="ttAddBtn" type="button">Add Row</button>
+<button class="btn small" id="ttAddBtn" type="button">Add Slot</button>
 <button class="btn small outline" id="ttCancelEdit" type="button" style="display:none">Cancel Edit</button>
 </div>
 <div id="ttList" style="margin-top:10px"></div>
@@ -310,7 +352,7 @@ footer b{color:#fff}
 <div><label for="grName">Group Name</label><input id="grName" type="text" placeholder="e.g. Group A"></div>
 <div><label for="grSubject">Subject</label><input id="grSubject" type="text" placeholder="e.g. Computer Science"></div>
 <div><label for="grTeacher">Teacher</label><input id="grTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
-<div><label for="grStudents">Students</label><input id="grStudents" type="number" min="1" placeholder="e.g. 5"></div>
+<div class="full"><label>Members — tick students from the Students list</label><div id="grMembers" style="border:2px solid var(--line);border-radius:9px;padding:10px 12px;max-height:180px;overflow-y:auto"></div></div>
 <div class="full"><label for="grTime">Time</label><input id="grTime" type="text" placeholder="e.g. Mon–Wed 4:00 PM"></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
@@ -318,6 +360,18 @@ footer b{color:#fff}
 <button class="btn small outline" id="grCancelEdit" type="button" style="display:none">Cancel Edit</button>
 </div>
 <div id="grList" style="margin-top:10px"></div>
+</div>
+
+<div class="atab" id="atab-students">
+<p class="note" style="margin-top:0">Passwords are not shown here. A student's default password is their phone number. CSV columns: name,phone,roll_number,class,group</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn small" id="stCsvTemplateBtn" type="button">Download CSV Template</button>
+<label class="btn small outline" for="stCsvFile" style="cursor:pointer">Import Students CSV</label>
+<input id="stCsvFile" type="file" accept=".csv,text/csv" style="display:none">
+<button class="btn small outline" id="stCsvExportBtn" type="button">Export Students CSV</button>
+</div>
+<div class="msg" id="stCsvMsg"></div>
+<div id="stList" style="margin-top:10px"></div>
 </div>
 
 <div class="atab" id="atab-notes">
@@ -372,17 +426,27 @@ footer b{color:#fff}
 <script>
 var DEFAULT_DATA = {
   featuredPlaylist: 'UUDY0UpWofnK0IDvvkgLeitg',
-  timetable: [
-    {day:'Monday', boys:'Programming (Sir Sajjad Ali)', girls:'Office Automation (Sir Ahmed Raza)', time:'Evening · from 4:00 PM'},
-    {day:'Tuesday', boys:'Programming (Sir Sajjad Ali)', girls:'Office Automation (Sir Ahmed Raza)', time:'Evening · from 4:00 PM'},
-    {day:'Wednesday', boys:'Programming (Sir Sajjad Ali)', girls:'Office Automation (Sir Ahmed Raza)', time:'Evening · from 4:00 PM'},
-    {day:'Thursday', boys:'Office Automation (Sir Ahmed Raza)', girls:'Programming (Sir Sajjad Ali)', time:'Evening · from 4:00 PM'},
-    {day:'Friday', boys:'Office Automation (Sir Ahmed Raza)', girls:'Programming (Sir Sajjad Ali)', time:'Evening · from 4:00 PM'},
-    {day:'Saturday', boys:'Office Automation (Sir Ahmed Raza)', girls:'Programming (Sir Sajjad Ali)', time:'Evening · from 4:00 PM'},
-    {day:'Sunday', boys:'— Closed —', girls:'— Closed —', time:'Closed'}
+  slots: [
+    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
+    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Monday', start:'5:00 PM', end:'5:45 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'Group A', students:['Azhar','Ahmed','Zia ur Rehman','Muhammad'], sample:true},
+    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
+    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
+    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
+    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
+    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
+    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
+    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
+    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]}
   ],
   groups: [
-    {name:'Group A', subject:'Computer Science', teacher:'Sir Sajjad Ali', students:5, time:'Mon–Wed 4:00 PM', sample:true}
+    {id:'g1', name:'Group A', subject:'Computer Science', teacher:'Sir Sajjad Ali', time:'Mon–Wed 4:00 PM', members:['Azhar','Ahmed','Zia ur Rehman','Muhammad'], sample:true}
+  ],
+  students: [
+    {name:'Sample Student', phone:'03070000001', roll:'FSCC-001', className:'Class 9th', group:'Group A', sample:true},
+    {name:'Sample Student Two', phone:'03070000002', roll:'FSCC-002', className:'Class 10th', group:'', sample:true}
   ],
   announcements: [
     {date:'16 Nov 2026', text:'Welcome to the new FSCC website — timetable, results, notes and videos are now available here.'}
@@ -418,7 +482,9 @@ var DEFAULT_DATA = {
   ]
 };
 
-var LS_KEY = 'fscc_data_v1';
+var LS_KEY = 'fscc_data_v2';
+var ST_PW_KEY = 'fscc_student_pw_v1';
+var currentStudent = null;
 var PW_KEY = 'fscc_admin_pw';
 var editing = {tt:-1, an:-1, rs:-1, gr:-1, nt:-1, vd:-1};
 
@@ -428,7 +494,7 @@ function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace
 function loadData(){
   try{
     var s = localStorage.getItem(LS_KEY);
-    if(s){ var d = JSON.parse(s); if(d && d.timetable && d.results) return d; }
+    if(s){ var d = JSON.parse(s); if(d && d.slots && d.groups && d.results){ d.students = d.students || []; d.slots.forEach(function(x){ x.students = x.students || []; }); d.groups.forEach(function(g){ g.members = g.members || []; }); return d; } }
   }catch(e){}
   return clone(DEFAULT_DATA);
 }
@@ -446,20 +512,36 @@ function saveData(){
 }
 
 /* ---------- Public rendering ---------- */
+var DAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 function renderTimetable(){
   var html = '';
-  data.timetable.forEach(function(r){
-    html += '<tr><td><b>' + esc(r.day) + '</b></td><td>' + esc(r.boys) + '</td><td>' + esc(r.girls) + '</td><td>' + esc(r.time) + '</td></tr>';
+  DAY_ORDER.forEach(function(day){
+    if(day === 'Sunday'){
+      html += '<h3 class="slot-day">Sunday</h3><p class="note" style="margin-top:0">Closed — no classes on Sunday.</p>';
+      return;
+    }
+    var slots = data.slots.filter(function(x){ return x.day === day; });
+    if(!slots.length) return;
+    html += '<h3 class="slot-day">' + esc(day) + '</h3>';
+    slots.forEach(function(x){
+      var names = (x.students || []).join(' - ');
+      html += '<div class="card slot"><div class="t">' + esc(x.start) + ' – ' + esc(x.end) + '</div>'
+        + '<div class="meta"><b>' + esc(x.subject) + '</b> · ' + esc(x.teacher) + ' · ' + esc(x.section)
+        + (x.group ? ' · ' + esc(x.group) : '') + '</div>'
+        + '<p class="students"><b>Students:</b> ' + (names ? esc(names) : 'To be assigned by the admin.') + '</p>'
+        + (x.sample ? '<span class="badge sample">SAMPLE — edit or delete in Admin</span>' : '') + '</div>';
+    });
   });
-  $('timetableBody').innerHTML = html;
+  $('timetableSlots').innerHTML = html || '<p class="note">No classes scheduled yet.</p>';
 }
 function renderGroups(){
   var html = '';
   data.groups.forEach(function(g){
+    var members = (g.members || []).join(', ');
     html += '<div class="card"><h3 style="margin-top:0;color:var(--blue)">' + esc(g.name)
       + (g.sample ? ' <span class="badge sample">SAMPLE — edit or delete in Admin</span>' : '') + '</h3>'
       + '<p><b>Subject:</b> ' + esc(g.subject) + '<br><b>Teacher:</b> ' + esc(g.teacher)
-      + '<br><b>Students:</b> ' + esc(g.students) + '<br><b>Time:</b> ' + esc(g.time) + '</p></div>';
+      + '<br><b>Time:</b> ' + esc(g.time) + '<br><b>Members:</b> ' + (members ? esc(members) : 'No members yet.') + '</p></div>';
   });
   $('groupsList').innerHTML = html || '<p class="note">No groups yet. The admin can add groups from the Admin panel.</p>';
 }
@@ -497,6 +579,19 @@ function resultStats(r){
   r.marks.forEach(function(m){ obt += Number(m.obtained) || 0; tot += Number(m.total) || 0; });
   var pct = tot ? Math.round(obt / tot * 100) : 0;
   return {obt:obt, tot:tot, pct:pct, status: pct >= 40 ? 'Pass' : 'Fail'};
+}
+function resultCardHTML(found){
+  var st = resultStats(found);
+  var rows = '';
+  found.marks.forEach(function(m){
+    rows += '<tr><td>' + esc(m.subject) + '</td><td>' + esc(m.obtained) + '</td><td>' + esc(m.total) + '</td></tr>';
+  });
+  return '<div class="result-card"><h3 style="color:var(--blue);margin:0 0 4px">' + esc(found.name)
+    + (found.sample ? ' <span class="badge sample">SAMPLE — delete in Admin</span>' : '') + '</h3>'
+    + '<p style="margin:0 0 12px"><b>Roll Number:</b> ' + esc(found.roll) + ' &nbsp;·&nbsp; <b>Class:</b> ' + esc(found.className) + '</p>'
+    + '<div class="table-scroll"><table class="marks"><thead><tr><th>Subject</th><th>Obtained</th><th>Total</th></tr></thead><tbody>' + rows
+    + '<tr><td><b>Total</b></td><td><b>' + st.obt + '</b></td><td><b>' + st.tot + '</b></td></tr></tbody></table></div>'
+    + '<p style="margin:12px 0 0"><b>Percentage:</b> ' + st.pct + '% &nbsp;·&nbsp; <b>Status:</b> <span class="' + (st.status === 'Pass' ? 'pass' : 'fail') + '">' + st.status + '</span></p></div>';
 }
 function searchResult(){
   var q = $('rollInput').value.trim().toUpperCase();
@@ -558,32 +653,52 @@ document.querySelectorAll('.modal').forEach(function(m){
 /* ---------- Admin: timetable ---------- */
 function renderAdminTimetable(){
   var html = '';
-  data.timetable.forEach(function(r, i){
-    html += '<div class="admin-row"><div><b>' + esc(r.day) + '</b><small>Boys: ' + esc(r.boys) + ' · Girls: ' + esc(r.girls) + ' · ' + esc(r.time) + '</small></div>'
+  data.slots.forEach(function(x, i){
+    var names = (x.students || []).join(' - ');
+    html += '<div class="admin-row"><div><b>' + esc(x.day) + ' · ' + esc(x.start) + ' – ' + esc(x.end) + '</b>'
+      + (x.sample ? ' <span class="badge sample">SAMPLE</span>' : '')
+      + '<small>' + esc(x.subject) + ' · ' + esc(x.teacher) + ' · ' + esc(x.section)
+      + (x.group ? ' · Group: ' + esc(x.group) : '') + '<br>Students: ' + (names ? esc(names) : 'None yet') + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="editTt(' + i + ')">Edit</button> '
       + '<button class="btn small outline" type="button" onclick="delTt(' + i + ')">Delete</button></div></div>';
   });
   $('ttList').innerHTML = html;
 }
+function slotFromForm(){
+  return {
+    day:$('ttDay').value,
+    start:$('ttStart').value.trim(),
+    end:$('ttEnd').value.trim(),
+    subject:$('ttSubject').value.trim(),
+    teacher:$('ttTeacher').value.trim(),
+    section:$('ttSection').value,
+    group:$('ttGroup').value.trim(),
+    students:$('ttStudents').value.split(',').map(function(s){ return s.trim(); }).filter(function(s){ return s; })
+  };
+}
 function editTt(i){
-  var r = data.timetable[i];
-  $('ttDay').value = r.day; $('ttBoys').value = r.boys; $('ttGirls').value = r.girls; $('ttTime').value = r.time;
+  var x = data.slots[i];
+  $('ttDay').value = x.day; $('ttStart').value = x.start; $('ttEnd').value = x.end;
+  $('ttSubject').value = x.subject; $('ttTeacher').value = x.teacher; $('ttSection').value = x.section;
+  $('ttGroup').value = x.group || ''; $('ttStudents').value = (x.students || []).join(', ');
   editing.tt = i; $('ttAddBtn').textContent = 'Save Changes'; $('ttCancelEdit').style.display = '';
 }
 function delTt(i){
-  if(!confirm('Delete this timetable row?')) return;
-  data.timetable.splice(i, 1); saveData();
+  if(!confirm('Delete this timetable slot?')) return;
+  data.slots.splice(i, 1); saveData();
 }
 function cancelTt(){
   editing.tt = -1;
-  $('ttDay').value = ''; $('ttBoys').value = ''; $('ttGirls').value = ''; $('ttTime').value = '';
-  $('ttAddBtn').textContent = 'Add Row'; $('ttCancelEdit').style.display = 'none';
+  $('ttDay').value = 'Monday'; $('ttStart').value = ''; $('ttEnd').value = ''; $('ttSubject').value = '';
+  $('ttTeacher').value = ''; $('ttSection').value = 'Boys'; $('ttGroup').value = ''; $('ttStudents').value = '';
+  $('ttAddBtn').textContent = 'Add Slot'; $('ttCancelEdit').style.display = 'none';
 }
 $('ttAddBtn').addEventListener('click', function(){
-  var day = $('ttDay').value.trim();
-  if(!day){ alert('Please enter a day.'); return; }
-  var row = {day:day, boys:$('ttBoys').value.trim(), girls:$('ttGirls').value.trim(), time:$('ttTime').value.trim()};
-  if(editing.tt >= 0) data.timetable[editing.tt] = row; else data.timetable.push(row);
+  var slot = slotFromForm();
+  if(!slot.subject){ alert('Please enter a subject.'); return; }
+  if(!slot.start || !slot.end){ alert('Please enter a start and end time.'); return; }
+  if(editing.tt >= 0){ slot.sample = !!data.slots[editing.tt].sample; data.slots[editing.tt] = slot; }
+  else data.slots.push(slot);
   cancelTt(); saveData();
 });
 $('ttCancelEdit').addEventListener('click', cancelTt);
@@ -680,21 +795,38 @@ $('rsAddBtn').addEventListener('click', function(){
 $('rsCancelEdit').addEventListener('click', cancelRs);
 
 /* ---------- Admin: groups ---------- */
+var grEditMembers = [];
+function renderGrMembers(){
+  var html = '';
+  if(!data.students.length){
+    html = '<p class="note" style="margin:0">No students yet. Import students from the Students tab first.</p>';
+  } else {
+    data.students.forEach(function(s){
+      var checked = grEditMembers.indexOf(s.name) >= 0 ? ' checked' : '';
+      html += '<label style="display:block;font-weight:400;margin:4px 0"><input type="checkbox" data-grmember="' + esc(s.name) + '"' + checked + '> ' + esc(s.name) + ' <small style="color:var(--muted)">(' + esc(s.phone) + ')</small></label>';
+    });
+  }
+  $('grMembers').innerHTML = html;
+}
 function renderAdminGroups(){
   var html = '';
   data.groups.forEach(function(g, i){
+    var members = (g.members || []).join(', ');
     html += '<div class="admin-row"><div><b>' + esc(g.name) + ' — ' + esc(g.subject) + '</b>'
       + (g.sample ? ' <span class="badge sample">SAMPLE</span>' : '')
-      + '<small>' + esc(g.teacher) + ' · ' + esc(g.students) + ' students · ' + esc(g.time) + '</small></div>'
+      + '<small>' + esc(g.teacher) + ' · ' + esc(g.time) + '<br>Members: ' + (members ? esc(members) : 'None yet') + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="editGr(' + i + ')">Edit</button> '
       + '<button class="btn small outline" type="button" onclick="delGr(' + i + ')">Delete</button></div></div>';
   });
   $('grList').innerHTML = html;
+  renderGrMembers();
 }
 function editGr(i){
   var g = data.groups[i];
   $('grName').value = g.name; $('grSubject').value = g.subject; $('grTeacher').value = g.teacher;
-  $('grStudents').value = g.students; $('grTime').value = g.time;
+  $('grTime').value = g.time;
+  grEditMembers = (g.members || []).slice();
+  renderGrMembers();
   editing.gr = i; $('grAddBtn').textContent = 'Save Changes'; $('grCancelEdit').style.display = '';
 }
 function delGr(i){
@@ -703,14 +835,23 @@ function delGr(i){
 }
 function cancelGr(){
   editing.gr = -1;
-  $('grName').value = ''; $('grSubject').value = ''; $('grTeacher').value = ''; $('grStudents').value = ''; $('grTime').value = '';
+  $('grName').value = ''; $('grSubject').value = ''; $('grTeacher').value = ''; $('grTime').value = '';
+  grEditMembers = []; renderGrMembers();
   $('grAddBtn').textContent = 'Add Group'; $('grCancelEdit').style.display = 'none';
 }
+$('grMembers').addEventListener('change', function(e){
+  var cb = e.target.closest ? e.target.closest('input[data-grmember]') : null;
+  if(!cb) return;
+  var nm = cb.getAttribute('data-grmember');
+  if(cb.checked){ if(grEditMembers.indexOf(nm) < 0) grEditMembers.push(nm); }
+  else grEditMembers = grEditMembers.filter(function(m){ return m !== nm; });
+});
 $('grAddBtn').addEventListener('click', function(){
   var name = $('grName').value.trim();
   if(!name){ alert('Please enter a group name.'); return; }
-  var g = {name:name, subject:$('grSubject').value.trim(), teacher:$('grTeacher').value.trim(),
-    students:parseInt($('grStudents').value, 10) || 0, time:$('grTime').value.trim()};
+  var g = {id: editing.gr >= 0 ? (data.groups[editing.gr].id || ('g' + Date.now())) : ('g' + Date.now()),
+    name:name, subject:$('grSubject').value.trim(), teacher:$('grTeacher').value.trim(),
+    time:$('grTime').value.trim(), members:grEditMembers.slice()};
   if(editing.gr >= 0){ g.sample = !!data.groups[editing.gr].sample; data.groups[editing.gr] = g; }
   else data.groups.push(g);
   cancelGr(); saveData();
@@ -818,7 +959,7 @@ $('importFile').addEventListener('change', function(e){
   reader.onload = function(){
     try{
       var d = JSON.parse(reader.result);
-      if(!d || !d.timetable || !d.results || !d.videos) throw new Error('bad file');
+      if(!d || !d.slots || !d.results || !d.videos) throw new Error('bad file');
       data = d; saveData();
       setMsg('settingsMsg', 'Data imported successfully.', 'ok');
     }catch(err){
@@ -845,12 +986,244 @@ $('btnChangePw').addEventListener('click', function(){
   setMsg('settingsMsg', 'Password changed successfully.', 'ok');
 });
 
+/* ---------- CSV: students import/export ---------- */
+var CSV_HEADER = ['name','phone','roll_number','class','group'];
+function parseCSVLine(line){
+  var out = [], cur = '', inQ = false;
+  for(var i = 0; i < line.length; i++){
+    var c = line[i];
+    if(inQ){
+      if(c === '"'){
+        if(line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = false;
+      } else cur += c;
+    } else if(c === '"'){ inQ = true; }
+    else if(c === ','){ out.push(cur); cur = ''; }
+    else cur += c;
+  }
+  out.push(cur);
+  return out.map(function(v){ return v.trim(); });
+}
+function parseCSV(text){
+  var lines = String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  var headerIdx = -1;
+  for(var i = 0; i < lines.length; i++){ if(lines[i].trim() !== ''){ headerIdx = i; break; } }
+  if(headerIdx < 0){ return {rows:[], error:'The file is empty. Expected header: name,phone,roll_number,class,group'}; }
+  var header = parseCSVLine(lines[headerIdx]).map(function(h){ return h.toLowerCase(); });
+  if(header.join(',') !== CSV_HEADER.join(',')){
+    return {rows:[], error:'Missing or incorrect header. Expected header: name,phone,roll_number,class,group'};
+  }
+  var rows = [];
+  for(var j = headerIdx + 1; j < lines.length; j++){
+    if(lines[j].trim() === '') continue;
+    var cols = parseCSVLine(lines[j]);
+    if(cols.length !== 5){ rows.push({skip:true, line:j + 1, reason:'Expected 5 columns, found ' + cols.length}); continue; }
+    rows.push({name:cols[0], phone:cols[1], roll:cols[2], className:cols[3], group:cols[4], line:j + 1});
+  }
+  return {rows:rows, error:''};
+}
+function importStudentsCSV(text){
+  var parsed = parseCSV(text);
+  if(parsed.error) return {added:0, updated:0, skipped:0, error:parsed.error, skippedRows:[]};
+  var added = 0, updated = 0, skippedRows = [];
+  parsed.rows.forEach(function(r){
+    if(r.skip){ skippedRows.push(r); return; }
+    if(!r.name || !r.phone){ skippedRows.push({line:r.line, reason:'Missing name or phone'}); return; }
+    var found = null;
+    data.students.forEach(function(s){ if(s.phone === r.phone) found = s; });
+    if(found){
+      found.name = r.name; found.roll = r.roll; found.className = r.className; found.group = r.group;
+      updated++;
+    } else {
+      data.students.push({name:r.name, phone:r.phone, roll:r.roll, className:r.className, group:r.group});
+      added++;
+    }
+  });
+  return {added:added, updated:updated, skipped:skippedRows.length, error:'', skippedRows:skippedRows};
+}
+function csvEscape(v){
+  v = String(v == null ? '' : v);
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function studentsToCSV(){
+  var lines = ['name,phone,roll_number,class,group'];
+  data.students.forEach(function(s){
+    lines.push([s.name, s.phone, s.roll, s.className, s.group].map(csvEscape).join(','));
+  });
+  return lines.join('\n');
+}
+var CSV_TEMPLATE = 'name,phone,roll_number,class,group\nSample Student,03070000001,FSCC-001,Class 9th,Group A\nSample Student Two,03070000002,FSCC-002,Class 10th,\n';
+function downloadFile(name, content, type){
+  var blob = new Blob([content], {type: type || 'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- Admin: students ---------- */
+function renderAdminStudents(){
+  var html = '';
+  if(!data.students.length){
+    html = '<p class="note">No students yet. Import a Students CSV to add students.</p>';
+  } else {
+    html = '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Actions</th></tr></thead><tbody>';
+    data.students.forEach(function(s, i){
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td><button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  $('stList').innerHTML = html;
+}
+function resetStuPw(i){
+  var s = data.students[i]; if(!s) return;
+  if(!confirm('Reset the password for ' + s.name + ' back to their phone number?')) return;
+  resetStudentPw(s.phone);
+  setMsg('stCsvMsg', 'Password reset. ' + s.name + ' can now log in with their phone number.', 'ok');
+}
+function delStu(i){
+  var s = data.students[i]; if(!s) return;
+  if(!confirm('Delete student ' + s.name + ' (' + s.phone + ')?')) return;
+  var name = s.name;
+  data.students.splice(i, 1);
+  data.groups.forEach(function(g){ g.members = (g.members || []).filter(function(m){ return m !== name; }); });
+  data.slots.forEach(function(x){ x.students = (x.students || []).filter(function(m){ return m !== name; }); });
+  saveData();
+}
+$('stCsvTemplateBtn').addEventListener('click', function(){
+  downloadFile('fscc-students-template.csv', CSV_TEMPLATE, 'text/csv');
+  setMsg('stCsvMsg', 'Template downloaded. The two rows in it are samples — delete them before importing your real list.', 'ok');
+});
+$('stCsvFile').addEventListener('change', function(e){
+  var f = e.target.files && e.target.files[0]; if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    var res = importStudentsCSV(reader.result);
+    if(res.error){ setMsg('stCsvMsg', res.error, 'err'); }
+    else {
+      saveData();
+      var msg = 'Imported ' + res.added + ' students, updated ' + res.updated + ', skipped ' + res.skipped + ' rows.';
+      if(res.skippedRows.length){
+        msg += ' Skipped: ' + res.skippedRows.map(function(r){ return 'line ' + r.line + ' (' + r.reason + ')'; }).join('; ');
+      }
+      setMsg('stCsvMsg', msg, res.skipped ? '' : 'ok');
+    }
+  };
+  reader.readAsText(f);
+  e.target.value = '';
+});
+$('stCsvExportBtn').addEventListener('click', function(){
+  downloadFile('fscc-students.csv', studentsToCSV(), 'text/csv');
+  setMsg('stCsvMsg', 'Students exported as fscc-students.csv.', 'ok');
+});
+
+/* ---------- Student login + dashboard ---------- */
+function loadPwStore(){
+  try{ var s = localStorage.getItem(ST_PW_KEY); return s ? JSON.parse(s) : {}; }catch(e){ return {}; }
+}
+function savePwStore(m){ try{ localStorage.setItem(ST_PW_KEY, JSON.stringify(m)); }catch(e){} }
+function normPhone(p){ return String(p || '').replace(/[^0-9]/g, ''); }
+function findStudentByPhone(phone){
+  var n = normPhone(phone), found = null;
+  data.students.forEach(function(s){ if(normPhone(s.phone) === n) found = s; });
+  return found;
+}
+var LOGIN_ERR = 'Incorrect phone number or password. Your default password is your phone number — contact the academy office if you still cannot log in.';
+function studentLogin(phone, pw){
+  var s = findStudentByPhone(phone);
+  if(!s) return {ok:false, msg:LOGIN_ERR};
+  var store = loadPwStore();
+  var hasCustom = store[s.phone] != null;
+  var good = hasCustom ? (pw === store[s.phone]) : (normPhone(pw) === normPhone(s.phone));
+  if(!good) return {ok:false, msg:LOGIN_ERR};
+  return {ok:true, student:s};
+}
+function changeStudentPw(phone, cur, nw, nw2){
+  var s = findStudentByPhone(phone);
+  if(!s) return {ok:false, msg:LOGIN_ERR};
+  var store = loadPwStore();
+  var hasCustom = store[s.phone] != null;
+  var curOk = hasCustom ? (cur === store[s.phone]) : (normPhone(cur) === normPhone(s.phone));
+  if(!curOk) return {ok:false, msg:'Current password is incorrect.'};
+  if(!nw) return {ok:false, msg:'Please enter a new password.'};
+  if(nw !== nw2) return {ok:false, msg:'New passwords do not match.'};
+  store[s.phone] = nw; savePwStore(store);
+  return {ok:true, msg:'Password changed. Your new password is saved on this device.'};
+}
+function resetStudentPw(phone){
+  var m = loadPwStore(); delete m[phone]; savePwStore(m);
+}
+function studentSlots(st){
+  var out = [];
+  data.slots.forEach(function(x){
+    var inList = (x.students || []).indexOf(st.name) >= 0;
+    var inGroup = st.group && x.group && x.group === st.group;
+    if(inList || inGroup) out.push(x);
+  });
+  return out;
+}
+function renderStudentDash(){
+  var st = currentStudent; if(!st) return;
+  var slots = studentSlots(st);
+  var myResults = [];
+  data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
+  var html = '<p style="font-size:1.1rem">Welcome, <b>' + esc(st.name) + '</b></p>'
+    + '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + '</p>'
+    + '<div class="stu-dash"><h4>My Timetable</h4>';
+  if(!slots.length) html += '<p class="note">No classes assigned yet. The admin will add your classes to the timetable.</p>';
+  else {
+    slots.forEach(function(x){
+      html += '<div class="card slot"><div class="t">' + esc(x.day) + ' · ' + esc(x.start) + ' – ' + esc(x.end) + '</div><div class="meta">' + esc(x.subject) + ' · ' + esc(x.teacher) + ' · ' + esc(x.section) + (x.group ? ' · ' + esc(x.group) : '') + '</div></div>';
+    });
+  }
+  html += '<h4>My Results</h4>';
+  if(!myResults.length) html += '<p class="note">No results published for your roll number yet.</p>';
+  else myResults.forEach(function(r){ html += resultCardHTML(r); });
+  html += '<h4>Study Material</h4><p><a class="btn small" href="#notes" onclick="closeModal(\'studentPanel\')">Notes &amp; PDFs</a> <a class="btn small outline" href="#videos" onclick="closeModal(\'studentPanel\')">Videos</a></p></div>';
+  $('studentDash').innerHTML = html;
+}
+function updateStudentBtn(){
+  $('btnStudent').textContent = currentStudent ? ('Hi, ' + currentStudent.name.split(' ')[0]) : 'Student Login';
+}
+function tryStudentLogin(){
+  var phone = $('stPhone').value.trim(), pw = $('stPw').value;
+  var res = studentLogin(phone, pw);
+  if(!res.ok){ $('studentLoginMsg').textContent = res.msg; return; }
+  currentStudent = res.student;
+  $('studentLoginMsg').textContent = '';
+  $('stPw').value = '';
+  closeModal('studentModal');
+  renderStudentDash();
+  updateStudentBtn();
+  openModal('studentPanel');
+}
+$('btnStudent').addEventListener('click', function(){
+  if(currentStudent){ renderStudentDash(); openModal('studentPanel'); return; }
+  $('studentLoginMsg').textContent = '';
+  $('stPhone').value = ''; $('stPw').value = '';
+  openModal('studentModal');
+  setTimeout(function(){ $('stPhone').focus(); }, 50);
+});
+$('studentLoginBtn').addEventListener('click', tryStudentLogin);
+$('stPw').addEventListener('keydown', function(e){ if(e.key === 'Enter') tryStudentLogin(); });
+$('studentLoginCancel').addEventListener('click', function(){ closeModal('studentModal'); });
+$('stLogoutBtn').addEventListener('click', function(){
+  currentStudent = null; updateStudentBtn(); closeModal('studentPanel');
+});
+$('stChangePwBtn').addEventListener('click', function(){
+  if(!currentStudent) return;
+  var res = changeStudentPw(currentStudent.phone, $('stPwOld').value, $('stPwNew').value, $('stPwNew2').value);
+  setMsg('stPwMsg', res.msg, res.ok ? 'ok' : 'err');
+  if(res.ok){ $('stPwOld').value = ''; $('stPwNew').value = ''; $('stPwNew2').value = ''; }
+});
+
 /* ---------- Render everything ---------- */
 function renderAdminAll(){
   renderAdminTimetable();
   renderAdminAnnouncements();
   renderAdminResults();
   renderAdminGroups();
+  renderAdminStudents();
   renderAdminNotes();
   renderAdminVideos();
 }
@@ -861,6 +1234,7 @@ function renderAll(){
   renderNotes();
   renderVideos();
   if($('adminPanel').classList.contains('open')) renderAdminAll();
+  if(currentStudent && $('studentPanel').classList.contains('open')) renderStudentDash();
 }
 $('btnResultSearch').addEventListener('click', searchResult);
 $('rollInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') searchResult(); });
