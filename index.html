@@ -130,6 +130,12 @@ nav.main a:last-child{border-bottom:0}
 .fb-banner{display:none;background:#fff3cd;color:#7a5b00;text-align:center;padding:8px 14px;font-size:.9rem;font-weight:600;border-bottom:2px solid #f5b301}
 .att-btn{margin:2px}
 .receipt{border:1px solid var(--line);border-radius:12px;padding:18px;margin:12px 0;background:#fff}
+.receipt-thermal{width:80mm;font-size:11px;line-height:1.45;color:#000;background:#fff;padding:2mm;margin:0 auto}
+.receipt-thermal h3{font-size:13px;line-height:1.3;margin:0 0 6px;text-align:center}
+.receipt-thermal table{width:100%;border-collapse:collapse}
+.receipt-thermal td{padding:1px 2px;vertical-align:top}
+.receipt-thermal td:first-child{width:42%}
+.receipt-thermal p{margin:4px 0;text-align:center}
 .receipt table{margin:10px 0}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:12px 0}
 .stat{background:#eef4ff;border:1px solid var(--line);border-radius:10px;padding:12px}
@@ -139,6 +145,7 @@ body *{visibility:hidden}
 #printArea,#printArea *{visibility:visible}
 #printArea{display:block !important;position:absolute;inset:0;padding:20px}
 #printArea .receipt{border:0}
+#printArea .no-print{display:none !important}
 }
 .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;vertical-align:-6px;font-size:1.35em}
 .form-grid select{padding:10px 12px;border:2px solid var(--line);border-radius:10px;font-size:1rem;width:100%;background:#fff}
@@ -237,10 +244,18 @@ body *{visibility:hidden}
 .tt-print .tt-stu{font-size:.78rem;color:#33475e}
 .tt-print hr{border:0;border-top:1px dashed #dbe4f0;margin:6px 0}
 .tt-print .tt-foot{text-align:center;color:#5a6b85;font-size:.8rem;margin-top:12px}
+.tt-roster-h{margin:14px 0 6px;color:#0b3d91;font-size:.95rem;text-align:left;letter-spacing:0}
+.tt-roster{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tt-grp-card{border:1px solid #1a2a44;border-radius:8px;padding:6px 10px;font-size:.8rem;text-align:left}
+.tt-grp-card ol{margin:4px 0 0;padding-left:18px}
+.tt-grp-card li{margin:1px 0}
+.tt-grp{font-size:.8rem;color:#33475e}
 .tt-compact table{min-width:0}
 .tt-compact th,.tt-compact td{padding:8px 10px;font-size:.88rem}
 @page ttlandscape{size:landscape;margin:10mm}
 #printArea.tt-landscape{page:ttlandscape}
+@page thermal{size:80mm auto;margin:2mm}
+#printArea.thermal{page:thermal;padding:2mm}
 /* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
 @media(max-width:720px){
 section{padding:28px 0}
@@ -488,6 +503,7 @@ table{min-width:520px}
 <button type="button" data-ttab="att" class="on">Attendance</button>
 <button type="button" data-ttab="students">My Students</button>
 <button type="button" data-ttab="homework">Homework &amp; Tests</button>
+<button type="button" data-ttab="results">Results</button>
 <button type="button" data-ttab="fee">Collect Fee</button>
 <button type="button" data-ttab="pw">Change Password</button>
 </div>
@@ -495,6 +511,7 @@ table{min-width:520px}
 <div class="form-grid">
 <div><label for="tAttDate">Date</label><input id="tAttDate" type="date"></div>
 <div><label for="tAttSlot">Class</label><select id="tAttSlot"></select></div>
+<div><label for="tAttSearch">Search student</label><input id="tAttSearch" type="text" placeholder="Name or roll number"></div>
 </div>
 <div style="margin-top:10px"><button class="btn small" id="tAttSaveBtn" type="button">Save Attendance</button></div>
 <div class="msg" id="tAttMsg"></div>
@@ -539,6 +556,15 @@ table{min-width:520px}
 <h4 style="margin:22px 0 6px">My Homework &amp; Tests</h4>
 <div id="hwList" style="margin-top:10px"></div>
 </div>
+<div class="atab" id="ttab-results">
+<h4 style="margin:6px 0">Results — My Students</h4>
+<p class="note" style="margin-top:0">Pick an exam and a group, then print the whole result on one page. Percentages and positions are calculated automatically.</p>
+<div class="form-grid">
+<div><label for="tResExam">Exam</label><select id="tResExam"></select></div>
+<div><label for="tResGroup">Group</label><select id="tResGroup"><option value="">All my students</option></select></div>
+</div>
+<div id="tResBody" style="margin-top:10px"></div>
+</div>
 <div class="atab" id="ttab-pw">
 <div class="form-grid">
 <div><label for="tcPwOld">Current Password</label><input id="tcPwOld" type="password"></div>
@@ -574,6 +600,7 @@ table{min-width:520px}
 <button type="button" data-atab="groups"><span class="material-symbols-outlined">group</span>Groups</button>
 <button type="button" data-atab="homework"><span class="material-symbols-outlined">assignment</span>Homework</button>
 <button type="button" data-atab="results"><span class="material-symbols-outlined">grade</span>Results</button>
+<button type="button" data-atab="exams"><span class="material-symbols-outlined">quiz</span>Exams</button>
 <button type="button" data-atab="announcements"><span class="material-symbols-outlined">campaign</span>Announcements</button>
 <button type="button" data-atab="notes"><span class="material-symbols-outlined">description</span>Notes</button>
 <button type="button" data-atab="videos"><span class="material-symbols-outlined">play_circle</span>Videos</button>
@@ -622,7 +649,9 @@ table{min-width:520px}
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ttAddBtn" type="button">Add Slot</button>
 <button class="btn small outline" id="ttCancelEdit" type="button" style="display:none">Cancel Edit</button>
-<button class="btn small outline" id="ttPrintBtn" type="button">Print Timetable / PDF</button>
+<button class="btn small outline" id="ttPrintGirls" type="button">Print Girls Timetable</button>
+<button class="btn small outline" id="ttPrintBoys" type="button">Print Boys Timetable</button>
+<button class="btn small outline" id="ttPrintMaster" type="button">Print Master Timetable</button>
 </div>
 <div id="ttList" style="margin-top:10px"></div>
 </div>
@@ -651,6 +680,27 @@ table{min-width:520px}
 <button class="btn small outline" id="rsCancelEdit" type="button" style="display:none">Cancel Edit</button>
 </div>
 <div id="rsList" style="margin-top:10px"></div>
+</div>
+
+<div class="atab" id="atab-exams">
+<h4 style="margin:6px 0">Exams</h4>
+<p class="note" style="margin-top:0">Create an exam (subject, total questions, total marks). Then enter marks &mdash; percentage and positions are calculated automatically.</p>
+<div class="form-grid">
+<div><label for="exmSubject">Subject</label><select id="exmSubject"></select></div>
+<div><label for="exmTitle">Exam Title</label><input id="exmTitle" type="text" placeholder="e.g. Monthly Test 1"></div>
+<div><label for="exmQuestions">Total Questions</label><input id="exmQuestions" type="number" min="1" placeholder="e.g. 50"></div>
+<div><label for="exmTotalMarks">Total Marks</label><input id="exmTotalMarks" type="number" min="1" placeholder="e.g. 100"></div>
+<div><label for="exmDate">Date</label><input id="exmDate" type="date"></div>
+<div><label for="exmTopN">Positions to show</label><input id="exmTopN" type="number" min="1" max="10" value="3"></div>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px">
+<button class="btn small" id="exmSaveBtn" type="button">Create Exam</button>
+<button class="btn small outline" id="exmCancelBtn" type="button" style="display:none">Cancel Edit</button>
+</div>
+<div class="msg" id="exmMsg"></div>
+<div id="exmList" style="margin-top:10px"></div>
+<div id="exmMarks" style="margin-top:10px"></div>
+<div id="exmResults" style="margin-top:10px"></div>
 </div>
 
 <div class="atab" id="atab-groups">
@@ -684,12 +734,13 @@ table{min-width:520px}
 <div class="form-grid">
 <div><label for="seName">Name</label><input id="seName" type="text"></div>
 <div><label for="sePhone">Phone</label><input id="sePhone" type="text"></div>
-<div><label for="seRoll">Roll Number</label><input id="seRoll" type="text"></div>
+<div><label for="seRoll">Roll Number</label><input id="seRoll" type="text"><button class="btn small outline" id="seGenRollBtn" type="button" style="margin-top:6px">Generate ID</button></div>
 <div><label for="seClass">Class</label><input id="seClass" type="text"></div>
 <div><label for="seGroup">Group</label><input id="seGroup" type="text"></div>
 <div><label for="seCourse">Course (DIT / English / Biology / Maths / Office)</label><input id="seCourse" type="text"></div>
 <div class="full"><label>Subjects (tick all subjects this student studies &mdash; the first ticked becomes the main Course)</label><div id="seSubChecks"></div></div>
 <div><label for="seGender">Gender</label><select id="seGender"><option value="">Not set</option><option value="Boy">Boy</option><option value="Girl">Girl</option></select></div>
+<div><label for="seStatus">Status</label><select id="seStatus"><option value="Active">Active</option><option value="Left">Left</option></select></div>
 <div><label for="seFather">Father's Name</label><input id="seFather" type="text"></div>
 <div><label for="seCaste">Caste</label><input id="seCaste" type="text"></div>
 <div><label for="seFatherPhone">Father's Phone</label><input id="seFatherPhone" type="text"></div>
@@ -714,11 +765,13 @@ table{min-width:520px}
 <div><label for="ntPages">Pages</label><input id="ntPages" type="text" placeholder="e.g. 95 pages"></div>
 <div><label for="ntDesc">Description</label><input id="ntDesc" type="text" placeholder="e.g. English + Urdu"></div>
 <div><label for="ntFile">File</label><input id="ntFile" type="text" placeholder="e.g. cpp-programming-notes.pdf"></div>
+<div class="full"><label for="ntUpload">Upload a file (PDF, Word, image) — it will be stored in the academy storage and the link filled in above</label><input id="ntUpload" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ntAddBtn" type="button">Add Note</button>
 <button class="btn small outline" id="ntCancelEdit" type="button" style="display:none">Cancel Edit</button>
 </div>
+<div class="msg" id="ntMsg"></div>
 <div id="ntList" style="margin-top:10px"></div>
 </div>
 
@@ -744,6 +797,7 @@ table{min-width:520px}
 <div><label for="feeDate">Date</label><input id="feeDate" type="date"></div>
 <div><label for="feeAmount">Amount Received (Rs)</label><input id="feeAmount" type="number" min="0" placeholder="e.g. 2000"></div>
 <div><label for="feeAdmFee">Admission Fee (Rs, if any)</label><input id="feeAdmFee" type="number" min="0" placeholder="0"></div>
+<div><label for="feeDiscount">Discount (Rs, if any)</label><input id="feeDiscount" type="number" min="0" placeholder="0"></div>
 <div><label for="feeBy">Received By</label><input id="feeBy" type="text" placeholder="e.g. Ahmed Raza"></div>
 </div>
 <div id="feeName" style="margin-top:10px"></div>
@@ -782,6 +836,7 @@ table{min-width:520px}
 <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
 <button class="btn small" id="mrLoadBtn" type="button">Load Multi Receipt</button>
 <button class="btn small outline" id="rcPrintBtn" type="button">Print Receipt</button>
+<button class="btn small outline" id="rcThermalBtn" type="button">Print Thermal (80mm)</button>
 </div>
 <div class="msg" id="rcMsg"></div>
 <div id="receiptView" style="margin-top:10px"></div>
@@ -849,6 +904,8 @@ table{min-width:520px}
 <div id="rpCollection"></div>
 <h4 style="color:var(--blue)">Teacher Pay Report</h4>
 <div id="rpTeacherPay"></div>
+<h4 style="color:var(--blue)">Arrears Sheet</h4>
+<div id="rpArrears"></div>
 </div>
 
 <div class="atab" id="atab-attendance">
@@ -856,6 +913,7 @@ table{min-width:520px}
 <div class="form-grid">
 <div><label for="attDate">Date</label><input id="attDate" type="date"></div>
 <div><label for="attSlot">Class</label><select id="attSlot"></select></div>
+<div><label for="attSearch">Search student</label><input id="attSearch" type="text" placeholder="Name or roll number"></div>
 </div>
 <div style="margin-top:10px"><button class="btn small" id="attSaveBtn" type="button">Save Attendance</button></div>
 <div class="msg" id="attMsg"></div>
@@ -911,8 +969,21 @@ table{min-width:520px}
 </div>
 
 <div class="atab" id="atab-homework">
-<h4 style="margin:6px 0">Homework &amp; Tests &mdash; All Teachers</h4>
-<p class="note" style="margin-top:0">Everything teachers have assigned. You can remove any item.</p>
+<h4 style="margin:6px 0">Homework &amp; Tests — All Teachers</h4>
+<p class="note" style="margin-top:0">Assign homework or a test yourself, or manage what teachers assigned. Mark an item Done when the work is finished.</p>
+<div class="form-grid">
+<div><label for="ahwKind">Type</label><select id="ahwKind"><option value="homework">Homework</option><option value="test">Test</option></select></div>
+<div><label for="ahwSubject">Subject</label><select id="ahwSubject"></select></div>
+<div><label for="ahwTarget">For</label><select id="ahwTarget"></select></div>
+<div><label for="ahwDate">Date</label><input id="ahwDate" type="date"></div>
+<div class="full"><label for="ahwTitle">Title</label><input id="ahwTitle" type="text" placeholder="e.g. Exercise 3 — Present Simple"></div>
+<div class="full"><label for="ahwDetail">Outline / details</label><textarea id="ahwDetail" rows="2" placeholder="What should students do?"></textarea></div>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px">
+<button class="btn small" id="ahwSaveBtn" type="button">Save Homework / Test</button>
+<button class="btn small outline" id="ahwCancelBtn" type="button" style="display:none">Cancel Edit</button>
+</div>
+<div class="msg" id="ahwMsg"></div>
 <div id="hwAdminList" style="margin-top:10px"></div>
 </div>
 
@@ -930,6 +1001,9 @@ table{min-width:520px}
 <input id="importFile" type="file" accept=".json,application/json" style="display:none">
 <button class="btn small outline" id="btnReset" type="button">Reset to Defaults</button>
 </div>
+<h4 style="margin:22px 0 6px">Receipt Note (prints on every receipt)</h4>
+<div><textarea id="rcNote" rows="2" style="width:100%" placeholder="e.g. Fees are non-refundable. Please pay before the 10th of every month."></textarea></div>
+<div style="margin-top:10px"><button class="btn small" id="btnRcNote" type="button">Save Receipt Note</button></div>
 <h4 style="margin:22px 0 6px">Subjects</h4>
 <div id="subjList" class="subj-grid"></div>
 <div class="form-grid" style="margin-top:10px">
@@ -968,10 +1042,12 @@ table{min-width:520px}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <script>
 var DEFAULT_DATA = {
   featuredPlaylist: 'UUDY0UpWofnK0IDvvkgLeitg',
+  receiptNote: '',
   slots: [
     {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
     {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
@@ -1164,8 +1240,10 @@ function searchResult(){
 }
 
 /* ---------- Admin: login & panel ---------- */
-function openModal(id){ $(id).classList.add('open'); }
-function closeModal(id){ $(id).classList.remove('open'); }
+function lockBodyScroll(){ document.body.style.overflow = 'hidden'; }
+function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
+function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel') lockBodyScroll(); }
+function closeModal(id){ $(id).classList.remove('open'); unlockBodyScroll(); }
 function tryLogin(){ tryLoginFb(); }
 /* ---------- Unified login: one button, role from the ID ---------- */
 function openLoginModal(){
@@ -1306,35 +1384,53 @@ function ttMin(t){
   if(m[3] && /pm/i.test(m[3])) h += 12;
   return h * 60 + min;
 }
-function timetablePrintHTML(){
+function timetablePrintHTML(section){
   var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var slots = data.slots.filter(function(x){ return !section || (x.section || '') === section; });
   var times = [];
-  data.slots.forEach(function(x){ var k = (x.start || '') + '–' + (x.end || ''); if(times.indexOf(k) < 0) times.push(k); });
+  slots.forEach(function(x){ var k = (x.start || '') + '–' + (x.end || ''); if(times.indexOf(k) < 0) times.push(k); });
   times.sort(function(a, b){ return ttMin(a.split('–')[0]) - ttMin(b.split('–')[0]); });
-  var h = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>TIME TABLE</h3><p class="tt-sub">' + esc(todayStr()) + ' &middot; Evening classes from 4:00 PM &middot; Sunday closed</p><table><thead><tr><th>Time</th>';
+  var label = section ? (section + ' Time Table') : 'Master Time Table (Girls & Boys)';
+  var h = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>' + esc(label.toUpperCase()) + '</h3><p class="tt-sub">' + esc(todayStr()) + ' &middot; Evening classes from 4:00 PM &middot; Sunday closed</p><table><thead><tr><th>Time</th>';
   days.forEach(function(d){ h += '<th>' + d + '</th>'; });
   h += '</tr></thead><tbody>';
   times.forEach(function(t){
     var parts = t.split('–');
     h += '<tr><td class="tt-time">' + esc(parts[0]) + '<br>&ndash; ' + esc(parts[1] || '') + '</td>';
     days.forEach(function(d){
-      var cells = data.slots.filter(function(x){ return x.day === d && ((x.start || '') + '–' + (x.end || '')) === t; });
+      var cells = slots.filter(function(x){ return x.day === d && ((x.start || '') + '–' + (x.end || '')) === t; });
       if(!cells.length){ h += '<td></td>'; return; }
       h += '<td>' + cells.map(function(x){
-        var names = (x.students || []).join(', ');
-        var grp = x.group ? ' (' + esc(x.group) + ')' : '';
-        return '<div class="tt-cell"><b>' + esc(x.subject) + '</b>' + (x.section ? ' <span class="tt-sec">' + esc(x.section) + '</span>' : '') + grp + (names ? '<br><span class="tt-stu">' + esc(names) + '</span>' : '<br><span class="tt-stu">&mdash;</span>') + '</div>';
+        var grp = x.group ? esc(x.group) : '&mdash;';
+        return '<div class="tt-cell"><b>' + esc(x.subject) + '</b>' + (x.section ? ' <span class="tt-sec">' + esc(x.section) + '</span>' : '') + '<br><span class="tt-grp">' + grp + '</span></div>';
       }).join('<hr>') + '</td>';
     });
     h += '</tr>';
   });
-  h += '</tbody></table><p class="tt-foot">Sir Sajjad Ali &amp; Sir Ahmed Raza — Future Star Computer &amp; Tuition Center, near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>';
+  h += '</tbody></table>';
+  var groups = {};
+  slots.forEach(function(x){
+    if(!x.group) return;
+    var g = groups[x.group] || (groups[x.group] = {name:x.group, section:x.section || '', students:[]});
+    (x.students || []).forEach(function(n){ if(g.students.indexOf(n) < 0) g.students.push(n); });
+    data.groups.forEach(function(gr){ if(gr.name === x.group) (gr.members || []).forEach(function(m){ if(g.students.indexOf(m) < 0) g.students.push(m); }); });
+  });
+  var gnames = Object.keys(groups).sort();
+  if(gnames.length){
+    h += '<h3 class="tt-roster-h">Groups — Students</h3><div class="tt-roster">';
+    gnames.forEach(function(gn){
+      var g = groups[gn];
+      h += '<div class="tt-grp-card"><b>' + esc(g.name) + (g.section ? ' (' + esc(g.section) + ')' : '') + '</b><ol>' + g.students.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ol></div>';
+    });
+    h += '</div>';
+  }
+  h += '<p class="tt-foot">Sir Sajjad Ali &amp; Sir Ahmed Raza — Future Star Computer &amp; Tuition Center, near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>';
   return h;
 }
-function printTimetable(){
+function printTimetable(section){
   var area = $('printArea'); if(!area) return;
   area.className = 'tt-landscape';
-  area.innerHTML = timetablePrintHTML();
+  area.innerHTML = timetablePrintHTML(section || null);
   window.print();
 }
 /* ---------- Admin: announcements ---------- */
@@ -1525,6 +1621,21 @@ $('ntAddBtn').addEventListener('click', function(){
   if(editing.nt >= 0) data.notes[editing.nt] = n; else data.notes.push(n);
   cancelNt(); saveData();
 });
+async function uploadNoteFile(){
+  var inp = $('ntUpload'); if(!inp || !inp.files || !inp.files[0]) return;
+  var file = inp.files[0];
+  if(!fb.ready || !fb.db){ setMsg('ntMsg', 'Live data is unavailable. File upload needs the live database.', 'err'); return; }
+  if(!firebase.storage){ setMsg('ntMsg', 'Storage is not ready yet — please reload the page and try again.', 'err'); return; }
+  try{
+    setMsg('ntMsg', 'Uploading ' + file.name + '…', 'ok');
+    var ref = firebase.storage().ref('notes/' + Date.now() + '_' + file.name.replace(/[^A-Za-z0-9._-]/g, '_'));
+    await ref.put(file);
+    var url = await ref.getDownloadURL();
+    $('ntFile').value = url;
+    setMsg('ntMsg', 'Uploaded. Now click Add Note to save it.', 'ok');
+  }catch(e){ setMsg('ntMsg', 'Upload failed: ' + fbErrText(e) + '. Storage may need to be enabled in the Firebase console first.', 'err'); }
+}
+(function(){ var u = $('ntUpload'); if(u) u.addEventListener('change', uploadNoteFile); })();
 $('ntCancelEdit').addEventListener('click', cancelNt);
 
 /* ---------- Admin: videos ---------- */
@@ -1541,7 +1652,7 @@ function cleanVideoId(v){
 function renderAdminVideos(){
   var html = '';
   data.videos.forEach(function(v, i){
-    html += '<div class="admin-row"><div><b>' + esc(v.id) + '</b><small>' + esc(v.title) + '</small></div>'
+    html += '<div class="admin-row"><div><b>' + esc(v.title) + '</b><small>' + esc(v.id) + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="editVd(' + i + ')">Edit</button> '
       + '<button class="btn small outline" type="button" onclick="delVd(' + i + ')">Delete</button></div></div>';
   });
@@ -1748,14 +1859,17 @@ async function loadNovData(){
 }
 
 /* ---------- Admin: students ---------- */
+var stStatusFilterQ = 'All';
 function renderAdminStudents(){
-  var html = '';
+  var f = stStatusFilterQ;
+  var html = '<p><label>Show: </label><select id="stStatusFilter" style="width:auto" onchange="stStatusFilterQ=this.value;renderAdminStudents()">' + ['All', 'Active', 'Left'].map(function(o){ return '<option' + (f === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></p>';
   if(!data.students.length){
-    html = '<p class="note">No students yet. Import a Students CSV to add students.</p>';
+    html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    html = '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Monthly Fee</th><th>Balance Due</th><th>Actions</th></tr></thead><tbody>';
+    html += '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     data.students.forEach(function(s, i){
-      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
+      if(f !== 'All' && (s.status || 'Active') !== f) return;
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
     });
     html += '</tbody></table></div>';
   }
@@ -2019,7 +2133,7 @@ function shareBase(p, basis){
   if(basis === 'received+adm') r += num(p.admission_fee);
   return r;
 }
-var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], audit:[], profiles:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
+var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
 try{ var _sr = JSON.parse(localStorage.getItem(SHARE_LS_KEY) || 'null'); if(_sr) fbData.shareRules = normShareRules(_sr); }catch(e){}
 var currentTeacher = null;
 var FB_MONTH = (function(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); })();
@@ -2112,7 +2226,7 @@ function studentFromDoc(doc){
   var d = doc.data();
   return {name:d.name || '', phone:'', roll:doc.id, className:d.course || '', course:d.course || '', group:d.group || '',
     father_name:d.father_name || '', caste:d.caste || '', admission_date:d.admission_date || '', time_slot:d.time_slot || '',
-    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), gender:d.gender || '', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
+    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
     subjects:Array.isArray(d.subjects) ? d.subjects.slice() : [], slotIds:Array.isArray(d.slotIds) ? d.slotIds.slice() : []};
 }
 function applySiteDoc(d){
@@ -2124,6 +2238,8 @@ function applySiteDoc(d){
   if(d.notes) data.notes = d.notes;
   if(d.videos) data.videos = d.videos;
   if(d.featuredPlaylist) data.featuredPlaylist = d.featuredPlaylist;
+  if(d.receiptNote != null) data.receiptNote = d.receiptNote;
+  var rn = $('rcNote'); if(rn) rn.value = data.receiptNote || '';
   if(d.shareRules){ fbData.shareRules = normShareRules(d.shareRules); try{ localStorage.setItem(SHARE_LS_KEY, JSON.stringify(fbData.shareRules)); }catch(e){} }
   if(d.subjects){ var _sj = normSubjects(d.subjects); if(_sj.length){ fbData.subjects = _sj; try{ localStorage.setItem(SUBJ_LS_KEY, JSON.stringify(_sj)); }catch(e){} } }
   if(d.migrated_v11) fbData.migrated = true;
@@ -2163,9 +2279,15 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, subjects:fbData.subjects, shareRules:fbData.shareRules, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', subjects:fbData.subjects, shareRules:fbData.shareRules, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
+function saveReceiptNote(){
+  data.receiptNote = ($('rcNote') ? $('rcNote').value.trim() : '');
+  saveData(); fbPushSite();
+  setMsg('settingsMsg', 'Receipt note saved — it will print on every receipt from now on.', 'ok');
+}
+(function(){ var b = $('btnRcNote'); if(b) b.addEventListener('click', saveReceiptNote); })();
 function updateMigrateBtn(){
   var b = $('btnMigrate'); if(!b) return;
   var hasLocal = false;
@@ -2335,7 +2457,7 @@ async function saveStudentToFb(s){
       name:s.name || '', course:s.course || s.className || '', course_type:'Monthly',
       admission_date:s.admission_date || '', time_slot:s.time_slot || '',
       monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues),
-      group:s.group || '', gender:s.gender || '', phoneHash:ph, passwordHash:pwHash, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
+      group:s.group || '', gender:s.gender || '', status:s.status || 'Active', phoneHash:ph, passwordHash:pwHash, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
     await fb.db.collection('academy_contacts').doc(String(s.roll).toUpperCase()).set({
       student_phone:s.phone || '', father_phone:s.father_phone || '', address:s.address || ''}, {merge:true});
   }catch(e){ setMsg('stCsvMsg', 'Live save failed for ' + s.name + ': ' + fbErrText(e), 'err'); }
@@ -2381,6 +2503,10 @@ async function fbLoadFinance(){
     fbData.homework = []; hwSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.homework.push(o); });
     var chSnap = await fb.db.collection('academy_challans').get();
     fbData.challans = []; chSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.challans.push(o); });
+    var exSnap = await fb.db.collection('academy_exams').get();
+    fbData.exams = []; exSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.exams.push(o); });
+    var mkSnap = await fb.db.collection('academy_marks').get();
+    fbData.marks = []; mkSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.marks.push(o); });
     if(fb.role === 'admin'){
       var auSnap = await fb.db.collection('academy_audit').orderBy('at', 'desc').limit(200).get();
       fbData.audit = []; auSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.audit.push(o); });
@@ -2407,7 +2533,7 @@ function auditLog(action, details, targetType, targetId){
 }
 function challanBalance(c){
   if(!c || c.status === 'void') return 0;
-  return Math.max(0, num(c.total) - num(c.paid));
+  return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
 function studentChallans(roll){
   return fbData.challans.filter(function(c){ return c.roll === roll && c.status !== 'void'; });
@@ -2436,8 +2562,13 @@ function attDaysFor(roll, month){
   Object.keys(byDate).forEach(function(dt){ total++; if(attDayStatus(byDate[dt]) === 'Present') present++; });
   return {total:total, present:present};
 }
+function discountsThisMonth(roll, month){
+  var total = 0;
+  fbData.payments.forEach(function(p){ if(!p.reversed && p.student_roll_no === roll && p.month === month) total += num(p.discount); });
+  return total;
+}
 function feeBalance(st, month){
-  return num(st.monthly_fee) + num(st.old_dues) - receivedThisMonth(st.roll, month);
+  return num(st.monthly_fee) + num(st.old_dues) - receivedThisMonth(st.roll, month) - discountsThisMonth(st.roll, month);
 }
 function teacherShareFor(p){
   var course = p.course || '';
@@ -2449,18 +2580,21 @@ function teacherShareFor(p){
 }
 function financeSummary(month){
   var incomeByCourse = {}, income = 0, teacherDue = {}, teacherTotal = 0;
+  var commonIncome = 0, teacherSubjectIncome = 0, academyShareTotal = 0;
   fbData.payments.forEach(function(p){
     if(p.month !== month || p.reversed) return;
     var amt = num(p.amount_received) + num(p.admission_fee);
     income += amt;
     incomeByCourse[p.course || 'Other'] = (incomeByCourse[p.course || 'Other'] || 0) + amt;
     var sh = teacherShareFor(p);
-    if(sh){ teacherDue[sh.teacher] = (teacherDue[sh.teacher] || 0) + sh.share; teacherTotal += sh.share; }
+    if(sh){ teacherDue[sh.teacher] = (teacherDue[sh.teacher] || 0) + sh.share; teacherTotal += sh.share; teacherSubjectIncome += amt; academyShareTotal += sh.academy; }
+    else { commonIncome += amt; }
   });
   var expense = 0, expenseByCat = {};
   fbData.expenses.forEach(function(x){ expense += num(x.amount); expenseByCat[x.category || 'Other'] = (expenseByCat[x.category || 'Other'] || 0) + num(x.amount); });
   var remaining = income - expense;
-  var distributable = remaining - teacherTotal;
+  var commonRemaining = commonIncome - expense;
+  var distributable = commonRemaining;
   var ownerShare = distributable / 2;
   var taken = {'Ahmed Raza':0, 'Sir Sajjad Ali':0};
   fbData.drawings.forEach(function(d){ if(taken[d.owner] != null) taken[d.owner] += num(d.amount); });
@@ -2480,9 +2614,12 @@ function financeSummary(month){
     if(bal !== 0) toGive.push({who:o + ' (owner share)', amount:bal});
   });
   var toGiveTotal = 0; toGive.forEach(function(g){ toGiveTotal += g.amount; });
+  var teacherPaidTotal = 0; Object.keys(teacherPaid).forEach(function(t){ teacherPaidTotal += num(teacherPaid[t]); });
   return {month:month, income:income, incomeByCourse:incomeByCourse, expense:expense, expenseByCat:expenseByCat,
     remaining:remaining, teacherTotal:teacherTotal, teacherDue:teacherDue, teacherPaid:teacherPaid,
-    distributable:distributable, ownerShare:ownerShare, taken:taken, inHand:remaining - (taken['Ahmed Raza'] + taken['Sir Sajjad Ali']),
+    commonIncome:commonIncome, teacherSubjectIncome:teacherSubjectIncome, academyShareTotal:academyShareTotal,
+    commonRemaining:commonRemaining, teacherPaidTotal:teacherPaidTotal,
+    distributable:distributable, ownerShare:ownerShare, taken:taken, inHand:income - expense - teacherPaidTotal - (taken['Ahmed Raza'] + taken['Sir Sajjad Ali']),
     toGive:toGive, toGiveTotal:toGiveTotal};
 }
 async function nextReceiptNo(month){
@@ -2524,6 +2661,7 @@ async function savePayment(p){
   if(amount <= 0){ setMsg(p + 'Msg', 'Please enter an amount greater than zero.', 'err'); return; }
   if(!fbNeedLive()){ setMsg(p + 'Msg', 'Live data is unavailable. Fee collection needs the live database — your form is still filled in, please try again when the connection returns.', 'err'); return; }
   var admFee = num(g('AdmFee') ? g('AdmFee').value : 0);
+  var discount = num(g('Discount') ? g('Discount').value : 0);
   var date = (g('Date') && g('Date').value) || todayStr();
   var by = (g('By') && g('By').value.trim()) || fb.userName || 'Ahmed Raza';
   var month = monthOf(date);
@@ -2531,9 +2669,9 @@ async function savePayment(p){
   try{
     var receiptNo = await nextReceiptNo(month);
     var oldDues = num(st.old_dues);
-    var balanceAfter = (month === FB_MONTH) ? (studentDue(st) - amount - admFee) : (num(st.monthly_fee) + oldDues - receivedThisMonth(st.roll, month) - amount - admFee);
+    var balanceAfter = (month === FB_MONTH) ? (studentDue(st) - amount - admFee - discount) : (num(st.monthly_fee) + oldDues - receivedThisMonth(st.roll, month) - discountsThisMonth(st.roll, month) - amount - admFee - discount);
     var rec = {receipt_no:receiptNo, date:date, student_roll_no:st.roll, month:month, challanId:(pendingChallanId || ''), monthly_fee:num(st.monthly_fee),
-      admission_fee:admFee, amount_received:amount, old_dues_at_time:oldDues, balance_after:balanceAfter, received_by:by, course:st.course || st.className || ''};
+      admission_fee:admFee, discount:discount, amount_received:amount, old_dues_at_time:oldDues, balance_after:balanceAfter, received_by:by, course:st.course || st.className || ''};
     var _payRef = await fb.db.collection('academy_payments').add(rec);
     rec.id = _payRef.id;
     fbData.payments.push(rec);
@@ -2541,8 +2679,9 @@ async function savePayment(p){
       var _ch = fbData.challans.find(function(x){ return x.id === pendingChallanId; });
       if(_ch){
         _ch.paid = num(_ch.paid) + amount;
-        _ch.status = (_ch.paid >= num(_ch.total)) ? 'paid' : 'partial';
-        try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, status:_ch.status}); }catch(e){}
+        _ch.discount = num(_ch.discount) + discount;
+        _ch.status = (challanBalance(_ch) <= 0) ? 'paid' : 'partial';
+        try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, discount:_ch.discount, status:_ch.status}); }catch(e){}
       }
       pendingChallanId = null;
     }
@@ -2550,6 +2689,7 @@ async function savePayment(p){
     setMsg(p + 'Msg', 'Fee saved. Receipt ' + receiptNo + ' — ' + st.name + ' paid ' + rs(amount + admFee) + '. Balance now ' + rs(balanceAfter) + '.', 'ok');
     showReceipt(rec, st);
     if(g('Amount')) g('Amount').value = '';
+    if(g('Discount')) g('Discount').value = '';
     renderAdminFinance();
   }catch(e){
     setMsg(p + 'Msg', 'Could not save: ' + fbErrText(e) + ' Your form data is still here — please try again.', 'err');
@@ -2603,8 +2743,9 @@ async function reversePayment(id){
       var _ch = fbData.challans.find(function(x){ return x.id === p.challanId; });
       if(_ch){
         _ch.paid = Math.max(0, num(_ch.paid) - num(p.amount_received));
-        _ch.status = (_ch.paid >= num(_ch.total)) ? 'paid' : (_ch.paid > 0 ? 'partial' : 'unpaid');
-        try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, status:_ch.status}); }catch(e){}
+        _ch.discount = Math.max(0, num(_ch.discount) - num(p.discount));
+        _ch.status = (challanBalance(_ch) <= 0) ? 'paid' : (_ch.paid > 0 || num(_ch.discount) > 0 ? 'partial' : 'unpaid');
+        try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, discount:_ch.discount, status:_ch.status}); }catch(e){}
       }
     }
     auditLog('reverse', 'Payment reversed: receipt ' + (p.receipt_no || '') + ' (' + p.student_roll_no + ', ' + rs(num(p.amount_received) + num(p.admission_fee)) + ')' + (reason ? ' — ' + reason : '') + '.', 'payment', id);
@@ -2616,6 +2757,7 @@ function renderDues(course){
   var rows = [], total = 0;
   data.students.forEach(function(st){
     if(course && course !== 'All' && (st.course || st.className) !== course) return;
+    if((st.status || 'Active') === 'Left') return;
     var bal = studentDue(st);
     if(bal > 0){ rows.push(st); total += bal; }
   });
@@ -2645,16 +2787,49 @@ function receiptHTML(rec, st){
     + '<tr><td>Monthly Fees</td><td>' + rs(rec.monthly_fee) + '</td></tr>'
     + '<tr><td>Admission Fee</td><td>' + rs(rec.admission_fee) + '</td></tr>'
     + '<tr><td>Received</td><td><b>' + rs(num(rec.amount_received) + num(rec.admission_fee)) + '</b></td></tr>'
+    + (num(rec.discount) > 0 ? '<tr><td>Discount</td><td>' + rs(rec.discount) + '</td></tr>' : '')
     + '<tr><td>Balance</td><td><b>' + rs(rec.balance_after) + '</b></td></tr>'
     + '<tr><td>Received By</td><td>' + esc(rec.received_by) + '</td></tr>'
     + '</tbody></table><p style="margin-top:14px">Student Copy</p>'
+    + (data.receiptNote ? '<p style="border-top:1px dashed var(--line);padding-top:10px">' + esc(data.receiptNote) + '</p>' : '')
     + '<p style="border-top:1px dashed var(--line);padding-top:10px">Thank you. Please keep this receipt.</p></div>';
 }
+var lastReceipt = null;
 function showReceipt(rec, st){
+  lastReceipt = {rec:rec, st:st};
   var area = $('printArea');
   if(area){ area.className = ''; area.innerHTML = receiptHTML(rec, st); }
   var v = $('receiptView');
   if(v){ v.innerHTML = receiptHTML(rec, st); }
+}
+/* Thermal receipt — 80mm wide, same rows as the Excel Receipt sheet
+   (print area A1:C12: header, Date, Roll No, Name, Course, Fees,
+   Admission, Received, Balance, Received by, Student Copy, dashed line). */
+function receiptThermalHTML(rec, st){
+  var row = function(k, v){ return '<tr><td>' + k + '</td><td><b>' + v + '</b></td></tr>'; };
+  return '<div class="receipt-thermal"><h3>Future Star<br>Computer Center<br>Shahdadpur<br>0307-0158381</h3>'
+    + '<table><tbody>'
+    + row('Receipt No', esc(rec.receipt_no || '—'))
+    + row('Date', esc(rec.date))
+    + row('Roll No', esc(rec.student_roll_no))
+    + row('Name', esc(st ? st.name : ''))
+    + row('Course', esc(rec.course || (st ? (st.course || st.className || '') : '')))
+    + row('Fees', rs(rec.monthly_fee))
+    + row('Admission', rs(rec.admission_fee))
+    + row('Received', rs(num(rec.amount_received) + num(rec.admission_fee)))
+    + (num(rec.discount) > 0 ? row('Discount', rs(rec.discount)) : '')
+    + row('Balance', rs(rec.balance_after))
+    + row('Received by', esc(rec.received_by))
+    + '</tbody></table><p>Student Copy</p>'
+    + (data.receiptNote ? '<p>' + esc(data.receiptNote) + '</p>' : '')
+    + '<p>---------------------------</p></div>';
+}
+function printThermalReceipt(){
+  if(!lastReceipt){ alert('Please open a receipt first.'); return; }
+  var area = $('printArea'); if(!area) return;
+  area.className = 'thermal';
+  area.innerHTML = receiptThermalHTML(lastReceipt.rec, lastReceipt.st);
+  window.print();
 }
 function printReceipt(){
   if(!$('printArea') || !$('printArea').innerHTML){ alert('Please open a receipt first.'); return; }
@@ -2718,9 +2893,11 @@ function renderTeacherPay(){
       + '<p>Share due: <b>' + rs(due) + '</b><br>Paid: <b>' + rs(paid) + '</b><br>Balance: <b>' + rs(due - paid) + '</b></p></div>';
   });
   html += '</div>';
-  var ownRows = [['Total income', s.income], ['Expenses', s.expense], ['Remaining', s.remaining], ['Teacher shares set aside', s.teacherTotal], ['Distributable', s.distributable], ['Each owner share (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
+  var ownRows = [['Common pool income (DIT / CIT / Office / Special)', s.commonIncome], ['Expenses (paid from the common pool only)', s.expense], ['Common pool balance', s.commonRemaining], ['Distributable to owners', s.distributable], ['Each owner share (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
+  var subjRows = [['Teacher-subject income (Eng / Maths / Bio / Chem / Phy)', s.teacherSubjectIncome], ['Teacher shares set aside', s.teacherTotal], ['Academy share (academy account — expenses never touch this)', s.academyShareTotal]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
   html += '<div class="card" style="margin-top:14px"><h3 style="margin-top:0;color:var(--blue)">Owners — Common Pool</h3>'
     + '<div class="table-scroll"><table><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>' + ownRows + '</tbody></table></div>'
+    + '<h4 style="color:var(--blue)">Teacher Subjects</h4><div class="table-scroll"><table><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>' + subjRows + '</tbody></table></div>'
     + '<h4 style="color:var(--blue)">Still To Give — Total ' + rs(s.toGiveTotal) + '</h4>'
     + (s.toGive.length ? s.toGive.map(function(g){ return '<p style="margin:4px 0">' + esc(g.who) + ': <b>' + rs(g.amount) + '</b></p>'; }).join('') : '<p>Nothing outstanding.</p>')
     + '</div>';
@@ -2974,7 +3151,7 @@ function renderReports(){
     if(!incRows) incRows = '<tr><td colspan="2" class="note">No income yet</td></tr>';
     var expRows = Object.keys(s.expenseByCat).map(function(c){ return '<tr><td>' + esc(c) + '</td><td>' + rs(s.expenseByCat[c]) + '</td></tr>'; }).join('');
     if(!expRows) expRows = '<tr><td colspan="2" class="note">No expenses yet</td></tr>';
-    var sumRows = [['Remaining after expenses', s.remaining], ['Teacher shares set aside', s.teacherTotal], ['Distributable', s.distributable], ['Each owner (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand], ['Still to give', s.toGiveTotal]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
+    var sumRows = [['Common pool income (DIT / CIT / Office / Special)', s.commonIncome], ['Expenses (common pool only)', s.expense], ['Common pool balance', s.commonRemaining], ['Teacher-subject income', s.teacherSubjectIncome], ['Teacher shares set aside', s.teacherTotal], ['Academy share (teacher subjects)', s.academyShareTotal], ['Distributable to owners', s.distributable], ['Each owner (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand], ['Still to give', s.toGiveTotal]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
     el.innerHTML = '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Monthly Finance Summary — ' + FB_MONTH + '</h3>'
       + '<h4>Income by Course</h4><div class="table-scroll"><table><thead><tr><th>Course</th><th>Amount</th></tr></thead><tbody>' + incRows
       + '<tr><td><b>Total income</b></td><td><b>' + rs(s.income) + '</b></td></tr></tbody></table></div>'
@@ -2984,6 +3161,11 @@ function renderReports(){
   }
   var dues = renderDues('All');
   var dEl = $('rpDues'); if(dEl) dEl.innerHTML = dues.html;
+  var aEl = $('rpArrears');
+  if(aEl){
+    var arr = arrearsSheetHTML();
+    aEl.innerHTML = arr.html + '<p style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small outline" type="button" onclick="exportReport(\'arrears\')">Arrears CSV</button> <button class="btn small outline" type="button" onclick="printArrears()">Print Arrears Sheet</button></p>';
+  }
   var coll = fbData.payments.slice().sort(function(a, b){ return (a.date < b.date ? 1 : -1); });
   var cEl = $('rpCollection');
   if(cEl){
@@ -3004,6 +3186,35 @@ function renderReports(){
     tEl.innerHTML = html;
   }
 }
+function arrearsSheetHTML(){
+  var rows = [], total = 0;
+  data.students.forEach(function(st){
+    if((st.status || 'Active') === 'Left') return;
+    var bal = studentDue(st);
+    if(bal > 0){ rows.push(st); total += bal; }
+  });
+  rows.sort(function(a, b){ return studentDue(b) - studentDue(a); });
+  var html = '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Arrears Sheet — ' + FB_MONTH + '</h3>';
+  if(!rows.length){
+    html += '<p class="note">No arrears — everyone is paid up.</p>';
+  } else {
+    html += '<div class="table-scroll"><table><thead><tr><th>Roll</th><th>Name</th><th>Course</th><th>Monthly Fee</th><th>Arrears (by month)</th><th>Received</th><th>Balance Due</th></tr></thead><tbody>';
+    rows.forEach(function(st){
+      var arrTxt = studentChallans(st.roll).filter(function(c){ return challanBalance(c) > 0; }).map(function(c){ return c.month + ': ' + rs(challanBalance(c)); }).join(' · ') || rs(st.old_dues);
+      html += '<tr><td>' + esc(st.roll) + '</td><td><b>' + esc(st.name) + '</b></td><td>' + esc(st.course || st.className || '') + '</td><td>' + rs(st.monthly_fee) + '</td><td>' + esc(arrTxt) + '</td><td>' + rs(receivedThisMonth(st.roll, FB_MONTH)) + '</td><td><b>' + rs(studentDue(st)) + '</b></td></tr>';
+    });
+    html += '</tbody></table></div><p style="margin-top:10px"><b>Total arrears: ' + rs(total) + '</b> (' + rows.length + ' students)</p>';
+  }
+  html += '</div>';
+  return {html:html, total:total, count:rows.length};
+}
+function printArrears(){
+  var arr = arrearsSheetHTML();
+  var area = $('printArea'); if(!area) return;
+  area.className = '';
+  area.innerHTML = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>ARREARS SHEET — ' + FB_MONTH + '</h3>' + arr.html + '</div>';
+  window.print();
+}
 function exportReport(kind){
   var s = financeSummary(FB_MONTH);
   if(kind === 'dues'){
@@ -3016,6 +3227,10 @@ function exportReport(kind){
   } else if(kind === 'teacherpay'){
     var rows = fbData.teacherPayments.map(function(t){ return [t.date, t.teacher, t.subject, t.amount_paid, t.note || '']; });
     downloadFile('fscc-teacher-pay-' + FB_MONTH + '.csv', reportRowsToCSV(['Date', 'Teacher', 'Subject', 'Paid', 'Note'], rows), 'text/csv');
+  } else if(kind === 'arrears'){
+    var rows = [];
+    data.students.forEach(function(st){ var bal = studentDue(st); if(bal > 0) rows.push([st.roll, st.name, st.course || st.className || '', st.monthly_fee, st.old_dues, receivedThisMonth(st.roll, FB_MONTH), bal]); });
+    downloadFile('fscc-arrears-' + FB_MONTH + '.csv', reportRowsToCSV(['Roll', 'Name', 'Course', 'Monthly Fee', 'Old Dues', 'Received', 'Balance Due'], rows), 'text/csv');
   } else if(kind === 'expenses'){
     var rows = fbData.expenses.map(function(x){ return [x.date, x.item, x.category, x.amount, x.paid_by, x.is_given ? 'Yes' : 'No']; });
     downloadFile('fscc-expenses-' + FB_MONTH + '.csv', reportRowsToCSV(['Date', 'Item', 'Category', 'Amount', 'Paid By', 'Given'], rows), 'text/csv');
@@ -3027,6 +3242,7 @@ function exportReport(kind){
 }
 /* ---------- Attendance ---------- */
 var attMarks = {};
+var attSearchQ = {att:'', tAtt:''};
 function attSlotStudents(slot){
   var names = (slot.students || []).slice();
   if(slot.group){
@@ -3040,7 +3256,7 @@ function attSlotStudents(slot){
     if(found) out.push(found);
     else out.push({name:n, roll:'—'});
   });
-  return out;
+  return out.filter(function(s){ return (s.status || 'Active') !== 'Left'; });
 }
 function attSlotsFor(viewer){
   var list = data.slots.slice();
@@ -3062,6 +3278,8 @@ function renderAttendance(p, viewer){
   var slot = slots[parseInt(slotSel.value || '0', 10)];
   var date = (dateEl && dateEl.value) || todayStr();
   var students = attSlotStudents(slot);
+  var q = (attSearchQ[p] || '').trim().toLowerCase();
+  if(q) students = students.filter(function(st){ return (st.name || '').toLowerCase().indexOf(q) >= 0 || (st.roll || '').toLowerCase().indexOf(q) >= 0; });
   var html = '<p><b>' + esc(slot.day + ' ' + slot.start + '–' + slot.end + ' · ' + slot.subject + ' · ' + slot.group || '') + '</b> — ' + students.length + ' students</p>';
   html += '<div class="table-scroll"><table><thead><tr><th>Roll</th><th>Name</th><th>Status</th></tr></thead><tbody>';
   students.forEach(function(st){
@@ -3299,13 +3517,50 @@ function renderTeacherPanel(){
     el.innerHTML = '<p>Welcome, <b>' + esc(currentTeacher.name) + '</b> · Subjects: ' + esc(currentTeacher.subjects.join(', ')) + '</p>'
       + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">My Pay — ' + FB_MONTH + '</h3>'
       + '<p>Share due: <b>' + rs(due) + '</b> · Paid: <b>' + rs(paid) + '</b> · Balance: <b>' + rs(due - paid) + '</b></p>'
-      + '<p class="note">Share is calculated from the fees collected for your subjects this month. The admin pays you and records it here.</p></div>';
+      + '<p class="note">Share is calculated from the fees collected for your subjects this month. The admin pays you and records it here.</p></div>'
+      + teacherStudentFeesHTML(currentTeacher);
   }
   renderTeacherStudents();
   renderTeacherHomework();
+  renderTeacherResults();
   renderAttendance('tAtt', 'teacher');
   var feeEl = $('tFeeName');
   if(feeEl) feeEl.textContent = '';
+}
+function teacherReceivedThisMonth(teacher, roll){
+  var subs = teacher.subjects || [];
+  return fbData.payments.filter(function(p){ return p.student_roll_no === roll && p.month === FB_MONTH && !p.reversed && subs.indexOf(p.course) >= 0; }).reduce(function(a, p){ return a + num(p.amount_received); }, 0);
+}
+function teacherStudentFeesHTML(teacher){
+  var studs = teacherStudents(teacher);
+  var h = '<div class="card" style="margin-top:12px"><h3 style="margin-top:0;color:var(--blue)">My Students — Fees (' + FB_MONTH + ')</h3>';
+  if(!studs.length){
+    h += '<p class="note">No students in your subjects yet.</p>';
+  } else {
+  var rows = studs.map(function(s){
+    var rec = teacherReceivedThisMonth(teacher, s.roll);
+    var myShare = 0;
+    fbData.payments.filter(function(p){ return p.student_roll_no === s.roll && p.month === FB_MONTH && !p.reversed; }).forEach(function(p){
+      var sh = teacherShareFor(p);
+      if(sh && sh.teacher === teacher.name) myShare += Math.round(shareBase(p, sh.rules.basis) * sh.rules.pct / 100);
+    });
+    var due = studentDue(s);
+    var status = due <= 0 ? 'Paid' : (rec > 0 ? 'Partial' : 'Unpaid');
+    return {name:s.name, roll:s.roll, received:rec, share:myShare, due:due, status:status};
+  });
+  rows.sort(function(a, b){ return b.due - a.due; });
+  var totRec = rows.reduce(function(a, r){ return a + r.received; }, 0);
+  var totShare = rows.reduce(function(a, r){ return a + r.share; }, 0);
+  var totDue = rows.reduce(function(a, r){ return a + r.due; }, 0);
+  h += '<div class="table-scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Paid this month</th><th>My share</th><th>Still pending</th><th>Status</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var st = r.status === 'Paid' ? '<b style="color:green">Paid ✓</b>' : (r.status === 'Partial' ? '<b style="color:#b8860b">Partial</b>' : '<b style="color:#c0392b">Unpaid</b>');
+    h += '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.roll) + '</td><td>' + rs(r.received) + '</td><td>' + rs(r.share) + '</td><td>' + rs(r.due) + '</td><td>' + st + '</td></tr>';
+  });
+  h += '</tbody></table></div><p class="note">Total paid: <b>' + rs(totRec) + '</b> · My total share: <b>' + rs(totShare) + '</b> · Total pending: <b>' + rs(totDue) + '</b><br>Paid and My share are for your subjects only. Still pending is the student\'s total balance.</p>';
+  }
+  h += '</div>';
+  return h;
 }
 /* ---------- v1.2.6: Homework & Tests ---------- */
 var editingHw = null;
@@ -3331,8 +3586,10 @@ function renderTeacherHomework(){
   var mine = fbData.homework.filter(function(h){ return h.teacherUid === (fb.user ? fb.user.uid : ''); }).sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
   var h = '';
   mine.forEach(function(it){
-    h += '<div class="admin-row"><div><b>' + esc(it.kind === 'test' ? 'Test: ' : 'Homework: ') + esc(it.title) + '</b><small>' + esc(it.subject) + ' · ' + esc(it.date) + ' · ' + (it.targetType === 'one' ? esc(it.targetRoll || '') : 'All ' + esc(it.subject) + ' students') + '<br>' + esc(it.detail || '') + '</small></div>'
+    var doneTxt = it.done ? ' · <b style="color:green">Done ✓ ' + esc(it.doneAt || '') + '</b>' : '';
+    h += '<div class="admin-row"><div><b>' + esc(it.kind === 'test' ? 'Test: ' : 'Homework: ') + esc(it.title) + '</b><small>' + esc(it.subject) + ' · ' + esc(it.date) + ' · ' + (it.targetType === 'one' ? esc(it.targetRoll || '') : 'All ' + esc(it.subject) + ' students') + doneTxt + '<br>' + esc(it.detail || '') + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="editHomework(\'' + it.id + '\')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="doneHomework(\'' + it.id + '\', ' + (it.done ? 'false' : 'true') + ')">' + (it.done ? 'Undo Done' : 'Mark Done') + '</button> '
       + '<button class="btn small outline" type="button" onclick="delHomework(\'' + it.id + '\')">Delete</button></div></div>';
   });
   el.innerHTML = h || '<p class="note">Nothing assigned yet.</p>';
@@ -3394,19 +3651,23 @@ function studentHomeworkHTML(st){
   }).sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
   var h = '<h4>Homework &amp; Tests</h4>';
   if(!mine.length) return h + '<p class="note">No homework or tests assigned to you yet.</p>';
-  h += '<div class="table-scroll"><table><thead><tr><th>Date</th><th>Type</th><th>Subject</th><th>Title &amp; Outline</th><th>Teacher</th></tr></thead><tbody>';
+  h += '<div class="table-scroll"><table><thead><tr><th>Date</th><th>Type</th><th>Subject</th><th>Title &amp; Outline</th><th>Teacher</th><th>Status</th></tr></thead><tbody>';
   mine.forEach(function(it){
-    h += '<tr><td>' + esc(it.date) + '</td><td>' + (it.kind === 'test' ? '<b>Test</b>' : 'Homework') + '</td><td>' + esc(it.subject) + '</td><td><b>' + esc(it.title) + '</b><br>' + esc(it.detail || '') + '</td><td>' + esc(it.teacherName || '') + '</td></tr>';
+    h += '<tr><td>' + esc(it.date) + '</td><td>' + (it.kind === 'test' ? '<b>Test</b>' : 'Homework') + '</td><td>' + esc(it.subject) + '</td><td><b>' + esc(it.title) + '</b><br>' + esc(it.detail || '') + '</td><td>' + esc(it.teacherName || '') + '</td><td>' + (it.done ? '<b style="color:green">Done ✓ ' + esc(it.doneAt || '') + '</b>' : 'Pending') + '</td></tr>';
   });
   return h + '</tbody></table></div>';
 }
 function renderHomeworkAdmin(){
   var el = $('hwAdminList'); if(!el) return;
+  ahwTargetOptions();
   var list = fbData.homework.slice().sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
   var h = '';
   list.forEach(function(it){
-    h += '<div class="admin-row"><div><b>' + esc(it.kind === 'test' ? 'Test: ' : 'Homework: ') + esc(it.title) + '</b><small>' + esc(it.subject) + ' · ' + esc(it.date) + ' · ' + esc(it.teacherName || '') + ' · ' + (it.targetType === 'one' ? esc(it.targetRoll || '') : 'All ' + esc(it.subject) + ' students') + '<br>' + esc(it.detail || '') + '</small></div>'
-      + '<div><button class="btn small outline" type="button" onclick="delHomeworkAdmin(\'' + it.id + '\')">Delete</button></div></div>';
+    var doneTxt = it.done ? ' · <b style="color:green">Done ✓ ' + esc(it.doneAt || '') + '</b>' : '';
+    h += '<div class="admin-row"><div><b>' + esc(it.kind === 'test' ? 'Test: ' : 'Homework: ') + esc(it.title) + '</b><small>' + esc(it.subject) + ' · ' + esc(it.date) + ' · ' + esc(it.teacherName || '') + ' · ' + (it.targetType === 'one' ? esc(it.targetRoll || '') : 'All ' + esc(it.subject) + ' students') + doneTxt + '<br>' + esc(it.detail || '') + '</small></div>'
+      + '<div><button class="btn small outline" type="button" onclick="editHomeworkAdmin(\'' + it.id + '\')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="doneHomework(\'' + it.id + '\', ' + (it.done ? 'false' : 'true') + ')">' + (it.done ? 'Undo Done' : 'Mark Done') + '</button> '
+      + '<button class="btn small outline" type="button" onclick="delHomeworkAdmin(\'' + it.id + '\')">Delete</button></div></div>';
   });
   el.innerHTML = h || '<p class="note">No homework or tests yet.</p>';
 }
@@ -3419,6 +3680,274 @@ async function delHomeworkAdmin(id){
     auditLog('homework', 'Admin deleted a homework/test item.', 'homework', id);
     renderHomeworkAdmin();
   }catch(e){ setMsg('chMsg', 'Could not delete: ' + fbErrText(e), 'err'); }
+}
+var editingHwAdmin = null;
+function ahwTargetOptions(){
+  var subjEl = $('ahwSubject');
+  if(subjEl){
+    var subs = subjectNames();
+    var cur = subjEl.value;
+    subjEl.innerHTML = subs.map(function(s){ return '<option>' + esc(s) + '</option>'; }).join('');
+    if(cur && subs.indexOf(cur) >= 0) subjEl.value = cur;
+  }
+  var subj = $('ahwSubject') ? $('ahwSubject').value : '';
+  var t = $('ahwTarget'); if(!t) return;
+  var list = data.students.filter(function(s){ return studentHasSubject(s, subj); });
+  var cur2 = t.value;
+  t.innerHTML = '<option value="subject">All students of ' + esc(subj) + '</option>'
+    + list.map(function(s){ return '<option value="' + esc(s.roll) + '">' + esc(s.name) + ' (' + esc(s.roll) + ')</option>'; }).join('');
+  if(cur2) t.value = cur2;
+}
+async function saveHomeworkAdmin(){
+  var kind = $('ahwKind').value, subj = $('ahwSubject').value, target = $('ahwTarget').value;
+  var title = $('ahwTitle').value.trim(), detail = $('ahwDetail').value.trim(), date = $('ahwDate').value || todayStr();
+  if(!subj){ setMsg('ahwMsg', 'Please pick a subject.', 'err'); return; }
+  if(!title){ setMsg('ahwMsg', 'Please enter a title.', 'err'); return; }
+  if(!fbNeedLive()){ setMsg('ahwMsg', 'Live data is unavailable. Homework needs the live database.', 'err'); return; }
+  var rec = {kind:kind, subject:subj, title:title, detail:detail, date:date,
+    targetType:(target === 'subject' ? 'subject' : 'one'), targetRoll:(target === 'subject' ? '' : target),
+    teacherUid:fb.user ? fb.user.uid : '', teacherName:fb.userName || 'Admin', updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    if(editingHwAdmin){
+      await fb.db.collection('academy_homework').doc(editingHwAdmin).update(rec);
+      var old = fbData.homework.find(function(x){ return x.id === editingHwAdmin; }); if(old) Object.assign(old, rec);
+      auditLog('homework', 'Admin updated ' + kind + ': ' + title + ' (' + subj + ', ' + date + ').', 'homework', editingHwAdmin);
+      setMsg('ahwMsg', 'Updated.', 'ok');
+    } else {
+      rec.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      var ref = await fb.db.collection('academy_homework').add(rec);
+      rec.id = ref.id; fbData.homework.push(rec);
+      auditLog('homework', 'Admin assigned ' + kind + ': ' + title + ' (' + subj + ', ' + date + ').', 'homework', ref.id);
+      setMsg('ahwMsg', 'Saved — students will see it on their portal.', 'ok');
+    }
+    cancelHomeworkAdmin();
+    renderHomeworkAdmin();
+  }catch(e){ setMsg('ahwMsg', 'Could not save: ' + fbErrText(e), 'err'); }
+}
+function editHomeworkAdmin(id){
+  var it = fbData.homework.find(function(x){ return x.id === id; }); if(!it) return;
+  editingHwAdmin = id;
+  $('ahwKind').value = it.kind; $('ahwSubject').value = it.subject; ahwTargetOptions();
+  $('ahwTarget').value = it.targetType === 'subject' ? 'subject' : it.targetRoll;
+  $('ahwTitle').value = it.title; $('ahwDetail').value = it.detail || ''; $('ahwDate').value = it.date;
+  $('ahwCancelBtn').style.display = '';
+  $('ahwSaveBtn').textContent = 'Update Homework / Test';
+  var tab = $('atab-homework'); if(tab) tab.scrollIntoView({behavior:'smooth'});
+}
+function cancelHomeworkAdmin(){
+  editingHwAdmin = null;
+  $('ahwCancelBtn').style.display = 'none'; $('ahwSaveBtn').textContent = 'Save Homework / Test';
+  $('ahwTitle').value = ''; $('ahwDetail').value = '';
+}
+async function doneHomework(id, done){
+  var it = fbData.homework.find(function(x){ return x.id === id; }); if(!it) return;
+  if(!fbNeedLive()){ setMsg('hwMsg', 'Live data is unavailable.', 'err'); return; }
+  var patch = done ? {done:true, doneAt:todayStr(), doneBy:fb.userName || 'teacher'} : {done:false, doneAt:'', doneBy:''};
+  try{
+    await fb.db.collection('academy_homework').doc(id).update(patch);
+    Object.assign(it, patch);
+    auditLog('homework', (done ? 'Marked done: ' : 'Reopened: ') + it.title + '.', 'homework', id);
+    renderTeacherHomework(); renderHomeworkAdmin();
+  }catch(e){ setMsg('hwMsg', 'Could not update: ' + fbErrText(e), 'err'); }
+}
+/* ---------- v1.3.0: Exams ---------- */
+var editingExam = null, openExamId = null;
+function examStudents(exam){
+  return data.students.filter(function(s){ return (s.status || 'Active') !== 'Left' && studentHasSubject(s, exam.subject); });
+}
+function renderExams(){
+  var subjEl = $('exmSubject');
+  if(subjEl){
+    var subs = subjectNames(); var cur = subjEl.value;
+    subjEl.innerHTML = subs.map(function(s){ return '<option>' + esc(s) + '</option>'; }).join('');
+    if(cur && subs.indexOf(cur) >= 0) subjEl.value = cur;
+  }
+  var el = $('exmList'); if(!el) return;
+  var list = fbData.exams.slice().sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
+  var h = '';
+  list.forEach(function(ex){
+    var n = fbData.marks.filter(function(m){ return m.examId === ex.id; }).length;
+    h += '<div class="admin-row"><div><b>' + esc(ex.title) + '</b><small>' + esc(ex.subject) + ' · ' + esc(ex.date) + ' · ' + ex.totalQuestions + ' questions · ' + ex.totalMarks + ' marks · ' + n + ' marks entered</small></div>'
+      + '<div><button class="btn small outline" type="button" onclick="openMarks(\'' + ex.id + '\')">Enter Marks</button> '
+      + '<button class="btn small outline" type="button" onclick="openExamResults(\'' + ex.id + '\')">Results</button> '
+      + '<button class="btn small outline" type="button" onclick="editExam(\'' + ex.id + '\')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="delExam(\'' + ex.id + '\')">Delete</button></div></div>';
+  });
+  el.innerHTML = h || '<p class="note">No exams yet.</p>';
+  if(openExamId) renderExamDetail();
+}
+async function saveExam(){
+  var subj = $('exmSubject').value, title = $('exmTitle').value.trim();
+  var q = num($('exmQuestions').value), tm = num($('exmTotalMarks').value);
+  var date = $('exmDate').value || todayStr(), topN = Math.max(1, Math.min(10, num($('exmTopN').value) || 3));
+  if(!subj){ setMsg('exmMsg', 'Please pick a subject.', 'err'); return; }
+  if(!title){ setMsg('exmMsg', 'Please enter an exam title.', 'err'); return; }
+  if(!q || !tm){ setMsg('exmMsg', 'Total questions and total marks are both required.', 'err'); return; }
+  if(!fbNeedLive()){ setMsg('exmMsg', 'Live data is unavailable. Exams need the live database.', 'err'); return; }
+  var rec = {subject:subj, title:title, totalQuestions:q, totalMarks:tm, date:date, topN:topN,
+    createdBy:fb.user ? fb.user.uid : '', createdByName:fb.userName || '', updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    if(editingExam){
+      await fb.db.collection('academy_exams').doc(editingExam).update(rec);
+      var old = fbData.exams.find(function(x){ return x.id === editingExam; }); if(old) Object.assign(old, rec);
+      auditLog('exam', 'Admin updated exam: ' + title + ' (' + subj + ', ' + date + ').', 'exam', editingExam);
+      setMsg('exmMsg', 'Exam updated.', 'ok');
+    } else {
+      rec.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      var ref = await fb.db.collection('academy_exams').add(rec);
+      rec.id = ref.id; fbData.exams.push(rec);
+      auditLog('exam', 'Admin created exam: ' + title + ' (' + subj + ', ' + date + ').', 'exam', ref.id);
+      setMsg('exmMsg', 'Exam created — now enter marks.', 'ok');
+    }
+    cancelExamEdit(); renderExams();
+  }catch(e){ setMsg('exmMsg', 'Could not save: ' + fbErrText(e), 'err'); }
+}
+function editExam(id){
+  var ex = fbData.exams.find(function(x){ return x.id === id; }); if(!ex) return;
+  editingExam = id;
+  $('exmSubject').value = ex.subject; $('exmTitle').value = ex.title;
+  $('exmQuestions').value = ex.totalQuestions; $('exmTotalMarks').value = ex.totalMarks;
+  $('exmDate').value = ex.date; $('exmTopN').value = ex.topN || 3;
+  $('exmCancelBtn').style.display = ''; $('exmSaveBtn').textContent = 'Update Exam';
+  var tab = $('atab-exams'); if(tab) tab.scrollIntoView({behavior:'smooth'});
+}
+function cancelExamEdit(){
+  editingExam = null;
+  $('exmCancelBtn').style.display = 'none'; $('exmSaveBtn').textContent = 'Create Exam';
+  $('exmTitle').value = ''; $('exmQuestions').value = ''; $('exmTotalMarks').value = '';
+}
+async function delExam(id){
+  var ex = fbData.exams.find(function(x){ return x.id === id; });
+  if(!confirm('Delete this exam and all its marks?')) return;
+  if(!fbNeedLive()) return;
+  try{
+    var snap = await fb.db.collection('academy_marks').where('examId', '==', id).get();
+    var batch = fb.db.batch();
+    snap.forEach(function(d){ batch.delete(d.ref); });
+    batch.delete(fb.db.collection('academy_exams').doc(id));
+    await batch.commit();
+    fbData.exams = fbData.exams.filter(function(x){ return x.id !== id; });
+    fbData.marks = fbData.marks.filter(function(m){ return m.examId !== id; });
+    if(openExamId === id) openExamId = null;
+    auditLog('exam', 'Admin deleted exam: ' + (ex ? ex.title : id) + '.', 'exam', id);
+    renderExams();
+  }catch(e){ setMsg('exmMsg', 'Could not delete: ' + fbErrText(e), 'err'); }
+}
+function openMarks(examId){ openExamId = examId; renderExamDetail(); var el = $('exmMarks'); if(el) el.scrollIntoView({behavior:'smooth'}); }
+function openExamResults(examId){ openExamId = examId; renderExamDetail(); var el = $('exmResults'); if(el) el.scrollIntoView({behavior:'smooth'}); }
+function renderExamDetail(){
+  var ex = fbData.exams.find(function(x){ return x.id === openExamId; });
+  var mEl = $('exmMarks'), rEl = $('exmResults');
+  if(!ex){ if(mEl) mEl.innerHTML = ''; if(rEl) rEl.innerHTML = ''; return; }
+  var studs = examStudents(ex);
+  var h = '<h4 style="margin:6px 0">Enter Marks — ' + esc(ex.title) + ' (' + esc(ex.subject) + ', ' + ex.totalMarks + ' marks)</h4><div class="table-scroll"><table><thead><tr><th>Roll</th><th>Student</th><th>Obtained (out of ' + ex.totalMarks + ')</th></tr></thead><tbody>';
+  studs.forEach(function(s){
+    var mk = fbData.marks.find(function(m){ return m.examId === ex.id && m.roll === s.roll; });
+    h += '<tr><td>' + esc(s.roll) + '</td><td>' + esc(s.name) + '</td><td><input type="number" min="0" max="' + ex.totalMarks + '" data-mk-roll="' + esc(s.roll) + '" value="' + (mk ? mk.obtained : '') + '" style="width:110px"></td></tr>';
+  });
+  h += '</tbody></table></div><div style="margin-top:10px"><button class="btn small" type="button" onclick="saveMarks(\'' + ex.id + '\')">Save Marks</button></div>';
+  if(mEl) mEl.innerHTML = h;
+  if(rEl) rEl.innerHTML = examResultsHTML(ex);
+}
+async function saveMarks(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  if(!fbNeedLive()){ setMsg('exmMsg', 'Live data is unavailable.', 'err'); return; }
+  var inputs = document.querySelectorAll('[data-mk-roll]');
+  var batch = fb.db.batch(); var count = 0;
+  inputs.forEach(function(inp){
+    var roll = inp.getAttribute('data-mk-roll');
+    var val = inp.value.trim();
+    if(val === '') return;
+    var obt = Math.max(0, Math.min(ex.totalMarks, num(val)));
+    var docId = examId + '_' + String(roll).toUpperCase().replace(/[^A-Z0-9]/g, '_');
+    batch.set(fb.db.collection('academy_marks').doc(docId), {examId:examId, roll:roll, obtained:obt, totalMarks:ex.totalMarks, subject:ex.subject, date:ex.date, updatedAt:firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
+    count++;
+  });
+  try{
+    await batch.commit();
+    var snap = await fb.db.collection('academy_marks').where('examId', '==', examId).get();
+    fbData.marks = fbData.marks.filter(function(m){ return m.examId !== examId; });
+    snap.forEach(function(d){ var m = d.data(); m.id = d.id; fbData.marks.push(m); });
+    auditLog('marks', 'Marks entered for ' + ex.title + ' (' + count + ' students).', 'exam', examId);
+    setMsg('exmMsg', 'Saved ' + count + ' marks.', 'ok');
+    renderExams();
+  }catch(e){ setMsg('exmMsg', 'Could not save marks: ' + fbErrText(e), 'err'); }
+}
+function examResultsHTML(ex){
+  var studs = examStudents(ex);
+  var rows = fbData.marks.filter(function(m){ return m.examId === ex.id; }).map(function(m){
+    var s = studs.find(function(x){ return x.roll === m.roll; });
+    return {roll:m.roll, name:s ? s.name : m.roll, obtained:num(m.obtained), pct:ex.totalMarks ? Math.round(num(m.obtained) / ex.totalMarks * 100) : 0};
+  });
+  rows.sort(function(a, b){ return b.obtained - a.obtained; });
+  rows.forEach(function(r){ r.pos = rows.filter(function(x){ return x.obtained > r.obtained; }).length + 1; });
+  var topN = ex.topN || 3;
+  var h = '<h4 style="margin:6px 0">Results — ' + esc(ex.title) + ' (' + esc(ex.subject) + ', ' + ex.totalMarks + ' marks)</h4>';
+  if(!rows.length) return h + '<p class="note">No marks entered yet.</p>';
+  h += '<p class="note">Positions: top ' + topN + ' highlighted. Same marks = same position.</p>';
+  h += '<div class="table-scroll"><table><thead><tr><th>Position</th><th>Roll</th><th>Student</th><th>Obtained</th><th>Percentage</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var top = r.pos <= topN ? ' style="background:#fff7d6;font-weight:700"' : '';
+    h += '<tr' + top + '><td>' + r.pos + (r.pos <= topN ? ' 🏆' : '') + '</td><td>' + esc(r.roll) + '</td><td>' + esc(r.name) + '</td><td>' + r.obtained + ' / ' + ex.totalMarks + '</td><td>' + r.pct + '%</td></tr>';
+  });
+  h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
+  return h;
+}
+function printExamResults(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  var area = $('printArea'); if(!area) return;
+  area.className = '';
+  area.innerHTML = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>EXAM RESULT</h3><p class="tt-sub">' + esc(ex.title) + ' · ' + esc(ex.subject) + ' · ' + esc(ex.date) + '</p>' + examResultsHTML(ex) + '<p class="tt-foot">Sir Sajjad Ali &amp; Sir Ahmed Raza — Future Star Computer &amp; Tuition Center, near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>';
+  window.print();
+}
+function renderTeacherResults(){
+  var el = $('tResBody'); if(!el) return;
+  if(!currentTeacher){ el.innerHTML = '<p class="note">Please log in as a teacher.</p>'; return; }
+  var subs = currentTeacher.subjects || [];
+  var exams = fbData.exams.filter(function(x){ return subs.indexOf(x.subject) >= 0; });
+  var sel = $('tResExam');
+  if(sel){
+    var cur = sel.value;
+    sel.innerHTML = exams.map(function(x){ return '<option value="' + x.id + '">' + esc(x.title) + ' — ' + esc(x.subject) + ' (' + esc(x.date) + ')</option>'; }).join('') || '<option value="">No exams for your subjects yet</option>';
+    if(cur) sel.value = cur;
+  }
+  var grpSel = $('tResGroup');
+  if(grpSel){
+    var groups = [];
+    teacherStudents(currentTeacher).forEach(function(s){ if(s.group && groups.indexOf(s.group) < 0) groups.push(s.group); });
+    var gcur = grpSel.value;
+    grpSel.innerHTML = '<option value="">All my students</option>' + groups.map(function(g){ return '<option>' + esc(g) + '</option>'; }).join('');
+    if(gcur) grpSel.value = gcur;
+  }
+  var exId = sel ? sel.value : '';
+  var ex = fbData.exams.find(function(x){ return x.id === exId; });
+  var grp = grpSel ? grpSel.value : '';
+  if(!ex){ el.innerHTML = '<p class="note">Pick an exam to see results.</p>'; return; }
+  var studs = teacherStudents(currentTeacher).filter(function(s){ return studentHasSubject(s, ex.subject) && (!grp || s.group === grp); });
+  var rows = fbData.marks.filter(function(m){ return m.examId === ex.id; }).filter(function(m){ return studs.some(function(s){ return s.roll === m.roll; }); }).map(function(m){
+    var s = studs.find(function(x){ return x.roll === m.roll; });
+    return {roll:m.roll, name:s ? s.name : m.roll, obtained:num(m.obtained), pct:ex.totalMarks ? Math.round(num(m.obtained) / ex.totalMarks * 100) : 0};
+  });
+  rows.sort(function(a, b){ return b.obtained - a.obtained; });
+  rows.forEach(function(r){ r.pos = rows.filter(function(x){ return x.obtained > r.obtained; }).length + 1; });
+  var topN = ex.topN || 3;
+  var h = '<div class="table-scroll"><table><thead><tr><th>Position</th><th>Roll</th><th>Student</th><th>Obtained</th><th>Percentage</th></tr></thead><tbody>';
+  if(!rows.length) h += '<tr><td colspan="5">No marks entered for this exam yet.</td></tr>';
+  rows.forEach(function(r){
+    var top = r.pos <= topN ? ' style="background:#fff7d6;font-weight:700"' : '';
+    h += '<tr' + top + '><td>' + r.pos + (r.pos <= topN ? ' 🏆' : '') + '</td><td>' + esc(r.roll) + '</td><td>' + esc(r.name) + '</td><td>' + r.obtained + ' / ' + ex.totalMarks + '</td><td>' + r.pct + '%</td></tr>';
+  });
+  h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printTeacherResults()">Print Results</button></div>';
+  el.innerHTML = h;
+}
+function printTeacherResults(){
+  var exId = $('tResExam') ? $('tResExam').value : '';
+  var ex = fbData.exams.find(function(x){ return x.id === exId; }); if(!ex) return;
+  var area = $('printArea'); if(!area) return;
+  var grp = $('tResGroup') ? $('tResGroup').value : '';
+  area.className = '';
+  area.innerHTML = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>EXAM RESULT</h3><p class="tt-sub">' + esc(ex.title) + ' · ' + esc(ex.subject) + ' · ' + esc(ex.date) + (grp ? ' · Group: ' + esc(grp) : '') + ' · Teacher: ' + esc(currentTeacher.name) + '</p>' + ($('tResBody') ? $('tResBody').innerHTML : '') + '<p class="tt-foot">Sir Sajjad Ali &amp; Sir Ahmed Raza — Future Star Computer &amp; Tuition Center, near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>';
+  window.print();
 }
 /* ---------- v1.2.6: Challans ---------- */
 var pendingChallanId = null;
@@ -3440,7 +3969,7 @@ function buildChallan(st, month, monthlyFee, extraLines, custom, note){
 }
 async function createChallansFor(month, rollOrNull){
   if(!fbNeedLive()){ setMsg('chMsg', 'Live data is unavailable. Challans need the live database.', 'err'); return 0; }
-  var targets = data.students.filter(function(st){ return !rollOrNull || st.roll === rollOrNull; });
+  var targets = data.students.filter(function(st){ if((st.status || 'Active') === 'Left') return false; return !rollOrNull || st.roll === rollOrNull; });
   var made = 0, skipped = 0;
   for(var i = 0; i < targets.length; i++){
     var st = targets[i];
@@ -3534,20 +4063,24 @@ async function voidChallan(id){
 }
 function challanSlipHTML(c){
   var st = studentByRoll(c.roll);
+  var chNo = 'CH-' + c.month + '-' + String(c.id || '').slice(-6).toUpperCase();
   var rows = '<tr><td>Monthly fee — ' + esc(c.month) + '</td><td><b>' + rs(c.monthlyFee) + '</b></td></tr>';
   (c.arrears || []).forEach(function(a){
     rows += '<tr><td>Arrears' + (a.month ? ' — ' + esc(a.month) : '') + (a.label && a.label !== 'Balance of ' + a.month ? ' (' + esc(a.label) + ')' : '') + '</td><td>' + rs(a.amount) + '</td></tr>';
   });
   rows += '<tr><td><b>Total payable</b></td><td><b>' + rs(c.total) + '</b></td></tr>'
+    + (num(c.discount) > 0 ? '<tr><td>Discount</td><td>' + rs(c.discount) + '</td></tr>' : '')
     + '<tr><td>Paid so far</td><td>' + rs(c.paid) + '</td></tr>'
     + '<tr><td><b>Balance</b></td><td><b>' + rs(challanBalance(c)) + '</b></td></tr>';
   return '<div class="receipt"><h3 style="margin:0;color:var(--blue)">Future Star Computer &amp; Tuition Center</h3>'
     + '<p style="margin:2px 0 12px">FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381</p>'
     + '<h3 style="margin:0;color:var(--blue)">Fee Challan — ' + esc(c.month) + '</h3>'
-    + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(c.status) + '</p>'
+    + '<p><b>Challan No:</b> ' + esc(chNo) + ' &nbsp;·&nbsp; <b>Due date:</b> end of ' + esc(c.month) + '</p>'
+    + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Course:</b> ' + esc(st ? (st.course || st.className || '') : '') + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(c.status) + '</p>'
     + '<table class="marks"><tbody>' + rows + '</tbody></table>'
     + (c.note ? '<p>Note: ' + esc(c.note) + '</p>' : '')
-    + '<p style="margin-top:14px">Please pay before the end of the month. Thank you.</p></div>';
+    + '<p style="margin-top:14px">Please pay before the end of the month. Thank you.</p>'
+    + '<p style="display:flex;justify-content:space-between;margin-top:26px"><span>Student Signature: ____________</span><span>Received by: ____________</span></p></div>';
 }
 function printChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
@@ -3571,16 +4104,19 @@ function renderChallans(){
   var list = fbData.challans.filter(function(c){ return c.month === month; }).sort(function(a, b){ return (a.studentName < b.studentName ? -1 : 1); });
   var h = '';
   if(!list.length) h = '<p class="note">No challans for ' + esc(month) + ' yet. Create them above — or one student at a time.</p>';
-  list.forEach(function(c){
-    var bal = challanBalance(c);
-    var arrTxt = (c.arrears || []).map(function(a){ return (a.month || 'Previous') + ': ' + rs(a.amount); }).join(' · ') || '—';
-    h += '<div class="admin-row"><div><b>' + esc(c.studentName || c.roll) + '</b> <small>(' + esc(c.roll) + ')' + (c.custom ? ' · custom' : '') + '</small><small>Fee ' + rs(c.monthlyFee) + ' · Arrears: ' + esc(arrTxt) + ' · Total <b>' + rs(c.total) + '</b> · Paid ' + rs(c.paid) + ' · Balance <b>' + rs(bal) + '</b> · ' + esc(c.status) + '</small></div>'
-      + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
-      + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
-      + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
-      + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
-      + '</div></div>';
-  });
+  else {
+    h = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Fee</th><th>Arrears</th><th>Total</th><th>Paid</th><th>Discount</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody>';
+    list.forEach(function(c){
+      var bal = challanBalance(c);
+      var arrTxt = (c.arrears || []).map(function(a){ return (a.month || 'Previous') + ': ' + rs(a.amount); }).join(' · ') || '—';
+      h += '<tr><td><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + '</td><td>' + esc(c.roll) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td><b>' + rs(c.total) + '</b></td><td>' + rs(c.paid) + '</td><td>' + rs(c.discount) + '</td><td><b>' + rs(bal) + '</b></td><td>' + esc(c.status) + '</td><td style="white-space:nowrap">'
+        + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
+        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
+        + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
+        + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
   el.innerHTML = h;
 }
 /* ---------- v1.2.6: Activity Log ---------- */
@@ -3613,6 +4149,7 @@ function renderAdminFinance(){
   renderRoles();
   renderChallans();
   renderHomeworkAdmin();
+  renderExams();
   renderActivityLog();
   renderPaymentsList();
   var mEl = $('feeMonthLabel');
@@ -3706,8 +4243,16 @@ function bindV12(){
   });
   /* fees */
   b = $('feeRoll'); if(b) b.addEventListener('change', function(){ fillFeeForm('fee', this.value); });
+  b = $('ahwSaveBtn'); if(b) b.addEventListener('click', saveHomeworkAdmin);
+  b = $('exmSaveBtn'); if(b) b.addEventListener('click', saveExam);
+  b = $('exmCancelBtn'); if(b) b.addEventListener('click', cancelExamEdit);
+  b = $('tResExam'); if(b) b.addEventListener('change', renderTeacherResults);
+  b = $('tResGroup'); if(b) b.addEventListener('change', renderTeacherResults);
+  b = $('ahwCancelBtn'); if(b) b.addEventListener('click', cancelHomeworkAdmin);
+  b = $('ahwSubject'); if(b) b.addEventListener('change', ahwTargetOptions);
   b = $('feeSaveBtn'); if(b) b.addEventListener('click', function(){ savePayment('fee'); });
   b = $('feePrintBtn'); if(b) b.addEventListener('click', printReceipt);
+  b = $('rcThermalBtn'); if(b) b.addEventListener('click', printThermalReceipt);
   b = $('duesCourse'); if(b) b.addEventListener('change', function(){ var d = renderDues(this.value); $('duesList').innerHTML = d.html; });
   b = $('duesCsvBtn'); if(b) b.addEventListener('click', function(){ exportReport('dues'); });
   b = $('newMonthBtn'); if(b) b.addEventListener('click', startNewMonth);
@@ -3715,8 +4260,10 @@ function bindV12(){
   b = $('rcLoadBtn'); if(b) b.addEventListener('click', loadSingleReceipt);
   b = $('mrLoadBtn'); if(b) b.addEventListener('click', loadMultiReceipt);
   b = $('rcPrintBtn'); if(b) b.addEventListener('click', printReceipt);
-  b = $('ttPrintBtn'); if(b) b.addEventListener('click', printTimetable);
-  b = $('ttPrintBtnPublic'); if(b) b.addEventListener('click', printTimetable);
+  b = $('ttPrintGirls'); if(b) b.addEventListener('click', function(){ printTimetable('Girls'); });
+  b = $('ttPrintBoys'); if(b) b.addEventListener('click', function(){ printTimetable('Boys'); });
+  b = $('ttPrintMaster'); if(b) b.addEventListener('click', function(){ printTimetable(null); });
+  b = $('ttPrintBtnPublic'); if(b) b.addEventListener('click', function(){ printTimetable(null); });
   /* teacher pay */
   b = $('tpSaveBtn'); if(b) b.addEventListener('click', saveTeacherPayment);
   b = $('shSaveBtn'); if(b) b.addEventListener('click', saveShareRules);
@@ -3749,6 +4296,8 @@ function bindV12(){
   b = $('attDate'); if(b) b.addEventListener('change', function(){ renderAttendance('att', 'admin'); });
   b = $('attSlot'); if(b) b.addEventListener('change', function(){ renderAttendance('att', 'admin'); });
   b = $('attSaveBtn'); if(b) b.addEventListener('click', function(){ attSave('att', 'admin'); });
+  b = $('attSearch'); if(b) b.addEventListener('input', function(){ attSearchQ.att = this.value; renderAttendance('att', 'admin'); });
+  b = $('tAttSearch'); if(b) b.addEventListener('input', function(){ attSearchQ.tAtt = this.value; renderAttendance('tAtt', 'teacher'); });
   /* attendance (teacher) */
   b = $('tAttDate'); if(b) b.addEventListener('change', function(){ renderAttendance('tAtt', 'teacher'); });
   b = $('tAttSlot'); if(b) b.addEventListener('change', function(){ renderAttendance('tAtt', 'teacher'); });
@@ -3763,7 +4312,7 @@ function bindV12(){
   b = $('btnFbLogout'); if(b) b.addEventListener('click', function(){ fbSignOut(); setMsg('settingsMsg', 'Signed out of the live account.', 'ok'); });
   /* date defaults */
   var today = todayStr();
-  ['feeDate', 'tFeeDate', 'exDate', 'tpDate', 'odDate', 'attDate', 'tAttDate'].forEach(function(id){ var el = $(id); if(el && !el.value) el.value = today; });
+  ['feeDate', 'tFeeDate', 'exDate', 'tpDate', 'odDate', 'attDate', 'tAttDate', 'ahwDate', 'exmDate'].forEach(function(id){ var el = $(id); if(el && !el.value) el.value = today; });
   var rm = $('rpMonth'); if(rm && !rm.value) rm.value = FB_MONTH;
   var fb2 = $('feeBy'); if(fb2 && !fb2.value) fb2.value = 'Ahmed Raza';
   var eb = $('exBy'); if(eb && !eb.value) eb.value = 'Ahmed Raza';
@@ -3781,6 +4330,8 @@ function editStu(i){
   $('seFatherPhone').value = s.father_phone || ''; $('seAddress').value = s.address || '';
   $('seAdmDate').value = s.admission_date || ''; $('seTime').value = s.time_slot || '';
   $('seGender').value = s.gender || '';
+  $('seStatus').value = s.status || 'Active';
+  editingStuRoll = s.roll || '';
   renderSeSubChecks(s.subjects && s.subjects.length ? s.subjects : (s.course ? [s.course] : []));
   $('seFee').value = num(s.monthly_fee); $('seAdmFee').value = num(s.admission_fee); $('seOld').value = num(s.old_dues);
   $('stEditForm').style.display = '';
@@ -3798,12 +4349,61 @@ function addStu(){
   $('seFatherPhone').value = ''; $('seAddress').value = '';
   $('seAdmDate').value = ''; $('seTime').value = '';
   $('seGender').value = '';
+  $('seStatus').value = 'Active';
+  editingStuRoll = '';
   renderSeSubChecks([]);
   $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = '';
   $('seFormTitle').textContent = 'Add New Student';
   $('stEditForm').style.display = '';
   $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
   setTimeout(function(){ $('seName').focus(); }, 50);
+}
+var ROLL_PREFIX = {DIT:'DIT', English:'ENG', Biology:'BIO', Chemistry:'CHEM', Physics:'PHY', Maths:'MATH', 'Office Automation':'OFFICE', Office:'OFFICE', Programming:'PROG', 'Computer Science':'PROG', Graphics:'GRAPHICS', Special:'SPECIAL'};
+function rollPrefixFor(s){
+  var subs = s.subjects || [];
+  if(subs.length > 1) return 'FSCC';
+  var key = subs[0] || s.course || s.className || '';
+  return ROLL_PREFIX[key] || (key ? key.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase() : 'FSCC');
+}
+function nextRollFor(prefix){
+  var max = 0;
+  data.students.forEach(function(x){
+    var r = String(x.roll || '').toUpperCase();
+    var m = r.match(new RegExp('^' + prefix + '-?(\\d+)$'));
+    if(m && Number(m[1]) > max) max = Number(m[1]);
+  });
+  return prefix + '-' + ('0' + (max + 1)).slice(-2);
+}
+function suggestRoll(){
+  var s = {subjects:[], course:$('seCourse').value.trim(), className:$('seClass').value.trim()};
+  document.querySelectorAll('#seSubChecks input:checked').forEach(function(cb){ s.subjects.push(cb.getAttribute('data-sesub')); });
+  $('seRoll').value = nextRollFor(rollPrefixFor(s));
+}
+var editingStuRoll = '';
+async function changeStudentRoll(oldRoll, newRoll){
+  if(!fb.ready || !fb.db || fb.role !== 'admin'){ setMsg('stCsvMsg', 'Roll number changed in this browser only — sign in as admin with the live database to move the live records.', 'ok'); return; }
+  try{
+    var batch = fb.db.batch();
+    var q1 = await fb.db.collection('academy_payments').where('student_roll_no', '==', oldRoll).get();
+    q1.forEach(function(d){ batch.update(d.ref, {student_roll_no:newRoll}); });
+    var q2 = await fb.db.collection('academy_challans').where('roll', '==', oldRoll).get();
+    q2.forEach(function(d){ batch.update(d.ref, {roll:newRoll}); });
+    var q3 = await fb.db.collection('academy_attendance').where('student_roll_no', '==', oldRoll).get();
+    q3.forEach(function(d){ batch.update(d.ref, {student_roll_no:newRoll}); });
+    var q4 = await fb.db.collection('academy_homework').where('targetRoll', '==', oldRoll).get();
+    q4.forEach(function(d){ batch.update(d.ref, {targetRoll:newRoll}); });
+    batch.delete(fb.db.collection('academy_students').doc(oldRoll));
+    batch.delete(fb.db.collection('academy_contacts').doc(oldRoll));
+    await batch.commit();
+    fbData.payments.forEach(function(p){ if(p.student_roll_no === oldRoll) p.student_roll_no = newRoll; });
+    fbData.challans.forEach(function(c){ if(c.roll === oldRoll) c.roll = newRoll; });
+    fbData.attendance.forEach(function(a){ if(a.student_roll_no === oldRoll) a.student_roll_no = newRoll; });
+    fbData.homework.forEach(function(h){ if(h.targetRoll === oldRoll) h.targetRoll = newRoll; });
+    data.results.forEach(function(r){ if(String(r.roll).toUpperCase() === oldRoll) r.roll = newRoll; });
+    auditLog('roll-change', 'Roll number changed: ' + oldRoll + ' → ' + newRoll + '.', 'student', newRoll);
+    fbPushSite();
+    setMsg('stCsvMsg', 'Roll number changed: ' + oldRoll + ' → ' + newRoll + ' (payments, challans, attendance and homework moved).', 'ok');
+  }catch(e){ setMsg('stCsvMsg', 'Roll changed in this browser, but the live move failed: ' + fbErrText(e), 'err'); }
 }
 function saveStuEdit(){
   if(editingStu === -1) return;
@@ -3817,10 +4417,13 @@ function saveStuEdit(){
   s.father_phone = $('seFatherPhone').value.trim(); s.address = $('seAddress').value.trim();
   s.admission_date = $('seAdmDate').value; s.time_slot = $('seTime').value.trim();
   s.gender = $('seGender').value;
+  s.status = $('seStatus').value || 'Active';
   s.subjects = [];
   document.querySelectorAll('#seSubChecks input:checked').forEach(function(cb){ s.subjects.push(cb.getAttribute('data-sesub')); });
   if(s.subjects.length) s.course = s.subjects[0];
   s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value);
+  var oldRoll = isNew ? '' : (editingStuRoll || '');
+  if(!isNew && oldRoll && oldRoll !== s.roll) changeStudentRoll(oldRoll, s.roll);
   if(!s.name || !s.roll){ setMsg('stCsvMsg', 'Please enter at least a name and a roll number.', 'err'); return; }
   if(isNew){
     var dup = null;
@@ -3849,6 +4452,9 @@ function renderSeSubChecks(checked){
   var b = $('seSaveBtn'); if(b) b.addEventListener('click', saveStuEdit);
   b = $('seCancelBtn'); if(b) b.addEventListener('click', cancelStuEdit);
   b = $('stAddBtn'); if(b) b.addEventListener('click', addStu);
+  b = $('seGenRollBtn'); if(b) b.addEventListener('click', suggestRoll);
+  var ssc = $('seSubChecks'); if(ssc) ssc.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
+  var sc2 = $('seCourse'); if(sc2) sc2.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   b = $('stLoadNovBtn'); if(b) b.addEventListener('click', loadNovData);
 })();
 
