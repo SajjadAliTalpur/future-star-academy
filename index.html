@@ -237,6 +237,8 @@ body *{visibility:hidden}
 .tt-print .tt-stu{font-size:.78rem;color:#33475e}
 .tt-print hr{border:0;border-top:1px dashed #dbe4f0;margin:6px 0}
 .tt-print .tt-foot{text-align:center;color:#5a6b85;font-size:.8rem;margin-top:12px}
+.tt-compact table{min-width:0}
+.tt-compact th,.tt-compact td{padding:8px 10px;font-size:.88rem}
 @page ttlandscape{size:landscape;margin:10mm}
 #printArea.tt-landscape{page:ttlandscape}
 /* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
@@ -971,19 +973,19 @@ table{min-width:520px}
 var DEFAULT_DATA = {
   featuredPlaylist: 'UUDY0UpWofnK0IDvvkgLeitg',
   slots: [
-    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
-    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
+    {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
     {day:'Monday', start:'5:00 PM', end:'5:45 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'Group A', students:['Azhar','Ahmed','Zia ur Rehman','Muhammad'], sample:true},
-    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
-    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
-    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
-    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
-    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
-    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
-    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
-    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
-    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
-    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]}
+    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
+    {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
+    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
+    {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
+    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
+    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]},
+    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls', group:'', students:[]},
+    {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys', group:'', students:[]}
   ],
   groups: [
     {id:'g1', name:'Group A', subject:'Computer Science', teacher:'Sir Sajjad Ali', time:'Mon–Wed 4:00 PM', members:['Azhar','Ahmed','Zia ur Rehman','Muhammad'], sample:true}
@@ -2879,14 +2881,15 @@ function studentGender(s){
   if(inBoys && !inGirls) return 'Boy';
   return '';
 }
-function dashBars(title, icon, rows, total, colors){
+function dashBars(title, icon, rows, total, colors, money){
   var max = 0; rows.forEach(function(r){ if(r[1] > max) max = r[1]; });
   var html = '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">' + icon + '</span> ' + esc(title) + '</h3>';
   if(!rows.length) html += '<p class="note">No data yet.</p>';
   rows.forEach(function(r, i){
     var pct = max ? Math.round(r[1] / max * 100) : 0;
     var cls = (colors && colors[i % colors.length]) || '';
-    html += '<div class="bar-row"><div class="bar-lbl"><span>' + esc(r[0]) + '</span><span><b>' + rs(r[1]) + '</b>' + (total ? ' &middot; ' + Math.round(r[1] / total * 100) + '%' : '') + '</span></div>'
+    var val = (money === false) ? r[1] : rs(r[1]);
+    html += '<div class="bar-row"><div class="bar-lbl"><span>' + esc(r[0]) + '</span><span><b>' + val + '</b>' + (total ? ' &middot; ' + Math.round(r[1] / total * 100) + '%' : '') + '</span></div>'
       + '<div class="bar-track"><div class="bar-fill ' + cls + '" style="width:' + pct + '%"></div></div></div>';
   });
   return html + '</div>';
@@ -2929,9 +2932,9 @@ function renderDashboard(){
     + '<div class="stat pink"><span class="material-symbols-outlined ic">girl</span><div class="num">' + girls + '</div><div class="lbl">Total Girls</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
     + '<div class="stat red"><span class="material-symbols-outlined ic">event_busy</span><div class="num">' + absentees.length + '</div><div class="lbl">Absentees Today</div><div class="sub">' + (todayMarked ? todayMarked + ' marked today' : 'no attendance marked today') + '</div></div>'
     + '</div>'
-    + '<div class="grid two">' + dashBars('Attendance Today', 'fact_check', attRows, scheduledCount || todayMarked, ['teal', 'red', 'amber', ''])
+    + '<div class="grid two">' + dashBars('Attendance Today', 'fact_check', attRows, scheduledCount || todayMarked, ['teal', 'red', 'amber', ''], false)
     + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">schedule</span> Today\'s Classes &mdash; ' + esc(todayName) + '</h3>'
-    + (todayClassRows ? '<div class="table-scroll"><table><thead><tr><th>Time</th><th>Subject</th><th>Teacher</th><th>Section</th></tr></thead><tbody>' + todayClassRows + '</tbody></table></div>' : '<p class="note">No classes scheduled for today.</p>') + '</div></div>'
+    + (todayClassRows ? '<div class="table-scroll tt-compact"><table><thead><tr><th>Time</th><th>Subject</th><th>Teacher</th><th>Section</th></tr></thead><tbody>' + todayClassRows + '</tbody></table></div>' : '<p class="note">No classes scheduled for today.</p>') + '</div></div>'
     + '<p class="note">Fees &amp; dues are in the Finance tab — they are not shown on this dashboard.</p>'
     + '<div class="grid two" style="margin-top:16px">'
     + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">event_busy</span> Absentees &mdash; Today</h3>'
