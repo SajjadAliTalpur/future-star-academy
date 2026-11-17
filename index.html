@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Future Star Computer &amp; Tuition Center — Shahdadpur</title>
 <meta name="description" content="Future Star Computer & Tuition Center (FSCC), Shahdadpur. Evening classes from 4:00 PM — Programming, English, Science and Mathematics. Timetable, results, notes and videos.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-50..200">
 <style>
 *{box-sizing:border-box}
 :root{--blue:#0b3d91;--blue2:#1256c4;--gold:#f5b301;--ink:#1a2a44;--muted:#5a6b85;--bg:#f4f7fb;--card:#fff;--line:#dbe4f0;--green:#1d8a4e;--red:#c0392b;--nav-h:72px}
@@ -139,6 +140,31 @@ body *{visibility:hidden}
 #printArea{display:block !important;position:absolute;inset:0;padding:20px}
 #printArea .receipt{border:0}
 }
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;vertical-align:-6px;font-size:1.35em}
+.form-grid select{padding:10px 12px;border:2px solid var(--line);border-radius:10px;font-size:1rem;width:100%;background:#fff}
+.dash-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:16px;padding:22px 24px;margin-bottom:16px;box-shadow:0 8px 24px rgba(11,61,145,.25)}
+.dash-head h3{margin:0;color:#fff;font-size:1.35rem}
+.dash-head p{margin:4px 0 0;color:#dbe7ff}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:16px}
+.stat{border-radius:16px;padding:18px;color:#fff;box-shadow:0 6px 18px rgba(11,61,145,.18);transition:transform .18s ease,box-shadow .18s ease}
+.stat:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(11,61,145,.28)}
+.stat .ic{font-size:2rem;opacity:.9}
+.stat .num{font-size:1.9rem;font-weight:800;line-height:1.1;margin-top:2px}
+.stat .lbl{font-weight:700;opacity:.95}
+.stat .sub{font-size:.85rem;opacity:.85}
+.stat.blue{background:linear-gradient(135deg,#0b3d91,#2f7fe0)}
+.stat.teal{background:linear-gradient(135deg,#0a7d78,#0abf9e)}
+.stat.pink{background:linear-gradient(135deg,#a4137a,#e0529b)}
+.stat.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.stat.red{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+.bar-row{margin:10px 0}
+.bar-row .bar-lbl{display:flex;justify-content:space-between;font-weight:600;font-size:.9rem}
+.bar-track{height:14px;background:#e8edf5;border-radius:999px;overflow:hidden;margin-top:3px}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b3d91,#2f7fe0);transition:width .5s ease}
+.bar-fill.teal{background:linear-gradient(90deg,#0a7d78,#0abf9e)}
+.bar-fill.amber{background:linear-gradient(90deg,#b45309,#f59e0b)}
+.bar-fill.pink{background:linear-gradient(90deg,#a4137a,#e0529b)}
+.bar-fill.red{background:linear-gradient(90deg,#b91c1c,#ef4444)}
 </style>
 </head>
 <body>
@@ -413,7 +439,8 @@ body *{visibility:hidden}
 </div>
 <p class="note" style="margin:8px 0 0">Changes save to the shared live database (Firebase) and appear on every device. If live data is unavailable, changes are saved in this browser only — use Export Data to keep a backup.</p>
 <div class="tabs" id="adminTabs">
-<button type="button" data-atab="timetable" class="on">Timetable</button>
+<button type="button" data-atab="dashboard" class="on">Dashboard</button>
+<button type="button" data-atab="timetable">Timetable</button>
 <button type="button" data-atab="announcements">Announcements</button>
 <button type="button" data-atab="results">Results</button>
 <button type="button" data-atab="groups">Groups</button>
@@ -431,7 +458,11 @@ body *{visibility:hidden}
 <button type="button" data-atab="settings">Settings</button>
 </div>
 
-<div class="atab on" id="atab-timetable">
+<div class="atab on" id="atab-dashboard">
+<div id="dashBody"></div>
+</div>
+
+<div class="atab" id="atab-timetable">
 <div class="form-grid">
 <div><label for="ttDay">Day</label><select id="ttDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
 <div><label for="ttStart">Start Time</label><input id="ttStart" type="text" placeholder="e.g. 4:00 PM"></div>
@@ -510,6 +541,7 @@ body *{visibility:hidden}
 <div><label for="seClass">Class</label><input id="seClass" type="text"></div>
 <div><label for="seGroup">Group</label><input id="seGroup" type="text"></div>
 <div><label for="seCourse">Course (DIT / English / Biology / Maths / Office)</label><input id="seCourse" type="text"></div>
+<div><label for="seGender">Gender</label><select id="seGender"><option value="">Not set</option><option value="Boy">Boy</option><option value="Girl">Girl</option></select></div>
 <div><label for="seFather">Father's Name</label><input id="seFather" type="text"></div>
 <div><label for="seCaste">Caste</label><input id="seCaste" type="text"></div>
 <div><label for="seFatherPhone">Father's Phone</label><input id="seFatherPhone" type="text"></div>
@@ -1357,7 +1389,7 @@ $('btnChangePw').addEventListener('click', async function(){
 });
 
 /* ---------- CSV: students import/export ---------- */
-var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot'];
+var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot','gender'];
 function parseCSVLine(line){
   var out = [], cur = '', inQ = false;
   for(var i = 0; i < line.length; i++){
@@ -1388,12 +1420,13 @@ function parseCSV(text){
   for(var j = headerIdx + 1; j < lines.length; j++){
     if(lines[j].trim() === '') continue;
     var cols = parseCSVLine(lines[j]);
-    if(cols.length !== 5 && cols.length !== 15){ rows.push({skip:true, line:j + 1, reason:'Expected 5 or 15 columns, found ' + cols.length}); continue; }
+    if(cols.length !== 5 && cols.length !== 15 && cols.length !== 16){ rows.push({skip:true, line:j + 1, reason:'Expected 5, 15 or 16 columns, found ' + cols.length}); continue; }
     var r = {name:cols[0], phone:cols[1], roll:cols[2], className:cols[3], group:cols[4], line:j + 1};
-    if(cols.length === 15){
+    if(cols.length === 15 || cols.length === 16){
       r.father_name = cols[5]; r.caste = cols[6]; r.father_phone = cols[7]; r.address = cols[8];
       r.course = cols[9]; r.monthly_fee = num(cols[10]); r.admission_fee = num(cols[11]);
       r.old_dues = num(cols[12]); r.admission_date = cols[13]; r.time_slot = cols[14];
+      if(cols.length === 16) r.gender = cols[15];
     }
     rows.push(r);
   }
@@ -1412,6 +1445,7 @@ function importStudentsCSV(text){
       father_name:r.father_name || '', caste:r.caste || '', father_phone:r.father_phone || '', address:r.address || '',
       course:r.course || r.className || '', monthly_fee:num(r.monthly_fee), admission_fee:num(r.admission_fee),
       old_dues:num(r.old_dues), admission_date:r.admission_date || '', time_slot:r.time_slot || ''};
+    if(r.gender) rec.gender = r.gender;
     if(found){
       Object.keys(rec).forEach(function(k){ found[k] = rec[k]; });
       updated++;
@@ -1431,11 +1465,11 @@ function csvEscape(v){
 function studentsToCSV(){
   var lines = [CSV_HEADER.join(',')];
   data.students.forEach(function(s){
-    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot].map(csvEscape).join(','));
+    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot, s.gender || ''].map(csvEscape).join(','));
   });
   return lines.join('\n');
 }
-var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM\n';
+var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot,gender\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM,\n';
 function downloadFile(name, content, type){
   var blob = new Blob([content], {type: type || 'text/plain'});
   var a = document.createElement('a');
@@ -1640,6 +1674,7 @@ $('stChangePwBtn').addEventListener('click', async function(){
 
 /* ---------- Render everything ---------- */
 function renderAdminAll(){
+  renderDashboard();
   renderAdminTimetable();
   renderAdminAnnouncements();
   renderAdminResults();
@@ -1772,7 +1807,7 @@ function studentFromDoc(doc){
   var d = doc.data();
   return {name:d.name || '', phone:'', roll:doc.id, className:d.course || '', course:d.course || '', group:d.group || '',
     father_name:d.father_name || '', caste:d.caste || '', admission_date:d.admission_date || '', time_slot:d.time_slot || '',
-    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || ''};
+    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), gender:d.gender || '', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || ''};
 }
 function applySiteDoc(d){
   if(!d) return;
@@ -1987,7 +2022,7 @@ async function saveStudentToFb(s){
       name:s.name || '', course:s.course || s.className || '', course_type:'Monthly',
       admission_date:s.admission_date || '', time_slot:s.time_slot || '',
       monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues),
-      group:s.group || '', phoneHash:ph, passwordHash:pwHash}, {merge:true});
+      group:s.group || '', gender:s.gender || '', phoneHash:ph, passwordHash:pwHash}, {merge:true});
     await fb.db.collection('academy_contacts').doc(String(s.roll).toUpperCase()).set({
       student_phone:s.phone || '', father_phone:s.father_phone || '', address:s.address || ''}, {merge:true});
   }catch(e){ setMsg('stCsvMsg', 'Live save failed for ' + s.name + ': ' + fbErrText(e), 'err'); }
@@ -2029,7 +2064,7 @@ async function fbLoadFinance(){
     fbData.attendance = []; atSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.attendance.push(o); });
     var tSnap = await fb.db.collection('academy_teachers').get();
     fbData.teachers = []; tSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.teachers.push(o); });
-    if(fb.role === 'admin'){ renderAdminFinance(); }
+    if(fb.role === 'admin'){ renderAdminFinance(); renderDashboard(); }
     if(fb.role === 'teacher'){ renderTeacherPanel(); }
   }catch(e){ setMsg('settingsMsg', 'Could not load finance data: ' + fbErrText(e), 'err'); }
 }
@@ -2371,6 +2406,95 @@ function renderExpenses(){
   });
   html += '</tbody></table></div>';
   var el = $('exList'); if(el) el.innerHTML = html;
+}
+
+/* ---------- Admin dashboard ---------- */
+function goAtab(name){
+  var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
+  if(b) b.click();
+}
+function studentGender(s){
+  if(s.gender === 'Boy' || s.gender === 'Girl') return s.gender;
+  var name = s.name || '', inBoys = false, inGirls = false;
+  data.slots.forEach(function(x){
+    var list = x.students || [];
+    if(list.indexOf(name) < 0) return;
+    var sec = String(x.section || '').toLowerCase();
+    if(sec.indexOf('girl') >= 0) inGirls = true;
+    if(sec.indexOf('boy') >= 0) inBoys = true;
+  });
+  if(inGirls && !inBoys) return 'Girl';
+  if(inBoys && !inGirls) return 'Boy';
+  return '';
+}
+function dashBars(title, icon, rows, total, colors){
+  var max = 0; rows.forEach(function(r){ if(r[1] > max) max = r[1]; });
+  var html = '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">' + icon + '</span> ' + esc(title) + '</h3>';
+  if(!rows.length) html += '<p class="note">No data yet.</p>';
+  rows.forEach(function(r, i){
+    var pct = max ? Math.round(r[1] / max * 100) : 0;
+    var cls = (colors && colors[i % colors.length]) || '';
+    html += '<div class="bar-row"><div class="bar-lbl"><span>' + esc(r[0]) + '</span><span><b>' + rs(r[1]) + '</b>' + (total ? ' &middot; ' + Math.round(r[1] / total * 100) + '%' : '') + '</span></div>'
+      + '<div class="bar-track"><div class="bar-fill ' + cls + '" style="width:' + pct + '%"></div></div></div>';
+  });
+  return html + '</div>';
+}
+function renderDashboard(){
+  var el = $('dashBody'); if(!el) return;
+  var today = todayStr();
+  var boys = 0, girls = 0, unset = 0;
+  data.students.forEach(function(s){
+    var g = studentGender(s);
+    if(g === 'Boy') boys++; else if(g === 'Girl') girls++; else unset++;
+  });
+  var total = data.students.length;
+  var s = financeSummary(FB_MONTH);
+  var dueList = data.students.map(function(st){ return {st:st, bal:feeBalance(st, FB_MONTH)}; }).filter(function(x){ return x.bal > 0; });
+  dueList.sort(function(a, b){ return b.bal - a.bal; });
+  var dueTotal = 0; dueList.forEach(function(x){ dueTotal += x.bal; });
+  var todayAtt = fbData.attendance.filter(function(a){ return a.date === today; });
+  var absentees = todayAtt.filter(function(a){ return a.status === 'Absent'; });
+  var absRows = absentees.map(function(a){
+    var st = studentByRoll(a.student_roll_no);
+    return '<tr><td>' + esc(st ? st.name : a.student_roll_no) + '</td><td>' + esc(st ? (st.course || st.className || '') : '') + '</td><td>' + esc(a.slot || '') + '</td></tr>';
+  }).join('');
+  var incRows = Object.keys(s.incomeByCourse).map(function(c){ return [c, s.incomeByCourse[c]]; });
+  incRows.sort(function(a, b){ return b[1] - a[1]; });
+  var expRows = Object.keys(s.expenseByCat).map(function(c){ return [c, s.expenseByCat[c]]; });
+  expRows.sort(function(a, b){ return b[1] - a[1]; });
+  var collRows = [['Collected (' + FB_MONTH + ')', s.income], ['Still due', dueTotal]];
+  var topDue = dueList.slice(0, 8).map(function(x){
+    return '<tr><td>' + esc(x.st.name) + '</td><td>' + esc(x.st.course || x.st.className || '') + '</td><td><b>' + rs(x.bal) + '</b></td></tr>';
+  }).join('');
+  var html = '<div class="dash-head"><h3><span class="material-symbols-outlined">dashboard</span> Admin Dashboard</h3>'
+    + '<p>' + esc(today) + ' &middot; ' + total + ' students &middot; Month ' + FB_MONTH + '</p></div>'
+    + '<div class="dash-stats">'
+    + '<div class="stat blue"><span class="material-symbols-outlined ic">groups</span><div class="num">' + total + '</div><div class="lbl">Total Students</div><div class="sub">' + boys + ' boys &middot; ' + girls + ' girls</div></div>'
+    + '<div class="stat teal"><span class="material-symbols-outlined ic">boy</span><div class="num">' + boys + '</div><div class="lbl">Total Boys</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
+    + '<div class="stat pink"><span class="material-symbols-outlined ic">girl</span><div class="num">' + girls + '</div><div class="lbl">Total Girls</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
+    + '<div class="stat amber"><span class="material-symbols-outlined ic">payments</span><div class="num">' + rs(dueTotal) + '</div><div class="lbl">Fees Due</div><div class="sub">' + dueList.length + ' student' + (dueList.length === 1 ? '' : 's') + ' owe fees</div></div>'
+    + '<div class="stat red"><span class="material-symbols-outlined ic">event_busy</span><div class="num">' + absentees.length + '</div><div class="lbl">Absentees Today</div><div class="sub">' + (todayAtt.length ? todayAtt.length + ' marked today' : 'no attendance marked today') + '</div></div>'
+    + '</div>'
+    + '<div class="grid two">' + dashBars('Income by Course', 'bar_chart', incRows, s.income, ['', 'teal', 'amber', 'pink', 'red'])
+    + dashBars('Fees — Collected vs Due', 'account_balance_wallet', collRows, s.income + dueTotal, ['teal', 'red']) + '</div>'
+    + '<div class="grid two" style="margin-top:16px">' + dashBars('Expenses by Category', 'receipt_long', expRows, s.expense, ['amber', 'pink', 'red', 'teal', ''])
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">event_busy</span> Absentees &mdash; Today</h3>'
+    + (absRows ? '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Course</th><th>Class</th></tr></thead><tbody>' + absRows + '</tbody></table></div>' : '<p class="note">' + (todayAtt.length ? 'No absentees today &mdash; everyone marked is present.' : 'No attendance marked for today yet. Mark it from the Attendance tab.') + '</p>') + '</div></div>'
+    + '<div class="grid two" style="margin-top:16px"><div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">payments</span> Top Fees Due</h3>'
+    + (topDue ? '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Course</th><th>Due</th></tr></thead><tbody>' + topDue + '</tbody></table></div><p class="note">Showing top 8 of ' + dueList.length + '. Full list is in Reports &rarr; Dues.</p>' : '<p class="note">No fees due &mdash; everyone is paid up.</p>') + '</div>'
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">bolt</span> Quick Actions</h3>'
+    + '<div style="display:flex;flex-direction:column;gap:10px">'
+    + '<button class="btn small" id="qaAddStu" type="button">+ Add New Student</button>'
+    + '<button class="btn small outline" id="qaFees" type="button">Collect a Fee</button>'
+    + '<button class="btn small outline" id="qaAtt" type="button">Mark Attendance</button>'
+    + '<button class="btn small outline" id="qaRep" type="button">View Reports</button>'
+    + '</div></div></div>';
+  el.innerHTML = html;
+  var q = function(id, fn){ var b = el.querySelector('#' + id); if(b) b.addEventListener('click', fn); };
+  q('qaAddStu', function(){ goAtab('students'); setTimeout(addStu, 50); });
+  q('qaFees', function(){ goAtab('fees'); });
+  q('qaAtt', function(){ goAtab('attendance'); });
+  q('qaRep', function(){ goAtab('reports'); });
 }
 
 /* ---------- Reports ---------- */
@@ -2731,6 +2855,7 @@ function editStu(i){
   $('seFather').value = s.father_name || ''; $('seCaste').value = s.caste || '';
   $('seFatherPhone').value = s.father_phone || ''; $('seAddress').value = s.address || '';
   $('seAdmDate').value = s.admission_date || ''; $('seTime').value = s.time_slot || '';
+  $('seGender').value = s.gender || '';
   $('seFee').value = num(s.monthly_fee); $('seAdmFee').value = num(s.admission_fee); $('seOld').value = num(s.old_dues);
   $('stEditForm').style.display = '';
   $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -2746,6 +2871,7 @@ function addStu(){
   $('seFather').value = ''; $('seCaste').value = '';
   $('seFatherPhone').value = ''; $('seAddress').value = '';
   $('seAdmDate').value = ''; $('seTime').value = '';
+  $('seGender').value = '';
   $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = '';
   $('seFormTitle').textContent = 'Add New Student';
   $('stEditForm').style.display = '';
@@ -2763,6 +2889,7 @@ function saveStuEdit(){
   s.father_name = $('seFather').value.trim(); s.caste = $('seCaste').value.trim();
   s.father_phone = $('seFatherPhone').value.trim(); s.address = $('seAddress').value.trim();
   s.admission_date = $('seAdmDate').value; s.time_slot = $('seTime').value.trim();
+  s.gender = $('seGender').value;
   s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value);
   if(!s.name || !s.roll){ setMsg('stCsvMsg', 'Please enter at least a name and a roll number.', 'err'); return; }
   if(isNew){
