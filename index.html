@@ -174,7 +174,7 @@ body *{visibility:hidden}
 .admin-side-head .btn.outline{background:transparent;color:#fff !important;border-color:#fff}
 .admin-sidebar .note{color:#cfe0ff}
 #adminTabs{display:flex;flex-direction:column;gap:4px;margin:14px 0;flex-wrap:nowrap}
-#adminTabs button{display:block;width:100%;text-align:left;border:2px solid transparent;background:transparent;color:#dbe7ff;border-radius:10px;padding:9px 12px}
+#adminTabs button{display:block;width:100%;text-align:left;border:2px solid transparent;background:transparent;color:#dbe7ff;border-radius:10px;padding:8px 12px}
 #adminTabs button:hover{background:#1256c4;color:#fff}
 #adminTabs button.on{background:var(--gold);color:#1a2a44;border-color:var(--gold)}
 .admin-main{flex:1;min-width:0;padding:22px 24px}
@@ -187,11 +187,15 @@ body *{visibility:hidden}
 }
 /* ---------- v1.2.8: sidebar brand, groups, subject cards ---------- */
 .admin-brand{text-align:center;padding:6px 0 2px}
-.admin-logo{height:84px;width:84px;object-fit:contain;background:#fff;border-radius:50%;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.admin-greet{color:#fff;font-size:.95rem;margin-top:10px;line-height:1.4}
+.admin-logo{height:72px;width:72px;object-fit:contain;background:#fff;border-radius:50%;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.admin-greet{color:#fff;font-size:.95rem;margin-top:6px;line-height:1.4}
 .admin-greet b{color:var(--gold);font-size:1.05rem}
 .admin-div{height:2px;background:var(--gold);border-radius:2px;margin:14px 8px 10px;opacity:.8}
-.admin-group{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#8fb4f0;text-transform:uppercase;padding:12px 12px 4px}
+.admin-group{display:flex;width:100%;align-items:center;gap:8px;background:transparent;border:0;color:#8fb4f0;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:8px 12px 4px;cursor:pointer;text-align:left;font-family:inherit}
+.admin-group .material-symbols-outlined{font-size:1.05rem}
+.admin-group .chev{margin-left:auto;transition:transform .2s ease;font-size:1.15rem}
+.admin-sec.collapsed .chev{transform:rotate(-90deg)}
+@media(min-width:901px){.admin-sec.collapsed .admin-sec-body{display:none}}
 #adminTabs button .material-symbols-outlined{font-size:1.2rem;vertical-align:-4px;margin-right:8px}
 .admin-sidebar{display:flex;flex-direction:column}
 .admin-side-foot{margin-top:auto;padding-top:14px}
@@ -208,6 +212,7 @@ body *{visibility:hidden}
 .subj-card.c4{background:linear-gradient(135deg,#b91c1c,#ef4444)}
 @media(max-width:900px){
 .admin-group{display:none}
+.admin-sec,.admin-sec-body{display:contents}
 .admin-brand{display:flex;align-items:center;gap:12px;text-align:left;padding:2px 0}
 .admin-logo{height:44px;width:44px;padding:3px}
 .admin-greet{margin-top:0}
@@ -538,7 +543,9 @@ table{min-width:520px}
 </div>
 <div class="tabs" id="adminTabs">
 <button type="button" data-atab="dashboard" class="on"><span class="material-symbols-outlined">dashboard</span>Dashboard</button>
-<div class="admin-group">Academics</div>
+<div class="admin-sec" data-sec="academics">
+<button class="admin-group" type="button"><span class="material-symbols-outlined">school</span>Academics<span class="material-symbols-outlined chev">expand_more</span></button>
+<div class="admin-sec-body">
 <button type="button" data-atab="timetable"><span class="material-symbols-outlined">schedule</span>Timetable</button>
 <button type="button" data-atab="attendance"><span class="material-symbols-outlined">fact_check</span>Attendance</button>
 <button type="button" data-atab="students"><span class="material-symbols-outlined">school</span>Students</button>
@@ -548,17 +555,27 @@ table{min-width:520px}
 <button type="button" data-atab="announcements"><span class="material-symbols-outlined">campaign</span>Announcements</button>
 <button type="button" data-atab="notes"><span class="material-symbols-outlined">description</span>Notes</button>
 <button type="button" data-atab="videos"><span class="material-symbols-outlined">play_circle</span>Videos</button>
-<div class="admin-group">Finance</div>
+</div>
+</div>
+<div class="admin-sec" data-sec="finance">
+<button class="admin-group" type="button"><span class="material-symbols-outlined">account_balance</span>Finance<span class="material-symbols-outlined chev">expand_more</span></button>
+<div class="admin-sec-body">
 <button type="button" data-atab="fees"><span class="material-symbols-outlined">payments</span>Finance</button>
 <button type="button" data-atab="challans"><span class="material-symbols-outlined">request_quote</span>Challans</button>
 <button type="button" data-atab="receipts"><span class="material-symbols-outlined">receipt_long</span>Receipts</button>
 <button type="button" data-atab="teacherpay"><span class="material-symbols-outlined">account_balance_wallet</span>Teacher Pay</button>
 <button type="button" data-atab="expenses"><span class="material-symbols-outlined">receipt</span>Expenses</button>
 <button type="button" data-atab="reports"><span class="material-symbols-outlined">bar_chart</span>Reports</button>
-<div class="admin-group">Manage</div>
+</div>
+</div>
+<div class="admin-sec" data-sec="manage">
+<button class="admin-group" type="button"><span class="material-symbols-outlined">manage_accounts</span>Manage<span class="material-symbols-outlined chev">expand_more</span></button>
+<div class="admin-sec-body">
 <button type="button" data-atab="teachers"><span class="material-symbols-outlined">person</span>Teachers</button>
 <button type="button" data-atab="activity"><span class="material-symbols-outlined">history</span>Activity Log</button>
 <button type="button" data-atab="settings"><span class="material-symbols-outlined">settings</span>Settings</button>
+</div>
+</div>
 </div>
 <div class="admin-side-foot">
 <button class="btn small outline" id="adminLogoutBtn" type="button"><span class="material-symbols-outlined">logout</span>Log out</button>
@@ -1185,7 +1202,15 @@ $('adminCloseBtn').addEventListener('click', function(){ closeModal('adminPanel'
 var _hl = document.querySelector('header.site .logo');
 if(_hl && $('adminLogoImg')) $('adminLogoImg').src = _hl.src;
 $('adminLogoutBtn').addEventListener('click', function(){ fbSignOut(); closeModal('adminPanel'); });
+var ADMIN_GROUPS = ['academics', 'finance', 'manage'];
+function loadAdminGroups(){ try{ return JSON.parse(localStorage.getItem('fscc_admin_groups') || '{}'); }catch(e){ return {}; } }
+function saveAdminGroups(st){ try{ localStorage.setItem('fscc_admin_groups', JSON.stringify(st)); }catch(e){} }
+function applyAdminGroups(){ var st = loadAdminGroups(); ADMIN_GROUPS.forEach(function(g){ var sec = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(!sec) return; var open = (g === 'academics') ? (st[g] !== false) : (st[g] === true); sec.classList.toggle('collapsed', !open); }); }
+function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; sec.classList.toggle('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
+applyAdminGroups();
 $('adminTabs').addEventListener('click', function(e){
+  var g = e.target.closest ? e.target.closest('.admin-group') : null;
+  if(g){ toggleAdminGroup(g); return; }
   var b = e.target.closest ? e.target.closest('button[data-atab]') : null;
   if(!b) return;
   var tabs = document.querySelectorAll('#adminTabs button');
@@ -2011,11 +2036,13 @@ function fbInit(){
     if(typeof firebase === 'undefined'){ fb.offline = true; showFbBanner(); return; }
     firebase.initializeApp(FB_CONFIG);
     fb.auth = firebase.auth();
+    try{ fb.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){}
     fb.db = firebase.firestore();
     try{ fb.db.enablePersistence({synchronizeTabs:true}); }catch(e){}
     try{ fb.secondary = firebase.initializeApp(FB_CONFIG, 'secondary'); }catch(e){ fb.secondary = firebase.app('secondary'); }
     fb.ready = true;
     fb.auth.onAuthStateChanged(fbOnAuth);
+    restoreLocalAdmin();
     fbLoadSite();
     fbLoadStudents();
   }catch(e){ fb.offline = true; fb.ready = false; showFbBanner(); }
@@ -2118,16 +2145,17 @@ function fbAuthErr(e){
 }
 function fbOnAuth(user){
   fb.authChecked = true;
-  if(!user){ fb.user = null; fb.role = null; fb.userName = ''; currentTeacher = null; updateAuthButtons(); return; }
+  if(!user){ fb.user = null; fb.userName = ''; currentTeacher = null; if(!localAdminValid()){ fb.role = null; } updateAuthButtons(); return; }
   fb.user = user;
   fb.db.collection('profiles').doc(user.uid).get().then(function(doc){
     if(doc.exists){
       var p = doc.data();
       fb.role = p.role || null; fb.userName = p.name || '';
+      if(fb.role !== 'admin') clearLocalAdmin();
       if(fb.role === 'teacher'){ currentTeacher = {uid:user.uid, name:p.name || '', phone:p.phone || '', subjects:p.subjects || []}; }
       else currentTeacher = null;
     } else {
-      fb.role = null; fb.userName = ''; currentTeacher = null;
+      fb.role = null; fb.userName = ''; currentTeacher = null; clearLocalAdmin();
     }
     updateAuthButtons();
     if(fb.role === 'admin' || fb.role === 'teacher'){ fbLoadFinance(); fbLoadContacts(); }
@@ -2143,7 +2171,12 @@ function updateAuthButtons(){
   }
   updateMigrateBtn();
 }
+function setLocalAdmin(){ try{ localStorage.setItem('fscc_admin_local', JSON.stringify({t:Date.now()})); }catch(e){} }
+function clearLocalAdmin(){ try{ localStorage.removeItem('fscc_admin_local'); }catch(e){} }
+function localAdminValid(){ try{ var raw = localStorage.getItem('fscc_admin_local'); if(!raw) return false; var rec = JSON.parse(raw); return !!(rec && rec.t && (Date.now() - rec.t) < 24*60*60*1000); }catch(e){ return false; } }
+function restoreLocalAdmin(){ if(!fb.user && localAdminValid()){ fb.role = 'admin'; fb.userName = 'Admin'; updateAuthButtons(); } }
 function fbSignOut(){
+  clearLocalAdmin();
   if(fb.auth){ fb.auth.signOut().catch(function(){}); }
   fb.user = null; fb.role = null; fb.userName = ''; currentTeacher = null;
   updateAuthButtons();
@@ -2160,14 +2193,14 @@ async function tryLoginFb(){
         $('adminLoginMsg').textContent = 'This account is not an admin. The admin profile must have role "admin" in the FSCC Academy database.';
         return;
       }
-      fb.user = cred.user; fb.role = 'admin'; fb.userName = prof.data().name || 'Admin';
+      fb.user = cred.user; fb.role = 'admin'; fb.userName = prof.data().name || 'Admin'; setLocalAdmin();
       closeModal('adminModal');
       renderAdminAll(); openModal('adminPanel');
       fbLoadFinance(); fbLoadContacts(); updateAuthButtons();
     }catch(e){ $('adminLoginMsg').textContent = fbAuthErr(e); }
     return;
   }
-  if(pw === getPw()){ closeModal('adminModal'); renderAdminAll(); openModal('adminPanel'); }
+  if(pw === getPw()){ setLocalAdmin(); fb.role = 'admin'; fb.userName = 'Admin'; closeModal('adminModal'); renderAdminAll(); openModal('adminPanel'); updateAuthButtons(); }
   else $('adminLoginMsg').textContent = 'Incorrect password. Please try again.';
 }
 /* Teacher login */
@@ -2771,7 +2804,7 @@ function renderExpenses(){
 /* ---------- Admin dashboard ---------- */
 function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
-  if(b) b.click();
+  if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
 function studentGender(s){
   if(s.gender === 'Boy' || s.gender === 'Girl') return s.gender;
