@@ -1375,7 +1375,7 @@ $('btnChangePw').addEventListener('click', async function(){
   if(nw !== nw2){ setMsg('settingsMsg', 'New passwords do not match.', 'err'); return; }
   if(fb.ready && !fb.offline && fb.user){
     try{
-      await fb.auth.signInWithEmailAndPassword('admin@future-star-academy.local', old);
+      await fb.auth.signInWithEmailAndPassword('admin@fscc-academy.local', old);
       await fb.user.updatePassword(nw);
       $('pwOld').value = ''; $('pwNew').value = ''; $('pwNew2').value = '';
       setMsg('settingsMsg', 'Password changed successfully.', 'ok');
@@ -1695,7 +1695,7 @@ function renderAll(){
   if(currentTeacher && $('teacherPanel').classList.contains('open')) renderTeacherPanel();
 }
 /* ================= v1.2 — Firebase core ================= */
-var FB_CONFIG = {apiKey:'AIzaSyD9oenUhTAcxX0smS8ATUjtAgCkZrjM9wI', authDomain:'future-star-academy.firebaseapp.com', projectId:'future-star-academy', storageBucket:'future-star-academy.firebasestorage.app', messagingSenderId:'1011814995088', appId:'1:1011814995088:web:2ada296ed347ec6761f415'};
+var FB_CONFIG = {apiKey:'AIzaSyD_ubNsHJJjUp0cYzwJd8LRzSQXN0r1FX0', authDomain:'fscc-academy.firebaseapp.com', projectId:'fscc-academy', storageBucket:'fscc-academy.firebasestorage.app', messagingSenderId:'899357336121', appId:'1:899357336121:web:17c8345a06041dfacf63e8'};
 var fb = {ready:false, db:null, auth:null, secondary:null, role:null, user:null, userName:'', offline:false, siteReady:false, authChecked:false};
 var SHARE_LS_KEY = 'fscc_share_rules_v1';
 var SHARE_DEFAULTS = {English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}};
@@ -1934,11 +1934,11 @@ async function tryLoginFb(){
   var pw = $('adminPw').value;
   if(fb.ready && !fb.offline){
     try{
-      var cred = await fb.auth.signInWithEmailAndPassword('admin@future-star-academy.local', pw);
+      var cred = await fb.auth.signInWithEmailAndPassword('admin@fscc-academy.local', pw);
       var prof = await fb.db.collection('profiles').doc(cred.user.uid).get();
       if(!prof.exists || prof.data().role !== 'admin'){
         await fb.auth.signOut();
-        $('adminLoginMsg').textContent = 'This account is not an admin. The admin profile must have role "admin" in the Wholesale Hub database.';
+        $('adminLoginMsg').textContent = 'This account is not an admin. The admin profile must have role "admin" in the FSCC Academy database.';
         return;
       }
       fb.user = cred.user; fb.role = 'admin'; fb.userName = prof.data().name || 'Admin';
@@ -1957,7 +1957,7 @@ async function tryTeacherLogin(){
   if(!phone){ $('tcLoginMsg').textContent = 'Please enter your phone number.'; return; }
   if(!fb.ready || fb.offline){ $('tcLoginMsg').textContent = 'Live data is unavailable. Teacher login needs the live database.'; return; }
   try{
-    var cred = await fb.auth.signInWithEmailAndPassword(phone + '@future-star-academy.local', pw);
+    var cred = await fb.auth.signInWithEmailAndPassword(phone + '@fscc-academy.local', pw);
     var prof = await fb.db.collection('profiles').doc(cred.user.uid).get();
     if(!prof.exists || prof.data().role !== 'teacher'){
       await fb.auth.signOut();
@@ -2033,7 +2033,7 @@ async function createTeacherLogin(name, phone, subjects){
   if(!n || n.length < 10) return {ok:false, msg:'Please enter a valid phone number.'};
   if(!fb.secondary) return {ok:false, msg:'Live data is unavailable. Teacher accounts need the live database.'};
   try{
-    var cred = await fb.secondary.auth().createUserWithEmailAndPassword(n + '@future-star-academy.local', n);
+    var cred = await fb.secondary.auth().createUserWithEmailAndPassword(n + '@fscc-academy.local', n);
     await fb.db.collection('profiles').doc(cred.user.uid).set({role:'teacher', name:name, phone:n, subjects:subjects, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     await fb.db.collection('academy_teachers').doc(cred.user.uid).set({name:name, phone:n, subjects:subjects, status:'active', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     await fb.secondary.auth().signOut();
