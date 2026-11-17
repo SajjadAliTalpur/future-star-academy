@@ -220,6 +220,22 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
+/* ---------- v1.2.10: printable timetable ---------- */
+.tt-print{font-size:.85rem;color:#1a2a44}
+.tt-print h2{font-size:1.15rem;color:#0b3d91;margin:0;text-align:center}
+.tt-print h3{font-size:1rem;letter-spacing:.25em;color:#0b3d91;margin:2px 0 0;text-align:center}
+.tt-print .tt-sub{text-align:center;color:#5a6b85;margin:4px 0 12px}
+.tt-print table{width:100%;border-collapse:collapse;min-width:0;table-layout:fixed}
+.tt-print th,.tt-print td{border:1px solid #1a2a44;padding:6px 7px;vertical-align:top;text-align:left}
+.tt-print th{background:#0b3d91;color:#fff;text-align:center}
+.tt-print .tt-time{font-weight:700;white-space:nowrap;text-align:center;background:#eef4ff}
+.tt-print .tt-cell{margin:2px 0}
+.tt-print .tt-sec{display:inline-block;background:#f5b301;color:#1a2a44;font-size:.68rem;font-weight:800;padding:0 6px;border-radius:999px}
+.tt-print .tt-stu{font-size:.78rem;color:#33475e}
+.tt-print hr{border:0;border-top:1px dashed #dbe4f0;margin:6px 0}
+.tt-print .tt-foot{text-align:center;color:#5a6b85;font-size:.8rem;margin-top:12px}
+@page ttlandscape{size:landscape;margin:10mm}
+#printArea.tt-landscape{page:ttlandscape}
 /* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
 @media(max-width:720px){
 section{padding:28px 0}
@@ -295,6 +311,7 @@ table{min-width:520px}
 <p class="sec-sub">Evening classes, Monday to Saturday from 4:00 PM. Sunday is closed.</p>
 <div id="timetableSlots"></div>
 <p class="note">Exact class times are set by the admin. Only student names are shown here — phone numbers are never published.</p>
+<p><button class="btn small outline" id="ttPrintBtnPublic" type="button">Print Timetable / PDF</button></p>
 <div class="grid three" style="margin-top:18px">
 <div class="card"><h3 style="margin-top:0;color:var(--blue)">Special Courses</h3><p>One-to-one courses with a single teacher: Programming with Sir Sajjad Ali, and Graphics &amp; Office with Sir Ahmed Raza.</p></div>
 <div class="card"><h3 style="margin-top:0;color:var(--blue)">Science &amp; Maths</h3><p>Biology, Chemistry and Physics with Sir Waqar Abbasi, English with Sir Sumair, and Mathematics with Sir Mohsin. Timings are scheduled by the admin.</p></div>
@@ -600,6 +617,7 @@ table{min-width:520px}
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ttAddBtn" type="button">Add Slot</button>
 <button class="btn small outline" id="ttCancelEdit" type="button" style="display:none">Cancel Edit</button>
+<button class="btn small outline" id="ttPrintBtn" type="button">Print Timetable / PDF</button>
 </div>
 <div id="ttList" style="margin-top:10px"></div>
 </div>
@@ -1276,6 +1294,44 @@ $('ttAddBtn').addEventListener('click', function(){
 });
 $('ttCancelEdit').addEventListener('click', cancelTt);
 
+function ttMin(t){
+  var m = String(t || '').match(/(\d{1,2}):(\d{2})\s*([AP]M)?/i);
+  if(!m) return 0;
+  var h = parseInt(m[1], 10) % 12; var min = parseInt(m[2], 10);
+  if(m[3] && /pm/i.test(m[3])) h += 12;
+  return h * 60 + min;
+}
+function timetablePrintHTML(){
+  var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var times = [];
+  data.slots.forEach(function(x){ var k = (x.start || '') + '–' + (x.end || ''); if(times.indexOf(k) < 0) times.push(k); });
+  times.sort(function(a, b){ return ttMin(a.split('–')[0]) - ttMin(b.split('–')[0]); });
+  var h = '<div class="tt-print"><h2>Future Star Computer &amp; Tuition Center — Shahdadpur</h2><h3>TIME TABLE</h3><p class="tt-sub">' + esc(todayStr()) + ' &middot; Evening classes from 4:00 PM &middot; Sunday closed</p><table><thead><tr><th>Time</th>';
+  days.forEach(function(d){ h += '<th>' + d + '</th>'; });
+  h += '</tr></thead><tbody>';
+  times.forEach(function(t){
+    var parts = t.split('–');
+    h += '<tr><td class="tt-time">' + esc(parts[0]) + '<br>&ndash; ' + esc(parts[1] || '') + '</td>';
+    days.forEach(function(d){
+      var cells = data.slots.filter(function(x){ return x.day === d && ((x.start || '') + '–' + (x.end || '')) === t; });
+      if(!cells.length){ h += '<td></td>'; return; }
+      h += '<td>' + cells.map(function(x){
+        var names = (x.students || []).join(', ');
+        var grp = x.group ? ' (' + esc(x.group) + ')' : '';
+        return '<div class="tt-cell"><b>' + esc(x.subject) + '</b>' + (x.section ? ' <span class="tt-sec">' + esc(x.section) + '</span>' : '') + grp + (names ? '<br><span class="tt-stu">' + esc(names) + '</span>' : '<br><span class="tt-stu">&mdash;</span>') + '</div>';
+      }).join('<hr>') + '</td>';
+    });
+    h += '</tr>';
+  });
+  h += '</tbody></table><p class="tt-foot">Sir Sajjad Ali &amp; Sir Ahmed Raza — Future Star Computer &amp; Tuition Center, near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>';
+  return h;
+}
+function printTimetable(){
+  var area = $('printArea'); if(!area) return;
+  area.className = 'tt-landscape';
+  area.innerHTML = timetablePrintHTML();
+  window.print();
+}
 /* ---------- Admin: announcements ---------- */
 function renderAdminAnnouncements(){
   var html = '';
@@ -2591,7 +2647,7 @@ function receiptHTML(rec, st){
 }
 function showReceipt(rec, st){
   var area = $('printArea');
-  if(area){ area.innerHTML = receiptHTML(rec, st); }
+  if(area){ area.className = ''; area.innerHTML = receiptHTML(rec, st); }
   var v = $('receiptView');
   if(v){ v.innerHTML = receiptHTML(rec, st); }
 }
@@ -3489,7 +3545,7 @@ function challanSlipHTML(c){
 }
 function printChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
-  if($('printArea')) $('printArea').innerHTML = challanSlipHTML(c);
+  if($('printArea')){ $('printArea').className = ''; $('printArea').innerHTML = challanSlipHTML(c); }
   window.print();
 }
 function collectForChallan(id){
@@ -3653,6 +3709,8 @@ function bindV12(){
   b = $('rcLoadBtn'); if(b) b.addEventListener('click', loadSingleReceipt);
   b = $('mrLoadBtn'); if(b) b.addEventListener('click', loadMultiReceipt);
   b = $('rcPrintBtn'); if(b) b.addEventListener('click', printReceipt);
+  b = $('ttPrintBtn'); if(b) b.addEventListener('click', printTimetable);
+  b = $('ttPrintBtnPublic'); if(b) b.addEventListener('click', printTimetable);
   /* teacher pay */
   b = $('tpSaveBtn'); if(b) b.addEventListener('click', saveTeacherPayment);
   b = $('shSaveBtn'); if(b) b.addEventListener('click', saveShareRules);
