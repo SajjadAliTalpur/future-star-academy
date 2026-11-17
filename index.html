@@ -156,9 +156,7 @@ body *{visibility:hidden}
 <a href="#contact">Contact</a>
 </nav>
 <div class="head-actions">
-<button class="btn small" id="btnAdmin" type="button">Admin</button>
-<button class="btn small outline" id="btnStudent" type="button">Student Login</button>
-<button class="btn small outline" id="btnTeacher" type="button">Teacher Login</button>
+<button class="btn small" id="btnLogin" type="button">Login</button>
 </div>
 <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
 </div>
@@ -344,6 +342,22 @@ body *{visibility:hidden}
 </div>
 </div>
 
+<div class="modal" id="loginModal">
+<div class="modal-box">
+<h3>Login</h3>
+<p class="sec-sub">One login for everyone. Admin: enter "admin" as your ID. Students: your phone number or roll number. Teachers: your phone number.</p>
+<label for="lgId">Login ID</label>
+<input id="lgId" type="text" placeholder="admin, phone number or roll number" autocomplete="username">
+<label for="lgPw">Password</label>
+<input id="lgPw" type="password" placeholder="Password" autocomplete="current-password">
+<div class="msg err" id="loginMsg"></div>
+<div style="display:flex;gap:10px;margin-top:12px">
+<button class="btn" id="loginBtn" type="button">Log In</button>
+<button class="btn outline" id="loginCancel" type="button">Cancel</button>
+</div>
+</div>
+</div>
+
 <div class="modal" id="teacherPanel">
 <div class="modal-box wide">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -483,10 +497,12 @@ body *{visibility:hidden}
 <label class="btn small outline" for="stCsvFile" style="cursor:pointer">Import Students CSV</label>
 <input id="stCsvFile" type="file" accept=".csv,text/csv" style="display:none">
 <button class="btn small outline" id="stCsvExportBtn" type="button">Export Students CSV</button>
+<button class="btn small" id="stAddBtn" type="button">+ Add New Student</button>
+<button class="btn small outline" id="stLoadNovBtn" type="button">Load November 2026 Data</button>
 </div>
 <div class="msg" id="stCsvMsg"></div>
 <div id="stEditForm" style="margin-top:10px;display:none">
-<h4 style="margin:6px 0">Edit Student — Fees &amp; Details</h4>
+<h4 style="margin:6px 0" id="seFormTitle">Edit Student — Fees &amp; Details</h4>
 <div class="form-grid">
 <div><label for="seName">Name</label><input id="seName" type="text"></div>
 <div><label for="sePhone">Phone</label><input id="sePhone" type="text"></div>
@@ -926,12 +942,57 @@ function searchResult(){
 function openModal(id){ $(id).classList.add('open'); }
 function closeModal(id){ $(id).classList.remove('open'); }
 function tryLogin(){ tryLoginFb(); }
-$('btnAdmin').addEventListener('click', function(){
-  $('adminLoginMsg').textContent = '';
-  $('adminPw').value = '';
-  openModal('adminModal');
-  setTimeout(function(){ $('adminPw').focus(); }, 50);
+/* ---------- Unified login: one button, role from the ID ---------- */
+function openLoginModal(){
+  $('loginMsg').textContent = '';
+  $('lgId').value = ''; $('lgPw').value = '';
+  openModal('loginModal');
+  setTimeout(function(){ $('lgId').focus(); }, 50);
+}
+async function tryUnifiedLogin(){
+  var id = $('lgId').value.trim(), pw = $('lgPw').value;
+  var lm = $('loginMsg'); lm.textContent = '';
+  if(!id){ lm.textContent = 'Please enter your login ID.'; return; }
+  if(!pw){ lm.textContent = 'Please enter your password.'; return; }
+  if(id.toLowerCase() === 'admin'){
+    $('adminPw').value = pw;
+    await tryLoginFb();
+    if(fb.role === 'admin' || $('adminPanel').classList.contains('open')){ closeModal('loginModal'); $('lgPw').value = ''; }
+    else lm.textContent = $('adminLoginMsg').textContent || 'Incorrect password. Please try again.';
+    return;
+  }
+  var n = normPhone(id), st = null;
+  if(n) st = findStudentByPhone(id);
+  if(!st){
+    var up = id.toUpperCase();
+    data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === up) st = s; });
+  }
+  if(st){
+    $('stPhone').value = st.phone || id; $('stPw').value = pw;
+    await tryStudentLogin();
+    if(currentStudent){ closeModal('loginModal'); $('lgPw').value = ''; }
+    else lm.textContent = $('studentLoginMsg').textContent || LOGIN_ERR;
+    return;
+  }
+  if(n && n.length >= 10){
+    if(!fb.ready || fb.offline){ lm.textContent = 'Live data is unavailable. Teacher login needs the live database.'; return; }
+    $('tcPhone').value = n; $('tcPw').value = pw;
+    await tryTeacherLogin();
+    if(currentTeacher){ closeModal('loginModal'); $('lgPw').value = ''; }
+    else lm.textContent = $('tcLoginMsg').textContent || 'Incorrect phone number or password.';
+    return;
+  }
+  lm.textContent = 'No account found for this ID. Students: use your phone number or roll number. Teachers: use your phone number. Admin: use "admin".';
+}
+$('btnLogin').addEventListener('click', function(){
+  if(fb.role === 'admin'){ renderAdminAll(); openModal('adminPanel'); return; }
+  if(currentTeacher){ renderTeacherPanel(); openModal('teacherPanel'); return; }
+  if(currentStudent){ renderStudentDash(); openModal('studentPanel'); return; }
+  openLoginModal();
 });
+$('loginBtn').addEventListener('click', tryUnifiedLogin);
+$('lgPw').addEventListener('keydown', function(e){ if(e.key === 'Enter') tryUnifiedLogin(); });
+$('loginCancel').addEventListener('click', function(){ closeModal('loginModal'); });
 $('adminLoginBtn').addEventListener('click', tryLogin);
 $('adminPw').addEventListener('keydown', function(e){ if(e.key === 'Enter') tryLogin(); });
 $('adminLoginCancel').addEventListener('click', function(){ closeModal('adminModal'); });
@@ -1381,6 +1442,31 @@ function downloadFile(name, content, type){
   document.body.appendChild(a); a.click(); a.remove();
 }
 
+/* ---------- November 2026 sheet data (filled from Sajjad's updated sheet) ---------- */
+var NOV_DATA = [];
+async function loadNovData(){
+  if(!NOV_DATA.length){ setMsg('stCsvMsg', 'November 2026 data is not in this version yet. Please send the updated November sheet first.', 'err'); return; }
+  var added = 0, updated = 0, sampleRolls = [];
+  data.students.forEach(function(s){ if(s.sample) sampleRolls.push(String(s.roll || '').toUpperCase()); });
+  NOV_DATA.forEach(function(r){
+    var idx = -1;
+    data.students.forEach(function(s, j){ if(String(s.roll || '').toUpperCase() === String(r.roll || '').toUpperCase()) idx = j; });
+    if(idx >= 0){ data.students[idx] = Object.assign({}, data.students[idx], r); updated++; }
+    else { data.students.push(r); added++; }
+  });
+  data.students = data.students.filter(function(s){ return !s.sample; });
+  saveData();
+  if(fb.ready && !fb.offline && fb.role === 'admin'){
+    sampleRolls.forEach(function(r){
+      fb.db.collection('academy_students').doc(r).delete().catch(function(){});
+      fb.db.collection('academy_contacts').doc(r).delete().catch(function(){});
+    });
+    for(var k = 0; k < data.students.length; k++){ await saveStudentToFb(data.students[k]); }
+  }
+  renderAdminStudents();
+  setMsg('stCsvMsg', 'November 2026 data loaded: ' + added + ' new students, ' + updated + ' updated. Sample students removed.', 'ok');
+}
+
 /* ---------- Admin: students ---------- */
 function renderAdminStudents(){
   var html = '';
@@ -1522,7 +1608,7 @@ function renderStudentDash(){
   $('studentDash').innerHTML = html;
 }
 function updateStudentBtn(){
-  $('btnStudent').textContent = currentStudent ? ('Hi, ' + currentStudent.name.split(' ')[0]) : 'Student Login';
+  updateAuthButtons();
 }
 async function tryStudentLogin(){
   var phone = $('stPhone').value.trim(), pw = $('stPw').value;
@@ -1537,13 +1623,6 @@ async function tryStudentLogin(){
   openModal('studentPanel');
   if(fb.ready && !fb.offline) fbLoadStudentOwn(currentStudent.roll);
 }
-$('btnStudent').addEventListener('click', function(){
-  if(currentStudent){ renderStudentDash(); openModal('studentPanel'); return; }
-  $('studentLoginMsg').textContent = '';
-  $('stPhone').value = ''; $('stPw').value = '';
-  openModal('studentModal');
-  setTimeout(function(){ $('stPhone').focus(); }, 50);
-});
 $('studentLoginBtn').addEventListener('click', tryStudentLogin);
 $('stPw').addEventListener('keydown', function(e){ if(e.key === 'Enter') tryStudentLogin(); });
 $('studentLoginCancel').addEventListener('click', function(){ closeModal('studentModal'); });
@@ -1799,9 +1878,13 @@ function fbOnAuth(user){
   }).catch(function(){ updateAuthButtons(); });
 }
 function updateAuthButtons(){
-  var bT = $('btnTeacher'), bA = $('btnAdmin');
-  if(bT) bT.textContent = (fb.role === 'teacher' && currentTeacher) ? ('Hi, ' + currentTeacher.name.split(' ')[0]) : 'Teacher Login';
-  if(bA) bA.textContent = (fb.role === 'admin') ? 'Admin ✓' : 'Admin';
+  var b = $('btnLogin');
+  if(b){
+    if(fb.role === 'admin') b.textContent = 'Admin \u2713';
+    else if(fb.role === 'teacher' && currentTeacher) b.textContent = 'Hi, ' + currentTeacher.name.split(' ')[0];
+    else if(currentStudent) b.textContent = 'Hi, ' + currentStudent.name.split(' ')[0];
+    else b.textContent = 'Login';
+  }
   updateMigrateBtn();
 }
 function fbSignOut(){
@@ -2558,12 +2641,6 @@ function fbLoadStudentOwn(roll){
 }
 function bindV12(){
   var b;
-  b = $('btnTeacher');
-  if(b) b.addEventListener('click', function(){
-    if(currentTeacher){ renderTeacherPanel(); openModal('teacherPanel'); return; }
-    $('tcLoginMsg').textContent = ''; $('tcPhone').value = ''; $('tcPw').value = '';
-    openModal('teacherModal'); setTimeout(function(){ $('tcPhone').focus(); }, 50);
-  });
   b = $('teacherLoginBtn'); if(b) b.addEventListener('click', tryTeacherLogin);
   b = $('tcPw'); if(b) b.addEventListener('keydown', function(e){ if(e.key === 'Enter') tryTeacherLogin(); });
   b = $('teacherLoginCancel'); if(b) b.addEventListener('click', function(){ closeModal('teacherModal'); });
@@ -2646,6 +2723,7 @@ var editingStu = -1;
 function editStu(i){
   var s = data.students[i]; if(!s) return;
   editingStu = i;
+  $('seFormTitle').textContent = 'Edit Student — Fees & Details';
   $('seName').value = s.name || ''; $('sePhone').value = s.phone || ''; $('seRoll').value = s.roll || '';
   $('seClass').value = s.className || ''; $('seGroup').value = s.group || ''; $('seCourse').value = s.course || '';
   $('seFather').value = s.father_name || ''; $('seCaste').value = s.caste || '';
@@ -2659,10 +2737,24 @@ function cancelStuEdit(){
   editingStu = -1;
   $('stEditForm').style.display = 'none';
 }
+function addStu(){
+  editingStu = -2;
+  $('seName').value = ''; $('sePhone').value = ''; $('seRoll').value = '';
+  $('seClass').value = ''; $('seGroup').value = ''; $('seCourse').value = '';
+  $('seFather').value = ''; $('seCaste').value = '';
+  $('seFatherPhone').value = ''; $('seAddress').value = '';
+  $('seAdmDate').value = ''; $('seTime').value = '';
+  $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = '';
+  $('seFormTitle').textContent = 'Add New Student';
+  $('stEditForm').style.display = '';
+  $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
+  setTimeout(function(){ $('seName').focus(); }, 50);
+}
 function saveStuEdit(){
-  if(editingStu < 0) return;
-  var s = data.students[editingStu]; if(!s) return;
-  var oldName = s.name;
+  if(editingStu === -1) return;
+  var isNew = (editingStu === -2);
+  var s = isNew ? {} : data.students[editingStu]; if(!s) return;
+  var oldName = isNew ? '' : s.name;
   s.name = $('seName').value.trim(); s.phone = $('sePhone').value.trim();
   s.roll = $('seRoll').value.trim().toUpperCase(); s.className = $('seClass').value.trim();
   s.group = $('seGroup').value.trim(); s.course = $('seCourse').value.trim() || s.className;
@@ -2671,7 +2763,13 @@ function saveStuEdit(){
   s.admission_date = $('seAdmDate').value; s.time_slot = $('seTime').value.trim();
   s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value);
   if(!s.name || !s.roll){ setMsg('stCsvMsg', 'Please enter at least a name and a roll number.', 'err'); return; }
-  if(oldName && oldName !== s.name){
+  if(isNew){
+    var dup = null;
+    data.students.forEach(function(x){ if(String(x.roll || '').toUpperCase() === s.roll) dup = x; });
+    if(dup){ setMsg('stCsvMsg', 'Roll number ' + s.roll + ' already exists (' + dup.name + '). Please use a different roll number.', 'err'); return; }
+    data.students.push(s);
+  }
+  if(!isNew && oldName && oldName !== s.name){
     data.groups.forEach(function(g){ g.members = (g.members || []).map(function(m){ return m === oldName ? s.name : m; }); });
     data.slots.forEach(function(x){ x.students = (x.students || []).map(function(m){ return m === oldName ? s.name : m; }); });
   }
@@ -2683,6 +2781,8 @@ function saveStuEdit(){
 (function(){
   var b = $('seSaveBtn'); if(b) b.addEventListener('click', saveStuEdit);
   b = $('seCancelBtn'); if(b) b.addEventListener('click', cancelStuEdit);
+  b = $('stAddBtn'); if(b) b.addEventListener('click', addStu);
+  b = $('stLoadNovBtn'); if(b) b.addEventListener('click', loadNovData);
 })();
 
 (function(){
@@ -2697,7 +2797,7 @@ function saveStuEdit(){
   });
   nav.addEventListener('click',function(e){ if(e.target&&e.target.tagName==='A') closeNav(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeNav(); });
-  ['btnAdmin','btnStudent','btnTeacher'].forEach(function(id){ var b=$(id); if(b) b.addEventListener('click',closeNav); });
+  ['btnLogin'].forEach(function(id){ var b=$(id); if(b) b.addEventListener('click',closeNav); });
 })();
 bindV12();
 fbInit();
