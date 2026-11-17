@@ -185,6 +185,36 @@ body *{visibility:hidden}
 #adminTabs button{width:auto;white-space:nowrap}
 .admin-main{padding:16px 14px}
 }
+/* ---------- v1.2.8: sidebar brand, groups, subject cards ---------- */
+.admin-brand{text-align:center;padding:6px 0 2px}
+.admin-logo{height:84px;width:84px;object-fit:contain;background:#fff;border-radius:50%;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.admin-greet{color:#fff;font-size:.95rem;margin-top:10px;line-height:1.4}
+.admin-greet b{color:var(--gold);font-size:1.05rem}
+.admin-div{height:2px;background:var(--gold);border-radius:2px;margin:14px 8px 10px;opacity:.8}
+.admin-group{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#8fb4f0;text-transform:uppercase;padding:12px 12px 4px}
+#adminTabs button .material-symbols-outlined{font-size:1.2rem;vertical-align:-4px;margin-right:8px}
+.admin-sidebar{display:flex;flex-direction:column}
+.admin-side-foot{margin-top:auto;padding-top:14px}
+.admin-side-foot .btn{width:100%}
+.subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:10px}
+.subj-card{border-radius:14px;padding:14px 16px;color:#fff;box-shadow:0 4px 14px rgba(11,61,145,.18)}
+.subj-card b{font-size:1.05rem}
+.subj-card small{display:block;opacity:.92;margin-top:4px;line-height:1.5}
+.subj-card .btn{margin-top:10px;background:rgba(255,255,255,.18);color:#fff !important;border-color:#fff}
+.subj-card.c0{background:linear-gradient(135deg,#0b3d91,#2f7fe0)}
+.subj-card.c1{background:linear-gradient(135deg,#0a7d78,#0abf9e)}
+.subj-card.c2{background:linear-gradient(135deg,#a4137a,#e0529b)}
+.subj-card.c3{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.subj-card.c4{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+@media(max-width:900px){
+.admin-group{display:none}
+.admin-brand{display:flex;align-items:center;gap:12px;text-align:left;padding:2px 0}
+.admin-logo{height:44px;width:44px;padding:3px}
+.admin-greet{margin-top:0}
+.admin-div{display:none}
+.admin-side-foot{margin-top:0;padding-top:8px}
+.admin-side-foot .btn{width:auto}
+}
 /* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
 @media(max-width:720px){
 section{padding:28px 0}
@@ -497,32 +527,41 @@ table{min-width:520px}
 <div class="modal" id="adminPanel">
 <div class="modal-box wide admin-box">
 <div class="admin-sidebar">
+<div class="admin-brand">
+<img class="admin-logo" id="adminLogoImg" alt="FSCC logo">
+<div class="admin-greet">Welcome back,<br><b>Sir Sajjad Ali</b></div>
+</div>
+<div class="admin-div"></div>
 <div class="admin-side-head">
 <h3 style="margin:0">Admin Panel</h3>
 <button class="btn small outline" id="adminCloseBtn" type="button">Close</button>
 </div>
-<p class="note" style="margin:8px 0 0">Changes save to the shared live database (Firebase) and appear on every device. If live data is unavailable, changes are saved in this browser only — use Export Data to keep a backup.</p>
 <div class="tabs" id="adminTabs">
-<button type="button" data-atab="dashboard" class="on">Dashboard</button>
-<button type="button" data-atab="timetable">Timetable</button>
-<button type="button" data-atab="announcements">Announcements</button>
-<button type="button" data-atab="results">Results</button>
-<button type="button" data-atab="groups">Groups</button>
-<button type="button" data-atab="students">Students</button>
-<button type="button" data-atab="notes">Notes</button>
-<button type="button" data-atab="videos">Videos</button>
-<button type="button" data-atab="fees">Finance</button>
-<button type="button" data-atab="receipts">Receipts</button>
-<button type="button" data-atab="teacherpay">Teacher Pay</button>
-<button type="button" data-atab="expenses">Expenses</button>
-<button type="button" data-atab="reports">Reports</button>
-<button type="button" data-atab="attendance">Attendance</button>
-<button type="button" data-atab="teachers">Teachers</button>
-<button type="button" data-atab="challans">Challans</button>
-<button type="button" data-atab="homework">Homework</button>
-<button type="button" data-atab="activity">Activity Log</button>
-
-<button type="button" data-atab="settings">Settings</button>
+<button type="button" data-atab="dashboard" class="on"><span class="material-symbols-outlined">dashboard</span>Dashboard</button>
+<div class="admin-group">Academics</div>
+<button type="button" data-atab="timetable"><span class="material-symbols-outlined">schedule</span>Timetable</button>
+<button type="button" data-atab="attendance"><span class="material-symbols-outlined">fact_check</span>Attendance</button>
+<button type="button" data-atab="students"><span class="material-symbols-outlined">school</span>Students</button>
+<button type="button" data-atab="groups"><span class="material-symbols-outlined">group</span>Groups</button>
+<button type="button" data-atab="homework"><span class="material-symbols-outlined">assignment</span>Homework</button>
+<button type="button" data-atab="results"><span class="material-symbols-outlined">grade</span>Results</button>
+<button type="button" data-atab="announcements"><span class="material-symbols-outlined">campaign</span>Announcements</button>
+<button type="button" data-atab="notes"><span class="material-symbols-outlined">description</span>Notes</button>
+<button type="button" data-atab="videos"><span class="material-symbols-outlined">play_circle</span>Videos</button>
+<div class="admin-group">Finance</div>
+<button type="button" data-atab="fees"><span class="material-symbols-outlined">payments</span>Finance</button>
+<button type="button" data-atab="challans"><span class="material-symbols-outlined">request_quote</span>Challans</button>
+<button type="button" data-atab="receipts"><span class="material-symbols-outlined">receipt_long</span>Receipts</button>
+<button type="button" data-atab="teacherpay"><span class="material-symbols-outlined">account_balance_wallet</span>Teacher Pay</button>
+<button type="button" data-atab="expenses"><span class="material-symbols-outlined">receipt</span>Expenses</button>
+<button type="button" data-atab="reports"><span class="material-symbols-outlined">bar_chart</span>Reports</button>
+<div class="admin-group">Manage</div>
+<button type="button" data-atab="teachers"><span class="material-symbols-outlined">person</span>Teachers</button>
+<button type="button" data-atab="activity"><span class="material-symbols-outlined">history</span>Activity Log</button>
+<button type="button" data-atab="settings"><span class="material-symbols-outlined">settings</span>Settings</button>
+</div>
+<div class="admin-side-foot">
+<button class="btn small outline" id="adminLogoutBtn" type="button"><span class="material-symbols-outlined">logout</span>Log out</button>
 </div>
 </div>
 <div class="admin-main">
@@ -852,8 +891,7 @@ table{min-width:520px}
 <button class="btn small outline" id="btnReset" type="button">Reset to Defaults</button>
 </div>
 <h4 style="margin:22px 0 6px">Subjects</h4>
-<p class="note" style="margin-top:0">Subjects are not fixed &mdash; add new ones or delete ones you no longer teach. A subject cannot be deleted while students or teachers still use it.</p>
-<div id="subjList" style="margin-top:10px"></div>
+<div id="subjList" class="subj-grid"></div>
 <div class="form-grid" style="margin-top:10px">
 <div><label for="subjNewName">New Subject Name</label><input id="subjNewName" type="text" placeholder="e.g. Chemistry"></div>
 <div><label for="subjNewTeacher">Teacher Name</label><input id="subjNewTeacher" type="text" placeholder="e.g. Sir Waqar"></div>
@@ -1144,6 +1182,9 @@ $('adminLoginBtn').addEventListener('click', tryLogin);
 $('adminPw').addEventListener('keydown', function(e){ if(e.key === 'Enter') tryLogin(); });
 $('adminLoginCancel').addEventListener('click', function(){ closeModal('adminModal'); });
 $('adminCloseBtn').addEventListener('click', function(){ closeModal('adminPanel'); });
+var _hl = document.querySelector('header.site .logo');
+if(_hl && $('adminLogoImg')) $('adminLogoImg').src = _hl.src;
+$('adminLogoutBtn').addEventListener('click', function(){ fbSignOut(); closeModal('adminPanel'); });
 $('adminTabs').addEventListener('click', function(e){
   var b = e.target.closest ? e.target.closest('button[data-atab]') : null;
   if(!b) return;
@@ -2991,12 +3032,13 @@ function attMonthlyReport(month){
 /* ---------- v1.2.6: Subjects (admin) ---------- */
 function renderSubjects(){
   var el = $('subjList'); if(!el) return;
+  var cols = ['c0', 'c1', 'c2', 'c3', 'c4'];
   var h = '';
-  fbData.subjects.forEach(function(s){
+  fbData.subjects.forEach(function(s, i){
     var stu = data.students.filter(function(x){ return studentHasSubject(x, s.name); }).length;
     var tea = fbData.teachers.filter(function(t){ return (t.subjects || []).indexOf(s.name) >= 0; }).length;
-    h += '<div class="admin-row"><div><b>' + esc(s.name) + '</b><small>Teacher: ' + esc(s.teacher || '—') + (s.teacherPhone ? ' · ' + esc(s.teacherPhone) : '') + ' · ' + stu + ' student' + (stu === 1 ? '' : 's') + ' · ' + tea + ' teacher' + (tea === 1 ? '' : 's') + '</small></div>'
-      + '<div><button class="btn small outline" type="button" onclick="delSubject(\'' + esc(s.name).replace(/'/g, '') + '\')">Delete</button></div></div>';
+    h += '<div class="subj-card ' + cols[i % 5] + '"><b>' + esc(s.name) + '</b><small>Teacher: ' + esc(s.teacher || '—') + (s.teacherPhone ? ' · ' + esc(s.teacherPhone) : '') + '<br>' + stu + ' student' + (stu === 1 ? '' : 's') + ' · ' + tea + ' teacher' + (tea === 1 ? '' : 's') + '</small>'
+      + '<button class="btn small outline" type="button" onclick="delSubject(\'' + esc(s.name).replace(/'/g, '') + '\')">Delete</button></div>';
   });
   el.innerHTML = h || '<p class="note">No subjects yet.</p>';
   renderTcSubChecks();
