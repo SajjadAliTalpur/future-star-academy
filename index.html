@@ -165,6 +165,42 @@ body *{visibility:hidden}
 .bar-fill.amber{background:linear-gradient(90deg,#b45309,#f59e0b)}
 .bar-fill.pink{background:linear-gradient(90deg,#a4137a,#e0529b)}
 .bar-fill.red{background:linear-gradient(90deg,#b91c1c,#ef4444)}
+/* ---------- v1.2.7: full-page admin with sidebar ---------- */
+#adminPanel{padding:0;background:var(--bg);align-items:stretch;justify-content:flex-start}
+#adminPanel .admin-box{max-width:none;width:100%;border-radius:0;padding:0;display:flex;min-height:100vh}
+.admin-sidebar{width:248px;flex-shrink:0;align-self:flex-start;background:#0b3d91;color:#fff;padding:18px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.admin-side-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.admin-side-head h3{color:#fff}
+.admin-side-head .btn.outline{background:transparent;color:#fff !important;border-color:#fff}
+.admin-sidebar .note{color:#cfe0ff}
+#adminTabs{display:flex;flex-direction:column;gap:4px;margin:14px 0;flex-wrap:nowrap}
+#adminTabs button{display:block;width:100%;text-align:left;border:2px solid transparent;background:transparent;color:#dbe7ff;border-radius:10px;padding:9px 12px}
+#adminTabs button:hover{background:#1256c4;color:#fff}
+#adminTabs button.on{background:var(--gold);color:#1a2a44;border-color:var(--gold)}
+.admin-main{flex:1;min-width:0;padding:22px 24px}
+@media(max-width:900px){
+#adminPanel .admin-box{flex-direction:column}
+.admin-sidebar{width:100%;height:auto;position:static;padding:12px 12px 8px;overflow:visible;align-self:auto}
+#adminTabs{flex-direction:row;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+#adminTabs button{width:auto;white-space:nowrap}
+.admin-main{padding:16px 14px}
+}
+/* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
+@media(max-width:720px){
+section{padding:28px 0}
+.hero{padding:36px 0}
+.hero-logo{height:110px;width:110px}
+th,td{padding:9px 10px;font-size:.9rem}
+table{min-width:520px}
+.btn{min-height:44px}
+.btn.small{min-height:40px}
+.modal-box input,.modal-box textarea,.modal-box select{font-size:1rem}
+.dash-stats{grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{padding:14px}
+.stat .num{font-size:1.5rem}
+.dash-head{padding:16px 18px}
+.admin-row{flex-direction:column;align-items:flex-start;gap:6px}
+}
 </style>
 </head>
 <body>
@@ -459,8 +495,9 @@ body *{visibility:hidden}
 </div>
 
 <div class="modal" id="adminPanel">
-<div class="modal-box wide">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div class="modal-box wide admin-box">
+<div class="admin-sidebar">
+<div class="admin-side-head">
 <h3 style="margin:0">Admin Panel</h3>
 <button class="btn small outline" id="adminCloseBtn" type="button">Close</button>
 </div>
@@ -474,7 +511,7 @@ body *{visibility:hidden}
 <button type="button" data-atab="students">Students</button>
 <button type="button" data-atab="notes">Notes</button>
 <button type="button" data-atab="videos">Videos</button>
-<button type="button" data-atab="fees">Fees</button>
+<button type="button" data-atab="fees">Finance</button>
 <button type="button" data-atab="receipts">Receipts</button>
 <button type="button" data-atab="teacherpay">Teacher Pay</button>
 <button type="button" data-atab="expenses">Expenses</button>
@@ -487,7 +524,8 @@ body *{visibility:hidden}
 
 <button type="button" data-atab="settings">Settings</button>
 </div>
-
+</div>
+<div class="admin-main">
 <div class="atab on" id="atab-dashboard">
 <div id="dashBody"></div>
 </div>
@@ -843,6 +881,7 @@ body *{visibility:hidden}
 </div>
 
 </div>
+</div>
 
 </div>
 </div>
@@ -1114,6 +1153,7 @@ $('adminTabs').addEventListener('click', function(e){
   for(var j = 0; j < panels.length; j++) panels[j].classList.toggle('on', panels[j].id === 'atab-' + b.getAttribute('data-atab'));
 });
 document.querySelectorAll('.modal').forEach(function(m){
+  if(m.id === 'adminPanel') return; // full-page admin: no backdrop close
   m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('open'); });
 });
 
@@ -2727,10 +2767,11 @@ function renderDashboard(){
     if(g === 'Boy') boys++; else if(g === 'Girl') girls++; else unset++;
   });
   var total = data.students.length;
-  var s = financeSummary(FB_MONTH);
-  var dueList = data.students.map(function(st){ return {st:st, bal:studentDue(st)}; }).filter(function(x){ return x.bal > 0; });
-  dueList.sort(function(a, b){ return b.bal - a.bal; });
-  var dueTotal = 0; dueList.forEach(function(x){ dueTotal += x.bal; });
+  var todayName = new Date().toLocaleDateString('en-US', {weekday:'long'});
+  var todaySlots = data.slots.filter(function(x){ return x.day === todayName; });
+  var scheduled = {};
+  todaySlots.forEach(function(x){ attSlotStudents(x).forEach(function(s){ if(s) scheduled[s.roll] = true; }); });
+  var scheduledCount = Object.keys(scheduled).length;
   var todayAtt = fbData.attendance.filter(function(a){ return a.date === today; });
   var todayByRoll = {};
   todayAtt.forEach(function(a){ (todayByRoll[a.student_roll_no] = todayByRoll[a.student_roll_no] || []).push(a); });
@@ -2740,13 +2781,12 @@ function renderDashboard(){
     var st = studentByRoll(a.student_roll_no);
     return '<tr><td>' + esc(st ? st.name : a.student_roll_no) + '</td><td>' + esc(st ? (st.course || st.className || '') : '') + '</td><td>' + esc(a.slot || '') + '</td></tr>';
   }).join('');
-  var incRows = Object.keys(s.incomeByCourse).map(function(c){ return [c, s.incomeByCourse[c]]; });
-  incRows.sort(function(a, b){ return b[1] - a[1]; });
-  var expRows = Object.keys(s.expenseByCat).map(function(c){ return [c, s.expenseByCat[c]]; });
-  expRows.sort(function(a, b){ return b[1] - a[1]; });
-  var collRows = [['Collected (' + FB_MONTH + ')', s.income], ['Still due', dueTotal]];
-  var topDue = dueList.slice(0, 8).map(function(x){
-    return '<tr><td>' + esc(x.st.name) + '</td><td>' + esc(x.st.course || x.st.className || '') + '</td><td><b>' + rs(x.bal) + '</b></td></tr>';
+  var pres = 0, abs = 0, lea = 0;
+  Object.keys(todayByRoll).forEach(function(r){ var _st = attDayStatus(todayByRoll[r].map(function(a){ return a.status; })); if(_st === 'Present') pres++; else if(_st === 'Absent') abs++; else lea++; });
+  var notMarked = Math.max(0, scheduledCount - todayMarked);
+  var attRows = [['Present', pres], ['Absent', abs], ['Leave', lea], ['Not marked yet', notMarked]];
+  var todayClassRows = todaySlots.map(function(x){
+    return '<tr><td>' + esc(x.start) + '–' + esc(x.end) + '</td><td>' + esc(x.subject) + '</td><td>' + esc(x.teacher || '') + '</td><td>' + esc(x.section || '') + '</td></tr>';
   }).join('');
   var html = '<div class="dash-head"><h3><span class="material-symbols-outlined">dashboard</span> Admin Dashboard</h3>'
     + '<p>' + esc(today) + ' &middot; ' + total + ' students &middot; Month ' + FB_MONTH + '</p></div>'
@@ -2754,16 +2794,18 @@ function renderDashboard(){
     + '<div class="stat blue"><span class="material-symbols-outlined ic">groups</span><div class="num">' + total + '</div><div class="lbl">Total Students</div><div class="sub">' + boys + ' boys &middot; ' + girls + ' girls</div></div>'
     + '<div class="stat teal"><span class="material-symbols-outlined ic">boy</span><div class="num">' + boys + '</div><div class="lbl">Total Boys</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
     + '<div class="stat pink"><span class="material-symbols-outlined ic">girl</span><div class="num">' + girls + '</div><div class="lbl">Total Girls</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
-    + '<div class="stat amber"><span class="material-symbols-outlined ic">payments</span><div class="num">' + rs(dueTotal) + '</div><div class="lbl">Fees Due</div><div class="sub">' + dueList.length + ' student' + (dueList.length === 1 ? '' : 's') + ' owe fees</div></div>'
     + '<div class="stat red"><span class="material-symbols-outlined ic">event_busy</span><div class="num">' + absentees.length + '</div><div class="lbl">Absentees Today</div><div class="sub">' + (todayMarked ? todayMarked + ' marked today' : 'no attendance marked today') + '</div></div>'
     + '</div>'
-    + '<div class="grid two">' + dashBars('Income by Course', 'bar_chart', incRows, s.income, ['', 'teal', 'amber', 'pink', 'red'])
-    + dashBars('Fees — Collected vs Due', 'account_balance_wallet', collRows, s.income + dueTotal, ['teal', 'red']) + '</div>'
-    + '<div class="grid two" style="margin-top:16px">' + dashBars('Expenses by Category', 'receipt_long', expRows, s.expense, ['amber', 'pink', 'red', 'teal', ''])
+    + '<div class="grid two">' + dashBars('Attendance Today', 'fact_check', attRows, scheduledCount || todayMarked, ['teal', 'red', 'amber', ''])
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">schedule</span> Today\'s Classes &mdash; ' + esc(todayName) + '</h3>'
+    + (todayClassRows ? '<div class="table-scroll"><table><thead><tr><th>Time</th><th>Subject</th><th>Teacher</th><th>Section</th></tr></thead><tbody>' + todayClassRows + '</tbody></table></div>' : '<p class="note">No classes scheduled for today.</p>') + '</div></div>'
+    + '<p class="note">Fees &amp; dues are in the Finance tab — they are not shown on this dashboard.</p>'
+    + '<div class="grid two" style="margin-top:16px">'
     + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">event_busy</span> Absentees &mdash; Today</h3>'
     + (absRows ? '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Course</th><th>Class</th></tr></thead><tbody>' + absRows + '</tbody></table></div>' : '<p class="note">' + (todayMarked ? 'No absentees today &mdash; everyone marked is present.' : 'No attendance marked for today yet. Mark it from the Attendance tab.') + '</p>') + '</div></div>'
-    + '<div class="grid two" style="margin-top:16px"><div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">payments</span> Top Fees Due</h3>'
-    + (topDue ? '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Course</th><th>Due</th></tr></thead><tbody>' + topDue + '</tbody></table></div><p class="note">Showing top 8 of ' + dueList.length + '. Full list is in Reports &rarr; Dues.</p>' : '<p class="note">No fees due &mdash; everyone is paid up.</p>') + '</div>'
+    + '<div class="grid two" style="margin-top:16px"><div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">payments</span> Fees &amp; Dues</h3>'
+    + '<p>Fees, dues, challans, payments and receipts live in the <b>Finance</b> tab. They are kept off this dashboard so nothing money-related shows while marking attendance.</p>'
+    + '<button class="btn small" id="qaFinance" type="button">Open Finance</button></div>'
     + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">bolt</span> Quick Actions</h3>'
     + '<div style="display:flex;flex-direction:column;gap:10px">'
     + '<button class="btn small" id="qaAddStu" type="button">+ Add New Student</button>'
@@ -2779,6 +2821,7 @@ function renderDashboard(){
   q('qaAtt', function(){ goAtab('attendance'); });
   q('qaRep', function(){ goAtab('reports'); });
   q('qaExp', function(){ goAtab('expenses'); });
+  q('qaFinance', function(){ goAtab('fees'); });
 }
 
 /* ---------- Reports ---------- */
