@@ -166,9 +166,10 @@ body *{visibility:hidden}
 .bar-fill.pink{background:linear-gradient(90deg,#a4137a,#e0529b)}
 .bar-fill.red{background:linear-gradient(90deg,#b91c1c,#ef4444)}
 /* ---------- v1.2.7: full-page admin with sidebar ---------- */
-#adminPanel{padding:0;background:var(--bg);align-items:stretch;justify-content:flex-start}
-#adminPanel .admin-box{max-width:none;width:100%;border-radius:0;padding:0;display:flex;min-height:100vh}
-.admin-sidebar{width:248px;flex-shrink:0;align-self:flex-start;background:#0b3d91;color:#fff;padding:18px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+#adminPanel{padding:0;background:var(--bg);align-items:stretch;justify-content:flex-start;overflow:hidden}
+#adminPanel .admin-box{max-width:none;width:100%;border-radius:0;padding:0;display:flex;height:100vh;overflow:hidden}
+.admin-sidebar{width:248px;flex-shrink:0;background:#0b3d91;color:#fff;padding:18px 14px;height:100vh;overflow-y:auto;scrollbar-width:none}
+.admin-sidebar::-webkit-scrollbar{display:none}
 .admin-side-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .admin-side-head h3{color:#fff}
 .admin-side-head .btn.outline{background:transparent;color:#fff !important;border-color:#fff}
@@ -177,10 +178,12 @@ body *{visibility:hidden}
 #adminTabs button{display:block;width:100%;text-align:left;border:2px solid transparent;background:transparent;color:#dbe7ff;border-radius:10px;padding:8px 12px}
 #adminTabs button:hover{background:#1256c4;color:#fff}
 #adminTabs button.on{background:var(--gold);color:#1a2a44;border-color:var(--gold)}
-.admin-main{flex:1;min-width:0;padding:22px 24px}
+.admin-main{flex:1;min-width:0;padding:22px 24px;height:100vh;overflow-y:auto}
 @media(max-width:900px){
-#adminPanel .admin-box{flex-direction:column}
+#adminPanel{overflow-y:auto}
+#adminPanel .admin-box{flex-direction:column;height:auto;min-height:100vh;overflow:visible}
 .admin-sidebar{width:100%;height:auto;position:static;padding:12px 12px 8px;overflow:visible;align-self:auto}
+.admin-main{height:auto;overflow:visible}
 #adminTabs{flex-direction:row;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
 #adminTabs button{width:auto;white-space:nowrap}
 .admin-main{padding:16px 14px}
