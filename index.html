@@ -4512,6 +4512,20 @@ fbInit();
 $('btnResultSearch').addEventListener('click', searchResult);
 $('rollInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') searchResult(); });
 renderAll();
+/* v1.3.3: always land at the top on arrival — a #videos (or any) hash saved
+   in a bookmark, or the browser restoring the old scroll position, used to
+   drop visitors mid-page on arrival. Nav links still scroll normally. */
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+if(location.hash) history.replaceState(null, '', location.pathname + location.search);
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    var de = document.documentElement;
+    var prev = de.style.scrollBehavior;
+    de.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    de.style.scrollBehavior = prev;
+  }, 50);
+});
 </script>
 </body>
 </html>
