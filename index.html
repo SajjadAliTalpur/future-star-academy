@@ -764,8 +764,8 @@ table{min-width:520px}
 <div><label for="ntTitle">Title</label><input id="ntTitle" type="text" placeholder="e.g. C++ Programming Notes"></div>
 <div><label for="ntPages">Pages</label><input id="ntPages" type="text" placeholder="e.g. 95 pages"></div>
 <div><label for="ntDesc">Description</label><input id="ntDesc" type="text" placeholder="e.g. English + Urdu"></div>
-<div><label for="ntFile">File</label><input id="ntFile" type="text" placeholder="e.g. cpp-programming-notes.pdf"></div>
-<div class="full"><label for="ntUpload">Upload a file (PDF, Word, image) — it will be stored in the academy storage and the link filled in above</label><input id="ntUpload" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"></div>
+<div><label for="ntFile">File link</label><input id="ntFile" type="text" placeholder="Paste a Google Drive link, or a file name"></div>
+<div class="full"><label for="ntUpload">Upload a file (PDF, Word, image) — direct upload needs Firebase Storage (Blaze plan), which is off. Easiest way: upload the file to Google Drive, set the link to "Anyone with the link", and paste it in the File link box above.</label><input id="ntUpload" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ntAddBtn" type="button">Add Note</button>
@@ -1633,7 +1633,7 @@ async function uploadNoteFile(){
     var url = await ref.getDownloadURL();
     $('ntFile').value = url;
     setMsg('ntMsg', 'Uploaded. Now click Add Note to save it.', 'ok');
-  }catch(e){ setMsg('ntMsg', 'Upload failed: ' + fbErrText(e) + '. Storage may need to be enabled in the Firebase console first.', 'err'); }
+  }catch(e){ setMsg('ntMsg', 'Upload failed: ' + fbErrText(e) + '. Direct upload needs Firebase Storage (Blaze plan), which is off. Please paste a Google Drive link in the File link box instead.', 'err'); }
 }
 (function(){ var u = $('ntUpload'); if(u) u.addEventListener('change', uploadNoteFile); })();
 $('ntCancelEdit').addEventListener('click', cancelNt);
