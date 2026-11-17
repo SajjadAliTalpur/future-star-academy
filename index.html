@@ -644,7 +644,10 @@ table{min-width:520px}
 <div><label for="ttTeacher">Teacher</label><input id="ttTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
 <div><label for="ttSection">Section</label><select id="ttSection"><option>Boys</option><option>Girls</option></select></div>
 <div><label for="ttGroup">Group (optional)</label><input id="ttGroup" type="text" placeholder="e.g. Group A"></div>
-<div class="full"><label for="ttStudents">Students (names separated by commas)</label><textarea id="ttStudents" rows="2" placeholder="e.g. Azhar, Ahmed, Zia ur Rehman, Muhammad"></textarea></div>
+<div class="full"><label>Students — tick to add to this slot</label>
+<input id="ttStuSearch" type="text" placeholder="Search name or roll..." style="width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;margin-top:6px">
+<div id="ttStuList" style="border:2px solid var(--line);border-radius:9px;padding:10px 12px;max-height:240px;overflow-y:auto;margin-top:8px"></div>
+</div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ttAddBtn" type="button">Add Slot</button>
@@ -1337,6 +1340,7 @@ function renderAdminTimetable(){
       + '<button class="btn small outline" type="button" onclick="delTt(' + i + ')">Delete</button></div></div>';
   });
   $('ttList').innerHTML = html;
+  renderTtStuList();
 }
 function slotFromForm(){
   return {
@@ -1347,14 +1351,14 @@ function slotFromForm(){
     teacher:$('ttTeacher').value.trim(),
     section:$('ttSection').value,
     group:$('ttGroup').value.trim(),
-    students:$('ttStudents').value.split(',').map(function(s){ return s.trim(); }).filter(function(s){ return s; })
+    students:ttEditStudents.slice()
   };
 }
 function editTt(i){
   var x = data.slots[i];
   $('ttDay').value = x.day; $('ttStart').value = x.start; $('ttEnd').value = x.end;
   $('ttSubject').value = x.subject; $('ttTeacher').value = x.teacher; $('ttSection').value = x.section;
-  $('ttGroup').value = x.group || ''; $('ttStudents').value = (x.students || []).join(', ');
+  $('ttGroup').value = x.group || ''; ttEditStudents = (x.students || []).slice(); renderTtStuList();
   editing.tt = i; $('ttAddBtn').textContent = 'Save Changes'; $('ttCancelEdit').style.display = '';
 }
 function delTt(i){
@@ -1364,7 +1368,8 @@ function delTt(i){
 function cancelTt(){
   editing.tt = -1;
   $('ttDay').value = 'Monday'; $('ttStart').value = ''; $('ttEnd').value = ''; $('ttSubject').value = '';
-  $('ttTeacher').value = ''; $('ttSection').value = 'Boys'; $('ttGroup').value = ''; $('ttStudents').value = '';
+  $('ttTeacher').value = ''; $('ttSection').value = 'Boys'; $('ttGroup').value = '';
+  ttEditStudents = []; ttStuSearchQ = ''; var sq = $('ttStuSearch'); if(sq) sq.value = ''; renderTtStuList();
   $('ttAddBtn').textContent = 'Add Slot'; $('ttCancelEdit').style.display = 'none';
 }
 $('ttAddBtn').addEventListener('click', function(){
@@ -1376,6 +1381,36 @@ $('ttAddBtn').addEventListener('click', function(){
   cancelTt(); saveData();
 });
 $('ttCancelEdit').addEventListener('click', cancelTt);
+var ttEditStudents = [];
+var ttStuSearchQ = '';
+function renderTtStuList(){
+  var el = $('ttStuList'); if(!el) return;
+  var q = (ttStuSearchQ || '').toLowerCase();
+  var list = data.students.filter(function(s){ return (s.status || 'Active') !== 'Left'; });
+  if(q) list = list.filter(function(s){ return (s.name || '').toLowerCase().indexOf(q) >= 0 || (s.roll || '').toLowerCase().indexOf(q) >= 0; });
+  var html = '';
+  if(!data.students.length){
+    html = '<p class="note" style="margin:0">No students yet. Import students from the Students tab first.</p>';
+  } else if(!list.length){
+    html = '<p class="note" style="margin:0">No student matches "' + esc(ttStuSearchQ) + '".</p>';
+  } else {
+    html = '<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Roll</th><th>Course</th><th>Group</th></tr></thead><tbody>';
+    list.forEach(function(s){
+      var checked = ttEditStudents.indexOf(s.name) >= 0 ? ' checked' : '';
+      html += '<tr><td><input type="checkbox" data-ttstu="' + esc(s.name) + '"' + checked + '></td><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.roll || '') + '</td><td>' + esc(s.course || s.className || '') + '</td><td>' + esc(s.group || '') + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  el.innerHTML = html;
+}
+$('ttStuList').addEventListener('change', function(e){
+  var cb = e.target.closest ? e.target.closest('input[data-ttstu]') : null;
+  if(!cb) return;
+  var nm = cb.getAttribute('data-ttstu');
+  if(cb.checked){ if(ttEditStudents.indexOf(nm) < 0) ttEditStudents.push(nm); }
+  else ttEditStudents = ttEditStudents.filter(function(m){ return m !== nm; });
+});
+$('ttStuSearch').addEventListener('input', function(){ ttStuSearchQ = this.value; renderTtStuList(); });
 
 function ttMin(t){
   var m = String(t || '').match(/(\d{1,2}):(\d{2})\s*([AP]M)?/i);
