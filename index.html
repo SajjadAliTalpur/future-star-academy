@@ -881,18 +881,7 @@ table{min-width:520px}
 </div>
 
 <div class="atab" id="atab-teacherpay">
-<h4 style="margin:6px 0">Teacher Shares</h4>
-<div id="tpRules"></div>
-<div id="tpCards"></div>
-<h4 style="margin:22px 0 6px">Payment History — This Month</h4>
-<div style="margin:6px 0 10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label for="tpViewTeacher">Teacher:</label><select id="tpViewTeacher" style="width:auto"><option value="">All teachers</option></select><span class="note" style="margin:0">Each payment is saved as its own entry — pay a little at a time.</span></div>
-<div id="tpHistory"></div>
-<h4 style="margin:22px 0 6px">Teacher Share %</h4>
-<div id="shEditor"></div>
-<p class="note">Subjects with no teacher assigned go to the common pool, split 50/50 between the owners.</p>
-<div style="margin-top:10px"><button class="btn small" id="shSaveBtn" type="button">Save Teacher Shares</button></div>
-<div class="msg" id="shMsg"></div>
-<h4 style="margin:22px 0 6px">Pay a Teacher</h4>
+<div class="card" style="margin-top:6px"><h4 style="margin:0 0 10px;color:var(--blue)">Pay a Teacher</h4>
 <div class="form-grid">
 <div><label for="tpTeacher">Teacher</label><select id="tpTeacher"><option>Sir Sumair</option><option>Sir Mohsin</option><option>Sir Waqar</option></select></div>
 <div><label for="tpDate">Date</label><input id="tpDate" type="date"></div>
@@ -900,6 +889,20 @@ table{min-width:520px}
 <div><label for="tpNote">Note</label><input id="tpNote" type="text" placeholder="e.g. October share, first instalment"></div>
 </div>
 <div style="margin-top:10px"><button class="btn small" id="tpSaveBtn" type="button">Save Teacher Payment</button></div>
+<div class="msg" id="tpMsg"></div>
+</div>
+<h4 style="margin:22px 0 6px">Payment History — This Month</h4>
+<div style="margin:6px 0 10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label for="tpViewTeacher">Teacher:</label><select id="tpViewTeacher" style="width:auto"><option value="">All teachers</option></select><span class="note" style="margin:0">Each payment is saved as its own entry — pay a little at a time.</span></div>
+<div id="tpHistory"></div>
+<h4 style="margin:22px 0 6px">Teacher Shares</h4>
+<div id="tpRules"></div>
+<div id="tpCards"></div>
+<h4 style="margin:22px 0 6px">Teacher Share %</h4>
+<p class="note" style="margin-top:0">Choose a teacher to view or change only their share.</p>
+<div id="shEditor"></div>
+<p class="note">Subjects with no teacher assigned go to the common pool, split 50/50 between the owners.</p>
+<div style="margin-top:10px"><button class="btn small" id="shSaveBtn" type="button">Save This Teacher's Share</button></div>
+<div class="msg" id="shMsg"></div>
 <h4 style="margin:22px 0 6px">Owner Drawings (Cash Taken)</h4>
 <div class="form-grid">
 <div><label for="odOwner">Owner</label><select id="odOwner"><option>Ahmed Raza</option><option>Sir Sajjad Ali</option></select></div>
@@ -907,7 +910,7 @@ table{min-width:520px}
 <div><label for="odAmount">Amount Taken (Rs)</label><input id="odAmount" type="number" min="0" placeholder="e.g. 6000"></div>
 </div>
 <div style="margin-top:10px"><button class="btn small" id="odSaveBtn" type="button">Save Drawing</button></div>
-<div class="msg" id="tpMsg"></div>
+<div class="msg" id="odMsg"></div>
 </div>
 
 <div class="atab" id="atab-expenses">
@@ -1045,6 +1048,9 @@ table{min-width:520px}
 <h4 style="margin:22px 0 6px">Receipt Note (prints on every receipt)</h4>
 <div><textarea id="rcNote" rows="2" style="width:100%" placeholder="e.g. Fees are non-refundable. Please pay before the 10th of every month."></textarea></div>
 <div style="margin-top:10px"><button class="btn small" id="btnRcNote" type="button">Save Receipt Note</button></div>
+<h4 style="margin:22px 0 6px">Receipt Instructions (prints on every receipt)</h4>
+<div><textarea id="rcInstructions" rows="3" style="width:100%" placeholder="One instruction per line"></textarea></div>
+<div style="margin-top:10px"><button class="btn small" id="btnRcInstructions" type="button">Save Receipt Instructions</button></div>
 <h4 style="margin:22px 0 6px">Subjects</h4>
 <div id="subjList" class="subj-grid"></div>
 <div class="form-grid" style="margin-top:10px">
@@ -1089,6 +1095,7 @@ table{min-width:520px}
 var DEFAULT_DATA = {
   featuredPlaylist: 'UUDY0UpWofnK0IDvvkgLeitg',
   receiptNote: '',
+  receiptInstructions: 'Please pay the remaining balance before the 10th of next month.\nKeep this receipt safe — it is your proof of payment.\nFor any query, contact the academy office: 0307-0158381.',
   slots: [
     {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls', group:'', students:[]},
     {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys', group:'', students:[]},
@@ -2353,6 +2360,8 @@ function applySiteDoc(d){
   if(d.featuredPlaylist) data.featuredPlaylist = d.featuredPlaylist;
   if(d.receiptNote != null) data.receiptNote = d.receiptNote;
   var rn = $('rcNote'); if(rn) rn.value = data.receiptNote || '';
+  if(d.receiptInstructions != null) data.receiptInstructions = d.receiptInstructions;
+  var ri = $('rcInstructions'); if(ri) ri.value = data.receiptInstructions || '';
   if(d.shareRules){ fbData.shareRules = normShareRules(d.shareRules); try{ localStorage.setItem(SHARE_LS_KEY, JSON.stringify(fbData.shareRules)); }catch(e){} }
   if(d.subjects){ var _sj = normSubjects(d.subjects); if(_sj.length){ fbData.subjects = _sj; try{ localStorage.setItem(SUBJ_LS_KEY, JSON.stringify(_sj)); }catch(e){} } }
   if(d.migrated_v11) fbData.migrated = true;
@@ -2392,7 +2401,7 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', subjects:fbData.subjects, shareRules:fbData.shareRules, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
 function saveReceiptNote(){
@@ -2401,6 +2410,12 @@ function saveReceiptNote(){
   setMsg('settingsMsg', 'Receipt note saved — it will print on every receipt from now on.', 'ok');
 }
 (function(){ var b = $('btnRcNote'); if(b) b.addEventListener('click', saveReceiptNote); })();
+function saveReceiptInstructions(){
+  data.receiptInstructions = ($('rcInstructions') ? $('rcInstructions').value.trim() : '');
+  saveData(); fbPushSite();
+  setMsg('settingsMsg', 'Receipt instructions saved — they will print on every receipt from now on.', 'ok');
+}
+(function(){ var b = $('btnRcInstructions'); if(b) b.addEventListener('click', saveReceiptInstructions); })();
 function updateMigrateBtn(){
   var b = $('btnMigrate'); if(!b) return;
   var hasLocal = false;
@@ -3048,6 +3063,7 @@ function receiptHTML(rec, st){
     + '<tr><td>Received By</td><td>' + esc(rec.received_by) + '</td></tr>'
     + '</tbody></table><p style="margin-top:14px">Student Copy</p>'
     + (data.receiptNote ? '<p style="border-top:1px dashed var(--line);padding-top:10px">' + esc(data.receiptNote) + '</p>' : '')
+    + (data.receiptInstructions ? '<p style="border-top:1px dashed var(--line);padding-top:10px"><b>Instructions:</b><br>' + esc(data.receiptInstructions).replace(/\n/g, '<br>') + '</p>' : '')
     + '<p style="border-top:1px dashed var(--line);padding-top:10px">Thank you. Please keep this receipt.</p></div>';
 }
 var lastReceipt = null;
@@ -3078,6 +3094,7 @@ function receiptThermalHTML(rec, st){
     + row('Received by', esc(rec.received_by))
     + '</tbody></table><p>Student Copy</p>'
     + (data.receiptNote ? '<p>' + esc(data.receiptNote) + '</p>' : '')
+    + (data.receiptInstructions ? '<p>Instructions:<br>' + esc(data.receiptInstructions).replace(/\n/g, '<br>') + '</p>' : '')
     + '<p>---------------------------</p></div>';
 }
 function printThermalReceipt(){
@@ -3230,32 +3247,43 @@ function renderTpHistory(){
   html += '<h4 style="color:var(--blue)">This Month — Due vs Paid</h4><div class="table-scroll"><table><thead><tr><th>Teacher</th><th>Share Due</th><th>Paid (all instalments)</th><th>Balance</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   el.innerHTML = html;
 }
-var shEditorKeys = '';
 function renderShareEditor(){
   var el = $('shEditor'); if(!el) return;
-  var names = subjectNames();
-  var keys = names.join('|');
-  if(keys !== shEditorKeys){
-    shEditorKeys = keys;
-    var h = '<div class="form-grid">';
-    names.forEach(function(n, i){
-      var s = subjectByName(n) || {};
-      h += '<div><label>' + esc(n) + (s.teacher ? ' &mdash; ' + esc(s.teacher) : '') + ' &middot; Teacher %</label>'
+  var teachers = teacherNamesAll();
+  var selEl = $('shTeacherSel');
+  var sel = selEl ? selEl.value : '';
+  if(!sel || teachers.indexOf(sel) < 0) sel = teachers[0] || '';
+  var typed = {};
+  el.querySelectorAll('[data-shpct]').forEach(function(p){ typed[p.getAttribute('data-shpct')] = p.value; });
+  el.querySelectorAll('[data-shbasis]').forEach(function(b){ typed['b' + b.getAttribute('data-shbasis')] = b.value; });
+  var names = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel; });
+  var h = '<div style="margin-bottom:10px"><label for="shTeacherSel">Teacher:</label> <select id="shTeacherSel" style="width:auto">' + teachers.map(function(t){ return '<option' + (t === sel ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select></div>';
+  if(!names.length){
+    h += '<p class="note">No subjects assigned to this teacher yet.</p>';
+  } else {
+    h += '<div class="form-grid">';
+    names.forEach(function(n){
+      var i = subjectNames().indexOf(n);
+      h += '<div><label>' + esc(n) + ' &middot; Teacher %</label>'
         + '<input type="number" min="0" max="100" step="0.5" data-shpct="' + i + '" placeholder="e.g. 70">'
         + '<p class="note" style="margin:4px 0 0">Academy: <b data-shacad="' + i + '"></b></p></div>'
         + '<div><label>' + esc(n) + ' &mdash; Basis</label><select data-shbasis="' + i + '"><option value="received">Received only</option><option value="received+adm">Received + Admission fee</option></select></div>';
     });
-    el.innerHTML = h + '</div>';
+    h += '</div>';
   }
-  names.forEach(function(n, i){
+  el.innerHTML = h;
+  names.forEach(function(n){
+    var i = subjectNames().indexOf(n);
     var r = fbData.shareRules[n] || {};
     var pctEl = el.querySelector('[data-shpct="' + i + '"]');
     var basisEl = el.querySelector('[data-shbasis="' + i + '"]');
     var acadEl = el.querySelector('[data-shacad="' + i + '"]');
-    if(pctEl && document.activeElement !== pctEl) pctEl.value = num(r.teacherPct);
-    if(basisEl && document.activeElement !== basisEl) basisEl.value = (r.basis === 'received+adm' ? 'received+adm' : 'received');
-    if(acadEl) acadEl.textContent = (100 - num(r.teacherPct)) + '%';
+    if(pctEl) pctEl.value = (typed[String(i)] != null && typed[String(i)] !== '') ? typed[String(i)] : num(r.teacherPct);
+    if(basisEl) basisEl.value = typed['b' + i] || (r.basis === 'received+adm' ? 'received+adm' : 'received');
+    if(acadEl) acadEl.textContent = (100 - num(pctEl ? pctEl.value : r.teacherPct)) + '%';
   });
+  var sel2 = $('shTeacherSel');
+  if(sel2) sel2.onchange = function(){ renderShareEditor(); };
 }
 function syncShareAcad(){
   var el = $('shEditor'); if(!el) return;
@@ -3267,10 +3295,14 @@ function syncShareAcad(){
 }
 async function saveShareRules(){
   var el = $('shEditor');
+  var sel = $('shTeacherSel') ? $('shTeacherSel').value : '';
+  var names = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel; });
+  if(!names.length){ setMsg('shMsg', 'Please choose a teacher first.', 'err'); return; }
   var rules = {};
-  var names = subjectNames();
-  for(var i = 0; i < names.length; i++){
-    var k = names[i];
+  Object.keys(fbData.shareRules).forEach(function(k){ rules[k] = fbData.shareRules[k]; });
+  for(var j = 0; j < names.length; j++){
+    var k = names[j];
+    var i = subjectNames().indexOf(k);
     var pctEl = el ? el.querySelector('[data-shpct="' + i + '"]') : null;
     var basisEl = el ? el.querySelector('[data-shbasis="' + i + '"]') : null;
     var raw = pctEl ? pctEl.value.trim() : '';
@@ -3285,12 +3317,12 @@ async function saveShareRules(){
   try{ localStorage.setItem(SHARE_LS_KEY, JSON.stringify(rules)); }catch(e){}
   renderShareEditor(); renderTeacherPay(); renderReports();
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady){
-    setMsg('shMsg', 'Teacher shares updated in this browser. Sign in as admin with the live database to share them with everyone.', 'ok');
+    setMsg('shMsg', 'Teacher share updated for ' + sel + ' in this browser. Sign in as admin with the live database to share it with everyone.', 'ok');
     return;
   }
   try{
     await fbPushSite();
-    setMsg('shMsg', 'Teacher shares updated.', 'ok');
+    setMsg('shMsg', 'Teacher share updated for ' + sel + '.', 'ok');
   }catch(e){ setMsg('shMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
 async function saveTeacherPayment(){
@@ -3309,17 +3341,17 @@ async function saveTeacherPayment(){
   }catch(e){ setMsg('tpMsg', 'Could not save: ' + fbErrText(e), 'err'); }
 }
 async function saveOwnerDrawing(){
-  if(!fbNeedLive()){ setMsg('tpMsg', 'Live data is unavailable. Please try again when the connection returns.', 'err'); return; }
+  if(!fbNeedLive()){ setMsg('odMsg', 'Live data is unavailable. Please try again when the connection returns.', 'err'); return; }
   var owner = $('odOwner').value, amount = num($('odAmount').value), date = $('odDate').value || todayStr();
-  if(amount <= 0){ setMsg('tpMsg', 'Please enter an amount greater than zero.', 'err'); return; }
+  if(amount <= 0){ setMsg('odMsg', 'Please enter an amount greater than zero.', 'err'); return; }
   try{
     var rec = {date:date, owner:owner, amount:amount};
     await fb.db.collection('academy_owner_drawings').add(rec);
     fbData.drawings.push(rec);
-    setMsg('tpMsg', owner + ' took ' + rs(amount) + ' on ' + date + '.', 'ok');
+    setMsg('odMsg', owner + ' took ' + rs(amount) + ' on ' + date + '.', 'ok');
     $('odAmount').value = '';
     renderTeacherPay();
-  }catch(e){ setMsg('tpMsg', 'Could not save: ' + fbErrText(e), 'err'); }
+  }catch(e){ setMsg('odMsg', 'Could not save: ' + fbErrText(e), 'err'); }
 }
 /* ---------- Expenses ---------- */
 async function saveExpense(){
