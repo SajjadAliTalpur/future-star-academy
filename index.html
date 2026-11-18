@@ -470,6 +470,24 @@ table{min-width:520px}
 </div>
 </div>
 
+<div class="modal" id="parentPanel">
+<div class="modal-box wide">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<h3 style="margin:0">Parent Dashboard</h3>
+<button class="btn small outline" id="prLogoutBtn" type="button">Log out</button>
+</div>
+<div id="parentDash" style="margin-top:14px"></div>
+<h4 style="margin:22px 0 6px">Change Password</h4>
+<div class="form-grid">
+<div><label for="prPwOld">Current Password</label><input id="prPwOld" type="password"></div>
+<div><label for="prPwNew">New Password</label><input id="prPwNew" type="password"></div>
+<div><label for="prPwNew2">Confirm New Password</label><input id="prPwNew2" type="password"></div>
+</div>
+<button class="btn small" id="prChangePwBtn" type="button" style="margin-top:10px">Change Password</button>
+<div class="msg" id="prPwMsg"></div>
+</div>
+</div>
+
 <div class="modal" id="teacherModal">
 <div class="modal-box">
 <h3>Teacher Login</h3>
@@ -489,7 +507,7 @@ table{min-width:520px}
 <div class="modal" id="loginModal">
 <div class="modal-box">
 <h3>Login</h3>
-<p class="sec-sub">One login for everyone. Admin: enter "admin" as your ID. Students: your phone number or roll number. Teachers: your phone number.</p>
+<p class="sec-sub">One login for everyone. Admin: enter "admin" as your ID. Students: your phone number or roll number. Teachers: your phone number. Parents: the father's phone number from the admission form.</p>
 <label for="lgId">Login ID</label>
 <input id="lgId" type="text" placeholder="admin, phone number or roll number" autocomplete="username">
 <label for="lgPw">Password</label>
@@ -606,6 +624,7 @@ table{min-width:520px}
 <div class="admin-sec-body">
 <button type="button" data-atab="timetable"><span class="material-symbols-outlined">schedule</span>Timetable</button>
 <button type="button" data-atab="attendance"><span class="material-symbols-outlined">fact_check</span>Attendance</button>
+<button type="button" data-atab="leaves"><span class="material-symbols-outlined">event_busy</span>Leaves</button>
 <button type="button" data-atab="students"><span class="material-symbols-outlined">school</span>Students</button>
 <button type="button" data-atab="groups"><span class="material-symbols-outlined">group</span>Groups</button>
 <button type="button" data-atab="homework"><span class="material-symbols-outlined">assignment</span>Homework</button>
@@ -648,8 +667,8 @@ table{min-width:520px}
 <div class="atab" id="atab-timetable">
 <div class="form-grid">
 <div><label for="ttDay">Day</label><select id="ttDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
-<div><label for="ttStart">Start Time</label><input id="ttStart" type="text" placeholder="e.g. 4:00 PM"></div>
-<div><label for="ttEnd">End Time</label><input id="ttEnd" type="text" placeholder="e.g. 5:00 PM"></div>
+<div><label for="ttStart">Start Time</label><input id="ttStart" type="time"></div>
+<div><label for="ttEnd">End Time</label><input id="ttEnd" type="time"></div>
 <div><label for="ttSubject">Subject</label><input id="ttSubject" type="text" placeholder="e.g. Programming"></div>
 <div><label for="ttTeacher">Teacher</label><input id="ttTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
 <div><label for="ttSection">Section</label><select id="ttSection"><option>Boys</option><option>Girls</option></select></div>
@@ -719,8 +738,8 @@ table{min-width:520px}
 <div class="atab" id="atab-groups">
 <div class="form-grid">
 <div><label for="grName">Group Name</label><input id="grName" type="text" placeholder="e.g. Group A"></div>
-<div><label for="grSubject">Subject</label><input id="grSubject" type="text" placeholder="e.g. Computer Science"></div>
-<div><label for="grTeacher">Teacher</label><input id="grTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
+<div><label for="grSubject">Subject</label><select id="grSubject"></select></div>
+<div><label for="grTeacher">Teacher (optional)</label><input id="grTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
 <div class="full"><label>Members — tick students from the Students list</label><div id="grMembers" style="border:2px solid var(--line);border-radius:9px;padding:10px 12px;max-height:280px;overflow-y:auto"></div></div>
 <div class="full"><label for="grTime">Time</label><input id="grTime" type="text" placeholder="e.g. Mon–Wed 4:00 PM"></div>
 </div>
@@ -747,7 +766,7 @@ table{min-width:520px}
 <div class="form-grid">
 <div><label for="seName">Name</label><input id="seName" type="text"></div>
 <div><label for="sePhone">Phone</label><input id="sePhone" type="text"></div>
-<div><label for="seRoll">Roll Number</label><input id="seRoll" type="text"><button class="btn small outline" id="seGenRollBtn" type="button" style="margin-top:6px">Generate ID</button></div>
+<div><label for="seRoll">Roll Number</label><input id="seRoll" type="text" placeholder="Auto-generated on save if left blank"></div>
 <div><label for="seClass">Class</label><input id="seClass" type="text"></div>
 <div><label for="seGroup">Group</label><input id="seGroup" type="text"></div>
 <div><label for="seCourse">Course (DIT / English / Biology / Maths / Office)</label><input id="seCourse" type="text"></div>
@@ -778,7 +797,6 @@ table{min-width:520px}
 <div><label for="ntPages">Pages</label><input id="ntPages" type="text" placeholder="e.g. 95 pages"></div>
 <div><label for="ntDesc">Description</label><input id="ntDesc" type="text" placeholder="e.g. English + Urdu"></div>
 <div><label for="ntFile">File link</label><input id="ntFile" type="text" placeholder="Paste a Google Drive link, or a file name"></div>
-<div class="full"><label for="ntUpload">Upload a file (PDF, Word, image) — direct upload needs Firebase Storage (Blaze plan), which is off. Easiest way: upload the file to Google Drive, set the link to "Anyone with the link", and paste it in the File link box above.</label><input id="ntUpload" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png"></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="ntAddBtn" type="button">Add Note</button>
@@ -786,6 +804,12 @@ table{min-width:520px}
 </div>
 <div class="msg" id="ntMsg"></div>
 <div id="ntList" style="margin-top:10px"></div>
+</div>
+
+<div class="atab" id="atab-leaves">
+<h4 style="margin:6px 0">Leave Applications</h4>
+<p class="note" style="margin-top:0">Parents apply for leave from the Parent Dashboard. Approve or reject each application here.</p>
+<div id="leavesList" style="margin-top:10px"></div>
 </div>
 
 <div class="atab" id="atab-videos">
@@ -805,6 +829,7 @@ table{min-width:520px}
 <div class="atab" id="atab-fees">
 <p class="note" style="margin-top:0" id="feeMonthLabel">Current month balances are shown below.</p>
 <h4 style="margin:6px 0">Collect Fee</h4>
+<div style="margin:6px 0 10px"><label for="feeSearchQ">Find student</label><input id="feeSearchQ" type="text" placeholder="Search by name or roll number..." style="width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;margin-top:6px"><div id="feeSearchList" style="margin-top:6px"></div></div>
 <div class="form-grid">
 <div><label for="feeRoll">Roll Number</label><input id="feeRoll" type="text" placeholder="e.g. DIT01"></div>
 <div><label for="feeDate">Date</label><input id="feeDate" type="date"></div>
@@ -859,6 +884,9 @@ table{min-width:520px}
 <h4 style="margin:6px 0">Teacher Shares</h4>
 <div id="tpRules"></div>
 <div id="tpCards"></div>
+<h4 style="margin:22px 0 6px">Payment History — This Month</h4>
+<div style="margin:6px 0 10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label for="tpViewTeacher">Teacher:</label><select id="tpViewTeacher" style="width:auto"><option value="">All teachers</option></select><span class="note" style="margin:0">Each payment is saved as its own entry — pay a little at a time.</span></div>
+<div id="tpHistory"></div>
 <h4 style="margin:22px 0 6px">Teacher Share %</h4>
 <div id="shEditor"></div>
 <p class="note">Subjects with no teacher assigned go to the common pool, split 50/50 between the owners.</p>
@@ -1120,6 +1148,7 @@ var DEFAULT_DATA = {
 var LS_KEY = 'fscc_data_v2';
 var ST_PW_KEY = 'fscc_student_pw_v1';
 var currentStudent = null;
+var currentParent = null;
 var PW_KEY = 'fscc_admin_pw';
 var editing = {tt:-1, an:-1, rs:-1, gr:-1, nt:-1, vd:-1};
 
@@ -1254,8 +1283,8 @@ function searchResult(){
 
 /* ---------- Admin: login & panel ---------- */
 function lockBodyScroll(){ document.body.style.overflow = 'hidden'; }
-function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
-function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel') lockBodyScroll(); }
+function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
+function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel' || id === 'parentPanel') lockBodyScroll(); }
 function closeModal(id){ $(id).classList.remove('open'); unlockBodyScroll(); }
 function tryLogin(){ tryLoginFb(); }
 /* ---------- Unified login: one button, role from the ID ---------- */
@@ -1290,6 +1319,18 @@ async function tryUnifiedLogin(){
     else lm.textContent = $('studentLoginMsg').textContent || LOGIN_ERR;
     return;
   }
+  var kids = findStudentsByFatherPhone(id);
+  if(kids.length){
+    var pres = await parentLogin(id, pw);
+    if(pres.ok){
+      currentParent = {phone:normPhone(id), kids:pres.kids};
+      closeModal('loginModal'); $('lgPw').value = '';
+      renderParentDash(); updateAuthButtons(); openModal('parentPanel');
+      if(fb.ready && !fb.offline) fbLoadParentOwn(pres.kids.map(function(k){ return k.roll; }));
+    }
+    else lm.textContent = pres.msg;
+    return;
+  }
   if(n && n.length >= 10){
     if(!fb.ready || fb.offline){ lm.textContent = 'Live data is unavailable. Teacher login needs the live database.'; return; }
     $('tcPhone').value = n; $('tcPw').value = pw;
@@ -1298,12 +1339,13 @@ async function tryUnifiedLogin(){
     else lm.textContent = $('tcLoginMsg').textContent || 'Incorrect phone number or password.';
     return;
   }
-  lm.textContent = 'No account found for this ID. Students: use your phone number or roll number. Teachers: use your phone number. Admin: use "admin".';
+  lm.textContent = 'No account found for this ID. Students: use your phone number or roll number. Teachers: use your phone number. Parents: use the father\'s phone number. Admin: use "admin".';
 }
 $('btnLogin').addEventListener('click', function(){
   if(fb.role === 'admin'){ renderAdminAll(); openModal('adminPanel'); return; }
   if(currentTeacher){ renderTeacherPanel(); openModal('teacherPanel'); return; }
   if(currentStudent){ renderStudentDash(); openModal('studentPanel'); return; }
+  if(currentParent){ renderParentDash(); openModal('parentPanel'); return; }
   openLoginModal();
 });
 $('loginBtn').addEventListener('click', tryUnifiedLogin);
@@ -1352,11 +1394,25 @@ function renderAdminTimetable(){
   $('ttList').innerHTML = html;
   renderTtStuList();
 }
+function to24h(t){
+  var m = String(t || '').match(/(\d{1,2}):(\d{2})\s*([AP]M)?/i);
+  if(!m) return '';
+  var h = parseInt(m[1], 10) % 12;
+  if(m[3] && /pm/i.test(m[3])) h += 12;
+  return ('0' + h).slice(-2) + ':' + m[2];
+}
+function to12h(t){
+  var m = String(t || '').match(/(\d{1,2}):(\d{2})/);
+  if(!m) return '';
+  var h = parseInt(m[1], 10), ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if(h === 0) h = 12;
+  return h + ':' + m[2] + ' ' + ap;
+}
 function slotFromForm(){
   return {
     day:$('ttDay').value,
-    start:$('ttStart').value.trim(),
-    end:$('ttEnd').value.trim(),
+    start:to12h($('ttStart').value),
+    end:to12h($('ttEnd').value),
     subject:$('ttSubject').value.trim(),
     teacher:$('ttTeacher').value.trim(),
     section:$('ttSection').value,
@@ -1366,7 +1422,7 @@ function slotFromForm(){
 }
 function editTt(i){
   var x = data.slots[i];
-  $('ttDay').value = x.day; $('ttStart').value = x.start; $('ttEnd').value = x.end;
+  $('ttDay').value = x.day; $('ttStart').value = to24h(x.start); $('ttEnd').value = to24h(x.end);
   $('ttSubject').value = x.subject; $('ttTeacher').value = x.teacher; $('ttSection').value = x.section;
   $('ttGroup').value = x.group || ''; ttEditStudents = (x.students || []).slice(); renderTtStuList();
   editing.tt = i; $('ttAddBtn').textContent = 'Save Changes'; $('ttCancelEdit').style.display = '';
@@ -1386,6 +1442,7 @@ $('ttAddBtn').addEventListener('click', function(){
   var slot = slotFromForm();
   if(!slot.subject){ alert('Please enter a subject.'); return; }
   if(!slot.start || !slot.end){ alert('Please enter a start and end time.'); return; }
+  if(ttMin(slot.start) >= ttMin(slot.end)){ alert('End time must be after start time.'); return; }
   if(editing.tt >= 0){ slot.sample = !!data.slots[editing.tt].sample; data.slots[editing.tt] = slot; }
   else data.slots.push(slot);
   cancelTt(); saveData();
@@ -1571,17 +1628,39 @@ $('rsCancelEdit').addEventListener('click', cancelRs);
 
 /* ---------- Admin: groups ---------- */
 var grEditMembers = [];
+function renderGrSubjectOptions(){
+  var el = $('grSubject'); if(!el) return;
+  var cur = el.value;
+  el.innerHTML = '<option value="">— Select subject —</option>' + subjectNames().map(function(n){ return '<option>' + esc(n) + '</option>'; }).join('');
+  if(cur && subjectNames().indexOf(cur) >= 0) el.value = cur;
+}
 function renderGrMembers(){
   var html = '';
   if(!data.students.length){
     html = '<p class="note" style="margin:0">No students yet. Import students from the Students tab first.</p>';
   } else {
-    html = '<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Father\'s Name</th><th>Course</th><th>Time</th><th>Phone</th></tr></thead><tbody>';
-    data.students.forEach(function(s){
-      var checked = grEditMembers.indexOf(s.name) >= 0 ? ' checked' : '';
-      html += '<tr><td><input type="checkbox" data-grmember="' + esc(s.name) + '"' + checked + '></td><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.father_name || '') + '</td><td>' + esc(s.course || s.className || '') + '</td><td>' + esc(s.time_slot || '') + '</td><td>' + esc(s.phone || '') + '</td></tr>';
+    var used = {};
+    data.groups.forEach(function(g, gi){
+      if(gi === editing.gr) return;
+      (g.members || []).forEach(function(m){ used[m] = true; });
     });
-    html += '</tbody></table></div>';
+    var hidden = 0;
+    var list = data.students.filter(function(s){
+      if((s.status || 'Active') === 'Left') return false;
+      if(used[s.name] && grEditMembers.indexOf(s.name) < 0){ hidden++; return false; }
+      return true;
+    });
+    if(!list.length){
+      html = '<p class="note" style="margin:0">No students available to add — every student is already in another group.</p>';
+    } else {
+      html = '<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Father\'s Name</th><th>Course</th><th>Time</th><th>Phone</th></tr></thead><tbody>';
+      list.forEach(function(s){
+        var checked = grEditMembers.indexOf(s.name) >= 0 ? ' checked' : '';
+        html += '<tr><td><input type="checkbox" data-grmember="' + esc(s.name) + '"' + checked + '></td><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.father_name || '') + '</td><td>' + esc(s.course || s.className || '') + '</td><td>' + esc(s.time_slot || '') + '</td><td>' + esc(s.phone || '') + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    if(hidden) html += '<p class="note" style="margin:8px 0 0">' + hidden + ' student(s) hidden — already in another group.</p>';
   }
   $('grMembers').innerHTML = html;
 }
@@ -1591,16 +1670,18 @@ function renderAdminGroups(){
     var members = (g.members || []).join(', ');
     html += '<div class="admin-row"><div><b>' + esc(g.name) + ' — ' + esc(g.subject) + '</b>'
       + (g.sample ? ' <span class="badge sample">SAMPLE</span>' : '')
-      + '<small>' + esc(g.teacher) + ' · ' + esc(g.time) + '<br>Members: ' + (members ? esc(members) : 'None yet') + '</small></div>'
+      + '<small>' + (g.teacher ? esc(g.teacher) + ' · ' : '') + esc(g.time) + '<br>Members: ' + (members ? esc(members) : 'None yet') + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="editGr(' + i + ')">Edit</button> '
       + '<button class="btn small outline" type="button" onclick="delGr(' + i + ')">Delete</button></div></div>';
   });
   $('grList').innerHTML = html;
+  renderGrSubjectOptions();
   renderGrMembers();
 }
 function editGr(i){
   var g = data.groups[i];
-  $('grName').value = g.name; $('grSubject').value = g.subject; $('grTeacher').value = g.teacher;
+  renderGrSubjectOptions();
+  $('grName').value = g.name; $('grSubject').value = g.subject; $('grTeacher').value = g.teacher || '';
   $('grTime').value = g.time;
   grEditMembers = (g.members || []).slice();
   renderGrMembers();
@@ -1613,7 +1694,7 @@ function delGr(i){
 function cancelGr(){
   editing.gr = -1;
   $('grName').value = ''; $('grSubject').value = ''; $('grTeacher').value = ''; $('grTime').value = '';
-  grEditMembers = []; renderGrMembers();
+  grEditMembers = []; renderGrSubjectOptions(); renderGrMembers();
   $('grAddBtn').textContent = 'Add Group'; $('grCancelEdit').style.display = 'none';
 }
 $('grMembers').addEventListener('change', function(e){
@@ -1626,8 +1707,10 @@ $('grMembers').addEventListener('change', function(e){
 $('grAddBtn').addEventListener('click', function(){
   var name = $('grName').value.trim();
   if(!name){ alert('Please enter a group name.'); return; }
+  var subj = $('grSubject').value;
+  if(!subj){ alert('Please choose a subject.'); return; }
   var g = {id: editing.gr >= 0 ? (data.groups[editing.gr].id || ('g' + Date.now())) : ('g' + Date.now()),
-    name:name, subject:$('grSubject').value.trim(), teacher:$('grTeacher').value.trim(),
+    name:name, subject:subj, teacher:$('grTeacher').value.trim(),
     time:$('grTime').value.trim(), members:grEditMembers.slice()};
   if(editing.gr >= 0){ g.sample = !!data.groups[editing.gr].sample; data.groups[editing.gr] = g; }
   else data.groups.push(g);
@@ -1666,21 +1749,6 @@ $('ntAddBtn').addEventListener('click', function(){
   if(editing.nt >= 0) data.notes[editing.nt] = n; else data.notes.push(n);
   cancelNt(); saveData();
 });
-async function uploadNoteFile(){
-  var inp = $('ntUpload'); if(!inp || !inp.files || !inp.files[0]) return;
-  var file = inp.files[0];
-  if(!fb.ready || !fb.db){ setMsg('ntMsg', 'Live data is unavailable. File upload needs the live database.', 'err'); return; }
-  if(!firebase.storage){ setMsg('ntMsg', 'Storage is not ready yet — please reload the page and try again.', 'err'); return; }
-  try{
-    setMsg('ntMsg', 'Uploading ' + file.name + '…', 'ok');
-    var ref = firebase.storage().ref('notes/' + Date.now() + '_' + file.name.replace(/[^A-Za-z0-9._-]/g, '_'));
-    await ref.put(file);
-    var url = await ref.getDownloadURL();
-    $('ntFile').value = url;
-    setMsg('ntMsg', 'Uploaded. Now click Add Note to save it.', 'ok');
-  }catch(e){ setMsg('ntMsg', 'Upload failed: ' + fbErrText(e) + '. Direct upload needs Firebase Storage (Blaze plan), which is off. Please paste a Google Drive link in the File link box instead.', 'err'); }
-}
-(function(){ var u = $('ntUpload'); if(u) u.addEventListener('change', uploadNoteFile); })();
 $('ntCancelEdit').addEventListener('click', cancelNt);
 
 /* ---------- Admin: videos ---------- */
@@ -2178,7 +2246,7 @@ function shareBase(p, basis){
   if(basis === 'received+adm') r += num(p.admission_fee);
   return r;
 }
-var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
+var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
 try{ var _sr = JSON.parse(localStorage.getItem(SHARE_LS_KEY) || 'null'); if(_sr) fbData.shareRules = normShareRules(_sr); }catch(e){}
 var currentTeacher = null;
 var FB_MONTH = (function(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); })();
@@ -2395,6 +2463,7 @@ function updateAuthButtons(){
     if(fb.role === 'admin') b.textContent = 'Admin \u2713';
     else if(fb.role === 'teacher' && currentTeacher) b.textContent = 'Hi, ' + currentTeacher.name.split(' ')[0];
     else if(currentStudent) b.textContent = 'Hi, ' + currentStudent.name.split(' ')[0];
+    else if(currentParent) b.textContent = 'Parent \u2713';
     else b.textContent = 'Login';
   }
   updateMigrateBtn();
@@ -2498,15 +2567,152 @@ async function saveStudentToFb(s){
     var ph = await sha256Hex(n);
     var pwStore = loadPwStore();
     var pwHash = pwStore[s.phone] ? await sha256Hex(pwStore[s.phone]) : ph;
+    var fn = normPhone(s.father_phone || '');
+    var fph = fn ? await sha256Hex(fn) : '';
+    var pph = (fn && pwStore['parent:' + fn]) ? await sha256Hex(pwStore['parent:' + fn]) : (fph || ph);
     await fb.db.collection('academy_students').doc(String(s.roll).toUpperCase()).set({
       name:s.name || '', course:s.course || s.className || '', course_type:'Monthly',
       admission_date:s.admission_date || '', time_slot:s.time_slot || '',
       monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues),
-      group:s.group || '', gender:s.gender || '', status:s.status || 'Active', phoneHash:ph, passwordHash:pwHash, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
+      group:s.group || '', gender:s.gender || '', status:s.status || 'Active', phoneHash:ph, passwordHash:pwHash, fatherPhoneHash:fph, parentPasswordHash:pph, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
     await fb.db.collection('academy_contacts').doc(String(s.roll).toUpperCase()).set({
       student_phone:s.phone || '', father_phone:s.father_phone || '', address:s.address || ''}, {merge:true});
   }catch(e){ setMsg('stCsvMsg', 'Live save failed for ' + s.name + ': ' + fbErrText(e), 'err'); }
 }
+/* ---------- Parent login + dashboard ---------- */
+var PARENT_LOGIN_ERR = 'Incorrect phone number or password. Your default password is the father\'s phone number — contact the academy office if you still cannot log in.';
+function findStudentsByFatherPhone(phone){
+  var n = normPhone(phone), out = [];
+  data.students.forEach(function(s){ if(normPhone(s.father_phone) === n) out.push(s); });
+  return out;
+}
+function parentLoginLocal(phone, pw){
+  var kids = findStudentsByFatherPhone(phone);
+  if(!kids.length) return {ok:false, msg:PARENT_LOGIN_ERR};
+  var store = loadPwStore();
+  var key = 'parent:' + normPhone(phone);
+  var good = store[key] != null ? (pw === store[key]) : (normPhone(pw) === normPhone(phone));
+  if(!good) return {ok:false, msg:PARENT_LOGIN_ERR};
+  return {ok:true, kids:kids};
+}
+async function parentLoginAsync(phone, pw){
+  var n = normPhone(phone);
+  var fh = await sha256Hex(n);
+  var snap = await fb.db.collection('academy_students').where('fatherPhoneHash', '==', fh).get();
+  if(snap.empty) return {ok:false, msg:PARENT_LOGIN_ERR};
+  var pwHash = await sha256Hex(pw);
+  var kids = [];
+  snap.forEach(function(doc){
+    var d = doc.data();
+    if(pwHash === (d.parentPasswordHash || fh)) kids.push(studentFromDoc(doc));
+  });
+  if(!kids.length) return {ok:false, msg:PARENT_LOGIN_ERR};
+  return {ok:true, kids:kids};
+}
+function parentLogin(phone, pw){
+  if(fb.ready && !fb.offline && fb.db) return parentLoginAsync(phone, pw);
+  return Promise.resolve(parentLoginLocal(phone, pw));
+}
+var parentViewRoll = '';
+function renderParentDash(){
+  var p = currentParent; if(!p) return;
+  var kids = p.kids || [];
+  if(!kids.length){ $('parentDash').innerHTML = '<p class="note">No children found for this phone number.</p>'; return; }
+  if(!parentViewRoll || !kids.some(function(k){ return k.roll === parentViewRoll; })) parentViewRoll = kids[0].roll;
+  var st = null; kids.forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
+  var html = '<p style="font-size:1.1rem">Welcome, parent of <b>' + esc(st.name) + '</b></p>';
+  if(kids.length > 1){
+    html += '<div style="margin:6px 0 10px"><label for="prChildSel">Child:</label><select id="prChildSel" style="width:auto">' + kids.map(function(k){ return '<option value="' + esc(k.roll) + '"' + (k.roll === parentViewRoll ? ' selected' : '') + '>' + esc(k.name) + ' (' + esc(k.roll) + ')</option>'; }).join('') + '</select></div>';
+  }
+  html += '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + ' &nbsp;·&nbsp; <b>Class Time:</b> ' + esc(st.time_slot || 'Not set yet') + '</p>';
+  var myResults = [];
+  data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
+  html += '<h4>Results</h4>';
+  if(!myResults.length) html += '<p class="note">No results published for this roll number yet.</p>';
+  else myResults.forEach(function(r){ html += resultCardHTML(r); });
+  html += studentFeeHTML(st);
+  html += studentHomeworkHTML(st);
+  html += '<h4>Announcements</h4>';
+  if(!data.announcements.length) html += '<p class="note">No announcements yet.</p>';
+  else html += data.announcements.map(function(a){ return '<p><b>' + esc(a.date) + ':</b> ' + esc(a.text) + '</p>'; }).join('');
+  html += '<h4>Apply for Leave</h4><div class="form-grid">'
+    + '<div><label for="lvFrom">From Date</label><input id="lvFrom" type="date"></div>'
+    + '<div><label for="lvTo">To Date</label><input id="lvTo" type="date"></div>'
+    + '<div class="full"><label for="lvReason">Reason</label><input id="lvReason" type="text" placeholder="e.g. Family wedding"></div></div>'
+    + '<div style="margin-top:10px"><button class="btn small" id="lvApplyBtn" type="button">Submit Leave Application</button></div>'
+    + '<div class="msg" id="lvMsg"></div>';
+  var myLeaves = (fbData.leaves || []).filter(function(l){ return l.roll === st.roll; }).sort(function(a, b){ return (a.createdAt < b.createdAt ? 1 : -1); });
+  html += '<h4>My Leave Applications</h4>';
+  if(!myLeaves.length) html += '<p class="note">No leave applications yet.</p>';
+  else {
+    html += '<div class="table-scroll"><table><thead><tr><th>From</th><th>To</th><th>Reason</th><th>Status</th></tr></thead><tbody>';
+    myLeaves.forEach(function(l){ html += '<tr><td>' + esc(l.fromDate) + '</td><td>' + esc(l.toDate) + '</td><td>' + esc(l.reason) + '</td><td><b>' + esc(l.status) + '</b></td></tr>'; });
+    html += '</tbody></table></div>';
+  }
+  $('parentDash').innerHTML = html;
+  var cs = $('prChildSel'); if(cs) cs.addEventListener('change', function(){ parentViewRoll = this.value; renderParentDash(); });
+  var ab = $('lvApplyBtn'); if(ab) ab.addEventListener('click', submitLeave);
+}
+async function submitLeave(){
+  var st = null; (currentParent.kids || []).forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
+  if(!st) return;
+  var from = $('lvFrom').value, to = $('lvTo').value, reason = $('lvReason').value.trim();
+  if(!from || !to){ setMsg('lvMsg', 'Please pick the from and to dates.', 'err'); return; }
+  if(to < from){ setMsg('lvMsg', 'The To date must be on or after the From date.', 'err'); return; }
+  if(!reason){ setMsg('lvMsg', 'Please write a short reason.', 'err'); return; }
+  if(!fb.ready || !fb.db){ setMsg('lvMsg', 'Live data is unavailable. Leave applications need the live database — please try again when the connection returns.', 'err'); return; }
+  try{
+    var rec = {roll:st.roll, studentName:st.name, parentPhone:currentParent.phone, fromDate:from, toDate:to, reason:reason, status:'pending', createdAt:todayStr()};
+    var ref = await fb.db.collection('academy_leaves').add(rec);
+    rec.id = ref.id;
+    fbData.leaves.push(rec);
+    setMsg('lvMsg', 'Leave application submitted for ' + st.name + ' (' + from + ' to ' + to + '). The academy will approve it soon.', 'ok');
+    renderParentDash();
+  }catch(e){ setMsg('lvMsg', 'Could not submit: ' + fbErrText(e), 'err'); }
+}
+function fbLoadParentOwn(rolls){
+  if(!fb.db) return;
+  rolls.forEach(function(roll){
+    fb.db.collection('academy_payments').where('student_roll_no', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.payments.some(function(x){ return x.id === o.id; })) fbData.payments.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+    fb.db.collection('academy_attendance').where('student_roll_no', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.attendance.some(function(x){ return x.id === o.id; })) fbData.attendance.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+    fb.db.collection('academy_challans').where('roll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.challans.some(function(x){ return x.id === o.id; })) fbData.challans.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+    fb.db.collection('academy_leaves').where('roll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.leaves.some(function(x){ return x.id === o.id; })) fbData.leaves.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+    fb.db.collection('academy_homework').where('targetRoll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.homework.some(function(x){ return x.id === o.id; })) fbData.homework.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+  });
+}
+function parentLogout(){ currentParent = null; parentViewRoll = ''; updateAuthButtons(); closeModal('parentPanel'); }
+async function changeParentPw(){
+  var p = currentParent; if(!p) return;
+  var cur = $('prPwOld').value, nw = $('prPwNew').value, nw2 = $('prPwNew2').value;
+  var key = 'parent:' + normPhone(p.phone);
+  if(fb.ready && !fb.offline && fb.db){
+    try{
+      var st = p.kids[0];
+      var doc = await fb.db.collection('academy_students').doc(String(st.roll).toUpperCase()).get();
+      var d = doc.exists ? doc.data() : {};
+      var fh = await sha256Hex(normPhone(p.phone));
+      var curHash = await sha256Hex(cur);
+      if(curHash !== (d.parentPasswordHash || fh)){ $('prPwMsg').textContent = 'Current password is incorrect.'; return; }
+      if(!nw){ $('prPwMsg').textContent = 'Please enter a new password.'; return; }
+      if(nw !== nw2){ $('prPwMsg').textContent = 'New passwords do not match.'; return; }
+      var newHash = await sha256Hex(nw);
+      for(var i = 0; i < p.kids.length; i++){ await fb.db.collection('academy_students').doc(String(p.kids[i].roll).toUpperCase()).update({parentPasswordHash:newHash}); }
+      $('prPwMsg').textContent = 'Password changed. It works on all devices now.';
+    }catch(e){ $('prPwMsg').textContent = 'Could not change password: ' + fbErrText(e); }
+  } else {
+    var store = loadPwStore();
+    var curOk = store[key] != null ? (cur === store[key]) : (normPhone(cur) === normPhone(p.phone));
+    if(!curOk){ $('prPwMsg').textContent = 'Current password is incorrect.'; return; }
+    if(!nw){ $('prPwMsg').textContent = 'Please enter a new password.'; return; }
+    if(nw !== nw2){ $('prPwMsg').textContent = 'New passwords do not match.'; return; }
+    store[key] = nw; savePwStore(store);
+    $('prPwMsg').textContent = 'Password changed. Your new password is saved on this device.';
+  }
+  $('prPwOld').value = ''; $('prPwNew').value = ''; $('prPwNew2').value = '';
+}
+$('prLogoutBtn').addEventListener('click', parentLogout);
+$('prChangePwBtn').addEventListener('click', changeParentPw);
+
 /* Admin creates a teacher account (secondary app so the admin stays signed in) */
 async function createTeacherLogin(name, phone, subjects){
   var n = normPhone(phone);
@@ -2552,6 +2758,8 @@ async function fbLoadFinance(){
     fbData.exams = []; exSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.exams.push(o); });
     var mkSnap = await fb.db.collection('academy_marks').get();
     fbData.marks = []; mkSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.marks.push(o); });
+    var lvSnap = await fb.db.collection('academy_leaves').get();
+    fbData.leaves = []; lvSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.leaves.push(o); });
     if(fb.role === 'admin'){
       var auSnap = await fb.db.collection('academy_audit').orderBy('at', 'desc').limit(200).get();
       fbData.audit = []; auSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.audit.push(o); });
@@ -2692,8 +2900,11 @@ function fillFeeForm(p, roll){
   if(!st){ if(g('Name')) g('Name').textContent = 'No student found with this roll number.'; return null; }
   var rec = receivedThisMonth(st.roll, FB_MONTH);
   var bal = studentDue(st);
+  var lastPay = null;
+  fbData.payments.forEach(function(p){ if(p.student_roll_no === st.roll && !p.reversed && (!lastPay || p.date > lastPay.date)) lastPay = p; });
   if(g('Name')) g('Name').innerHTML = '<b>' + esc(st.name) + '</b> · ' + esc(st.course || st.className || '') + ' · ' + esc(st.group || '') +
-    '<br>Monthly fee: <b>' + rs(st.monthly_fee) + '</b> · Old dues: <b>' + rs(st.old_dues) + '</b> · Received this month: <b>' + rs(rec) + '</b> · <b>Balance due: ' + rs(bal) + '</b>';
+    '<br>Monthly fee: <b>' + rs(st.monthly_fee) + '</b> · Old dues: <b>' + rs(st.old_dues) + '</b> · Received this month: <b>' + rs(rec) + '</b> · <b>Balance due: ' + rs(bal) + '</b>'
+    + '<br>Last payment: <b>' + (lastPay ? esc(lastPay.date) + ' — ' + rs(num(lastPay.amount_received) + num(lastPay.admission_fee)) + ' (Receipt ' + esc(lastPay.receipt_no || '') + ')' : 'None yet') + '</b>';
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
@@ -2929,6 +3140,30 @@ function teacherNamesAll(){
   fbData.subjects.forEach(function(x){ if(x.teacher && names.indexOf(x.teacher) < 0) names.push(x.teacher); });
   return names;
 }
+function renderLeaves(){
+  var el = $('leavesList'); if(!el) return;
+  var list = (fbData.leaves || []).slice().sort(function(a, b){ return (a.createdAt < b.createdAt ? 1 : -1); });
+  if(!list.length){ el.innerHTML = '<p class="note">No leave applications yet.</p>'; return; }
+  var html = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>';
+  list.forEach(function(l){
+    html += '<tr><td><b>' + esc(l.studentName || '') + '</b> (' + esc(l.roll || '') + ')</td><td>' + esc(l.fromDate) + '</td><td>' + esc(l.toDate) + '</td><td>' + esc(l.reason || '') + '</td><td><b>' + esc(l.status || 'pending') + '</b></td><td style="white-space:nowrap">';
+    if((l.status || 'pending') === 'pending'){
+      html += '<button class="btn small" type="button" onclick="decideLeave(\'' + l.id + '\', \'approved\')">Approve</button> <button class="btn small outline" type="button" onclick="decideLeave(\'' + l.id + '\', \'rejected\')">Reject</button>';
+    }
+    html += '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  el.innerHTML = html;
+}
+async function decideLeave(id, status){
+  if(!fb.db || fb.role !== 'admin') return;
+  try{
+    await fb.db.collection('academy_leaves').doc(id).update({status:status});
+    fbData.leaves.forEach(function(l){ if(l.id === id) l.status = status; });
+    auditLog('leave-' + status, 'Leave application ' + status + ' (id ' + id + ').', 'leave', id);
+    renderLeaves();
+  }catch(e){ alert('Could not update: ' + fbErrText(e)); }
+}
 function renderTeacherPay(){
   var s = financeSummary(FB_MONTH);
   var html = '<div class="grid three">';
@@ -2964,7 +3199,36 @@ function renderTeacherPay(){
     tpSel.innerHTML = _names.map(function(t){ return '<option>' + esc(t) + '</option>'; }).join('');
     if(_curT && _names.indexOf(_curT) >= 0) tpSel.value = _curT;
   }
+  var tpView = $('tpViewTeacher');
+  if(tpView){
+    var _curV = tpView.value;
+    tpView.innerHTML = '<option value="">All teachers</option>' + teacherNamesAll().map(function(t){ return '<option>' + esc(t) + '</option>'; }).join('');
+    if(_curV && teacherNamesAll().indexOf(_curV) >= 0) tpView.value = _curV;
+    tpView.onchange = renderTpHistory;
+  }
+  renderTpHistory();
   renderShareEditor();
+}
+function renderTpHistory(){
+  var el = $('tpHistory'); if(!el) return;
+  var sel = $('tpViewTeacher') ? $('tpViewTeacher').value : '';
+  var s = financeSummary(FB_MONTH);
+  var list = fbData.teacherPayments.filter(function(t){ return monthOf(t.date) === FB_MONTH; }).sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
+  if(sel) list = list.filter(function(t){ return t.teacher === sel; });
+  var html = '';
+  if(!list.length){
+    html = '<p class="note">No teacher payments recorded this month yet.</p>';
+  } else {
+    var tot = 0; list.forEach(function(t){ tot += num(t.amount_paid); });
+    html = '<div class="table-scroll"><table><thead><tr><th>Date</th><th>Teacher</th><th>Subject</th><th>Amount</th><th>Note</th></tr></thead><tbody>';
+    list.forEach(function(t){ html += '<tr><td>' + esc(t.date) + '</td><td>' + esc(t.teacher) + '</td><td>' + esc(t.subject || '') + '</td><td><b>' + rs(t.amount_paid) + '</b></td><td>' + esc(t.note || '') + '</td></tr>'; });
+    html += '</tbody></table></div><p>Total paid this month: <b>' + rs(tot) + '</b></p>';
+  }
+  var per = {};
+  fbData.teacherPayments.forEach(function(t){ if(monthOf(t.date) !== FB_MONTH) return; per[t.teacher] = (per[t.teacher] || 0) + num(t.amount_paid); });
+  var rows = teacherNamesAll().map(function(t){ return '<tr><td>' + esc(t) + '</td><td>' + rs(s.teacherDue[t] || 0) + '</td><td>' + rs(per[t] || 0) + '</td><td><b>' + rs((s.teacherDue[t] || 0) - (per[t] || 0)) + '</b></td></tr>'; }).join('');
+  html += '<h4 style="color:var(--blue)">This Month — Due vs Paid</h4><div class="table-scroll"><table><thead><tr><th>Teacher</th><th>Share Due</th><th>Paid (all instalments)</th><th>Balance</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  el.innerHTML = html;
 }
 var shEditorKeys = '';
 function renderShareEditor(){
@@ -4195,6 +4459,7 @@ function renderAdminFinance(){
   renderChallans();
   renderHomeworkAdmin();
   renderExams();
+  renderLeaves();
   renderActivityLog();
   renderPaymentsList();
   var mEl = $('feeMonthLabel');
@@ -4295,7 +4560,18 @@ function bindV12(){
   b = $('tResGroup'); if(b) b.addEventListener('change', renderTeacherResults);
   b = $('ahwCancelBtn'); if(b) b.addEventListener('click', cancelHomeworkAdmin);
   b = $('ahwSubject'); if(b) b.addEventListener('change', ahwTargetOptions);
-  b = $('feeSaveBtn'); if(b) b.addEventListener('click', function(){ savePayment('fee'); });
+$('feeSaveBtn').addEventListener('click', function(){ savePayment('fee'); });
+var feeSearchQ = '';
+function renderFeeSearch(){
+  var el = $('feeSearchList'); if(!el) return;
+  var q = (feeSearchQ || '').trim().toLowerCase();
+  if(!q){ el.innerHTML = ''; return; }
+  var list = data.students.filter(function(s){ return (s.name || '').toLowerCase().indexOf(q) >= 0 || (s.roll || '').toLowerCase().indexOf(q) >= 0; }).slice(0, 8);
+  if(!list.length){ el.innerHTML = '<p class="note" style="margin:0">No student matches "' + esc(feeSearchQ) + '".</p>'; return; }
+  el.innerHTML = '<div class="table-scroll"><table><tbody>' + list.map(function(s){ return '<tr><td><button class="btn small outline" type="button" onclick="pickFeeStudent(\'' + esc(s.roll) + '\')">' + esc(s.name) + ' (' + esc(s.roll) + ')</button></td><td>' + esc(s.course || s.className || '') + '</td><td>' + esc(s.group || '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+}
+function pickFeeStudent(roll){ $('feeRoll').value = roll; fillFeeForm('fee', roll); feeSearchQ = ''; var q = $('feeSearchQ'); if(q) q.value = ''; var el = $('feeSearchList'); if(el) el.innerHTML = ''; }
+(function(){ var q = $('feeSearchQ'); if(q) q.addEventListener('input', function(){ feeSearchQ = this.value; renderFeeSearch(); }); })();
   b = $('feePrintBtn'); if(b) b.addEventListener('click', printReceipt);
   b = $('rcThermalBtn'); if(b) b.addEventListener('click', printThermalReceipt);
   b = $('duesCourse'); if(b) b.addEventListener('change', function(){ var d = renderDues(this.value); $('duesList').innerHTML = d.html; });
@@ -4466,6 +4742,7 @@ function saveStuEdit(){
   s.subjects = [];
   document.querySelectorAll('#seSubChecks input:checked').forEach(function(cb){ s.subjects.push(cb.getAttribute('data-sesub')); });
   if(s.subjects.length) s.course = s.subjects[0];
+  if(isNew && !s.roll) s.roll = nextRollFor(rollPrefixFor(s));
   s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value);
   var oldRoll = isNew ? '' : (editingStuRoll || '');
   if(!isNew && oldRoll && oldRoll !== s.roll) changeStudentRoll(oldRoll, s.roll);
@@ -4497,7 +4774,6 @@ function renderSeSubChecks(checked){
   var b = $('seSaveBtn'); if(b) b.addEventListener('click', saveStuEdit);
   b = $('seCancelBtn'); if(b) b.addEventListener('click', cancelStuEdit);
   b = $('stAddBtn'); if(b) b.addEventListener('click', addStu);
-  b = $('seGenRollBtn'); if(b) b.addEventListener('click', suggestRoll);
   var ssc = $('seSubChecks'); if(ssc) ssc.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   var sc2 = $('seCourse'); if(sc2) sc2.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   b = $('stLoadNovBtn'); if(b) b.addEventListener('click', loadNovData);
