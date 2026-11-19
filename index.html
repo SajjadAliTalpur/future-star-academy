@@ -240,6 +240,34 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
+/* ---------- v1.4.3: mobile admin card system ---------- */
+#adminBackBtn{display:none}
+#adminCardMenu{display:none}
+.mob-cards{display:none}
+.mcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(11,61,145,.08)}
+.mcard-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mcard-head b{font-size:1rem;color:var(--ink)}
+.mcard-pill{margin-left:auto;background:#eaf0fb;color:var(--blue);font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px}
+.mcard-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--line);font-size:.9rem}
+.mcard-row span{color:var(--muted)}
+.mcard-row b{text-align:right}
+.mcard-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.acard{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;text-align:left;box-shadow:0 2px 10px rgba(11,61,145,.08);min-width:0}
+.acard .material-symbols-outlined{font-size:1.6rem;color:var(--blue);background:#eaf0fb;border-radius:50%;padding:8px}
+.acard b{font-size:.95rem;color:var(--ink);margin-top:6px}
+.acard small{color:var(--muted);font-size:.78rem;line-height:1.4}
+.acard.on{border-color:var(--gold)}
+@media(max-width:900px){
+#adminTabs{display:none}
+.admin-main.menu-open .atab.on{display:none}
+.admin-main.menu-open #adminCardMenu{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.admin-main:not(.menu-open) #adminBackBtn{display:inline-block;margin-bottom:6px}
+.admin-table{display:none}
+.mob-cards{display:block}
+}
+@media(max-width:380px){
+.admin-main.menu-open #adminCardMenu{grid-template-columns:1fr}
+}
 /* ---------- v1.2.10: printable timetable ---------- */
 .tt-print{font-size:.85rem;color:#1a2a44}
 .tt-print h2{font-size:1.15rem;color:#0b3d91;margin:0;text-align:center}
@@ -663,6 +691,8 @@ table{min-width:520px}
 </div>
 </div>
 <div class="admin-main">
+<button class="btn small outline" id="adminBackBtn" type="button" onclick="showAdminMenu()">‹ All Sections</button>
+<div id="adminCardMenu"></div>
 <div class="atab on" id="atab-dashboard">
 <div id="dashBody"></div>
 </div>
@@ -1302,7 +1332,7 @@ function searchResult(){
 /* ---------- Admin: login & panel ---------- */
 function lockBodyScroll(){ document.body.style.overflow = 'hidden'; }
 function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
-function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel' || id === 'parentPanel') lockBodyScroll(); }
+function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel' || id === 'parentPanel') lockBodyScroll(); if(id === 'adminPanel' && window.innerWidth <= 900) showAdminMenu(); }
 function closeModal(id){ $(id).classList.remove('open'); unlockBodyScroll(); }
 function tryLogin(){ tryLoginFb(); }
 /* ---------- Unified login: one button, role from the ID ---------- */
@@ -1392,6 +1422,7 @@ $('adminTabs').addEventListener('click', function(e){
   var panels = document.querySelectorAll('.atab');
   for(var j = 0; j < panels.length; j++) panels[j].classList.toggle('on', panels[j].id === 'atab-' + b.getAttribute('data-atab'));
 });
+window.addEventListener('resize', function(){ if(window.innerWidth > 900){ var m = document.querySelector('.admin-main'); if(m) m.classList.remove('menu-open'); } });
 document.querySelectorAll('.modal').forEach(function(m){
   if(m.id === 'adminPanel') return; // full-page admin: no backdrop close
   m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('open'); });
@@ -1997,12 +2028,21 @@ function renderAdminStudents(){
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    html += '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    var cards = '';
     data.students.forEach(function(s, i){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
       html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
+      cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
+        + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
+        + '<div class="mcard-row"><span>Course</span><b>' + esc(s.course) + '</b></div>'
+        + '<div class="mcard-row"><span>Group</span><b>' + esc(s.group) + '</b></div>'
+        + '<div class="mcard-row"><span>Monthly Fee</span><b>' + rs(s.monthly_fee) + '</b></div>'
+        + '<div class="mcard-row"><span>Balance Due</span><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></div>'
+        + '<div class="mcard-actions"><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></div></div>';
     });
     html += '</tbody></table></div>';
+    html += '<div class="mob-cards">' + cards + '</div>';
   }
   $('stList').innerHTML = html;
 }
@@ -3210,15 +3250,24 @@ function renderLeaves(){
   var el = $('leavesList'); if(!el) return;
   var list = (fbData.leaves || []).slice().sort(function(a, b){ return (a.createdAt < b.createdAt ? 1 : -1); });
   if(!list.length){ el.innerHTML = '<p class="note">No leave applications yet.</p>'; return; }
-  var html = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>';
+  var html = '<div class="table-scroll admin-table"><table><thead><tr><th>Student</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>';
+  var cards = '';
   list.forEach(function(l){
     html += '<tr><td><b>' + esc(l.studentName || '') + '</b> (' + esc(l.roll || '') + ')</td><td>' + esc(l.fromDate) + '</td><td>' + esc(l.toDate) + '</td><td>' + esc(l.reason || '') + '</td><td><b>' + esc(l.status || 'pending') + '</b></td><td style="white-space:nowrap">';
     if((l.status || 'pending') === 'pending'){
       html += '<button class="btn small" type="button" onclick="decideLeave(\'' + l.id + '\', \'approved\')">Approve</button> <button class="btn small outline" type="button" onclick="decideLeave(\'' + l.id + '\', \'rejected\')">Reject</button>';
     }
+    cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(l.studentName || '') + '</b><span class="mcard-pill">' + esc(l.status || 'pending') + '</span></div>'
+      + '<div class="mcard-row"><span>Roll</span><b>' + esc(l.roll || '') + '</b></div>'
+      + '<div class="mcard-row"><span>From</span><b>' + esc(l.fromDate) + '</b></div>'
+      + '<div class="mcard-row"><span>To</span><b>' + esc(l.toDate) + '</b></div>'
+      + '<div class="mcard-row"><span>Reason</span><b>' + esc(l.reason || '') + '</b></div>'
+      + ((l.status || 'pending') === 'pending' ? '<div class="mcard-actions"><button class="btn small" type="button" onclick="decideLeave(\'' + l.id + '\', \'approved\')">Approve</button> <button class="btn small outline" type="button" onclick="decideLeave(\'' + l.id + '\', \'rejected\')">Reject</button></div>' : '')
+      + '</div>';
     html += '</td></tr>';
   });
   html += '</tbody></table></div>';
+  html += '<div class="mob-cards">' + cards + '</div>';
   el.innerHTML = html;
 }
 async function decideLeave(id, status){
@@ -3243,12 +3292,18 @@ function renderTopics(){
   var sumEl = $('dtSummary');
   if(sumEl) sumEl.innerHTML = '<b>' + list.length + '</b> student' + (list.length === 1 ? '' : 's') + ' submitted a topic on <b>' + esc(date) + '</b>.';
   if(!list.length){ el.innerHTML = '<p class="note">No topics submitted on this date yet.</p>'; return; }
-  var html = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Class / Group</th><th>Topic</th></tr></thead><tbody>';
+  var html = '<div class="table-scroll admin-table"><table><thead><tr><th>Student</th><th>Roll</th><th>Class / Group</th><th>Topic</th></tr></thead><tbody>';
+  var cards = '';
   list.forEach(function(t){
     var st = null; data.students.forEach(function(s){ if(s.roll === t.roll) st = s; });
+    cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(t.studentName || (st ? st.name : '')) + '</b></div>'
+      + '<div class="mcard-row"><span>Roll</span><b>' + esc(t.roll || '') + '</b></div>'
+      + '<div class="mcard-row"><span>Class / Group</span><b>' + esc(st ? (st.className + (st.group ? ' · ' + st.group : '')) : '') + '</b></div>'
+      + '<div class="mcard-row"><span>Topic</span><b>' + esc(t.topic || '') + '</b></div></div>';
     html += '<tr><td><b>' + esc(t.studentName || (st ? st.name : '')) + '</b></td><td>' + esc(t.roll || '') + '</td><td>' + esc(st ? (st.className + (st.group ? ' \u00b7 ' + st.group : '')) : '') + '</td><td>' + esc(t.topic || '') + '</td></tr>';
   });
   html += '</tbody></table></div>';
+  html += '<div class="mob-cards">' + cards + '</div>';
   el.innerHTML = html;
 }
 function renderTeacherPay(){
@@ -3454,6 +3509,49 @@ function renderExpenses(){
 function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
+}
+/* ---------- v1.4.3: mobile admin card menu ---------- */
+var ADMIN_SECTIONS = [
+  ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
+  ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
+  ['attendance', 'fact_check', 'Attendance', 'Mark who came today'],
+  ['leaves', 'event_busy', 'Leaves', 'Approve parent leave requests'],
+  ['topics', 'edit_note', 'Daily Topics', 'See what students studied today'],
+  ['students', 'school', 'Students', 'Add, search and manage students'],
+  ['groups', 'group', 'Groups', 'Organise students into groups'],
+  ['homework', 'assignment', 'Homework', 'Set homework and tests'],
+  ['results', 'grade', 'Results', 'Search results by roll number'],
+  ['exams', 'quiz', 'Exams', 'Exams, marks and positions'],
+  ['announcements', 'campaign', 'Announcements', 'Post news for everyone'],
+  ['notes', 'description', 'Notes', 'Share study notes and PDFs'],
+  ['videos', 'play_circle', 'Videos', 'Manage YouTube lesson videos'],
+  ['fees', 'payments', 'Finance', 'Collect fees and see balances'],
+  ['challans', 'request_quote', 'Challans', 'Monthly fee challans'],
+  ['receipts', 'receipt_long', 'Receipts', 'Reprint fee receipts'],
+  ['teacherpay', 'account_balance_wallet', 'Teacher Pay', 'Pay teachers and check shares'],
+  ['expenses', 'receipt', 'Expenses', 'Record academy expenses'],
+  ['reports', 'bar_chart', 'Reports', 'Arrears and monthly reports'],
+  ['teachers', 'person', 'Teachers', 'Manage teachers and logins'],
+  ['activity', 'history', 'Activity Log', 'See everything that changed'],
+  ['settings', 'settings', 'Settings', 'Academy settings and roles']
+];
+function renderAdminCardMenu(){
+  var el = $('adminCardMenu'); if(!el) return;
+  var cur = document.querySelector('#adminTabs button.on');
+  var curTab = cur ? cur.getAttribute('data-atab') : 'dashboard';
+  var html = '';
+  ADMIN_SECTIONS.forEach(function(s){
+    html += '<button type="button" class="acard' + (s[0] === curTab ? ' on' : '') + '" onclick="openAdminSection(\'' + s[0] + '\')"><span class="material-symbols-outlined">' + s[1] + '</span><b>' + s[2] + '</b><small>' + s[3] + '</small></button>';
+  });
+  el.innerHTML = html;
+}
+function showAdminMenu(){
+  renderAdminCardMenu();
+  var m = document.querySelector('.admin-main'); if(m) m.classList.add('menu-open');
+}
+function openAdminSection(name){
+  goAtab(name);
+  var m = document.querySelector('.admin-main'); if(m) m.classList.remove('menu-open');
 }
 function studentGender(s){
   if(s.gender === 'Boy' || s.gender === 'Girl') return s.gender;
@@ -4516,7 +4614,8 @@ function renderChallans(){
   var h = '';
   if(!list.length) h = '<p class="note">No challans for ' + esc(month) + ' yet. Create them above — or one student at a time.</p>';
   else {
-    h = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Fee</th><th>Arrears</th><th>Total</th><th>Paid</th><th>Discount</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody>';
+    h = '<div class="table-scroll admin-table"><table><thead><tr><th>Student</th><th>Roll</th><th>Fee</th><th>Arrears</th><th>Total</th><th>Paid</th><th>Discount</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody>';
+    var cards = '';
     list.forEach(function(c){
       var bal = challanBalance(c);
       var arrTxt = (c.arrears || []).map(function(a){ return (a.month || 'Previous') + ': ' + rs(a.amount); }).join(' · ') || '—';
@@ -4525,8 +4624,21 @@ function renderChallans(){
         + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
         + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
         + '</td></tr>';
+      cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + '<span class="mcard-pill">' + esc(c.status) + '</span></div>'
+        + '<div class="mcard-row"><span>Roll</span><b>' + esc(c.roll) + '</b></div>'
+        + '<div class="mcard-row"><span>Month</span><b>' + esc(month) + '</b></div>'
+        + '<div class="mcard-row"><span>Fee</span><b>' + rs(c.monthlyFee) + '</b></div>'
+        + '<div class="mcard-row"><span>Total</span><b>' + rs(c.total) + '</b></div>'
+        + '<div class="mcard-row"><span>Paid</span><b>' + rs(c.paid) + '</b></div>'
+        + '<div class="mcard-row"><span>Balance</span><b>' + rs(bal) + '</b></div>'
+        + '<div class="mcard-actions">'
+        + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
+        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
+        + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
+        + '</div></div>';
     });
     h += '</tbody></table></div>';
+    h += '<div class="mob-cards">' + cards + '</div>';
   }
   el.innerHTML = h;
 }
