@@ -17,6 +17,8 @@
 *{box-sizing:border-box}
 :root{--blue:#0b3d91;--blue2:#1256c4;--gold:#f5b301;--ink:#1a2a44;--muted:#5a6b85;--bg:#f4f7fb;--card:#fff;--line:#dbe4f0;--green:#1d8a4e;--red:#c0392b;--nav-h:72px}
 html{scroll-behavior:smooth}
+html,body{overflow-x:hidden}
+html,body{overflow-x:clip}
 body{margin:0;padding-top:var(--nav-h);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
 img{max-width:100%}
 a{color:var(--blue2)}
@@ -119,11 +121,11 @@ html{scroll-behavior:smooth}
 :root{--nav-h:60px}
 .nav-toggle{display:inline-flex}
 .head-actions{margin-left:auto}
-nav.main{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:6px 14px 12px;border-bottom:3px solid var(--gold);box-shadow:0 18px 30px rgba(11,61,145,.18)}
+nav.main{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:6px 14px 12px;border-bottom:3px solid var(--gold);box-shadow:0 18px 30px rgba(11,61,145,.18);max-height:calc(100vh - var(--nav-h) - 8px);overflow-y:auto}
 header.site.nav-open nav.main{display:flex}
 nav.main a{padding:12px 10px;border-bottom:1px solid var(--line);border-radius:8px}
 nav.main a:last-child{border-bottom:0}
-.brand{font-size:.95rem}
+.brand{font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brand small{display:none}
 }
 @media(max-width:560px){
@@ -199,8 +201,8 @@ body *{visibility:hidden}
 #adminPanel .admin-box{flex-direction:column;height:auto;min-height:100vh;overflow:visible}
 .admin-sidebar{width:100%;height:auto;position:static;padding:12px 12px 8px;overflow:visible;align-self:auto}
 .admin-main{height:auto;overflow:visible}
-#adminTabs{flex-direction:row;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
-#adminTabs button{width:auto;white-space:nowrap}
+#adminTabs{flex-direction:row;overflow-x:visible;flex-wrap:wrap;padding-bottom:4px}
+#adminTabs button{width:auto;white-space:nowrap;padding:6px 10px;font-size:.85rem}
 .admin-main{padding:16px 14px}
 }
 /* ---------- v1.2.8: sidebar brand, groups, subject cards ---------- */
@@ -625,6 +627,7 @@ table{min-width:520px}
 <button type="button" data-atab="timetable"><span class="material-symbols-outlined">schedule</span>Timetable</button>
 <button type="button" data-atab="attendance"><span class="material-symbols-outlined">fact_check</span>Attendance</button>
 <button type="button" data-atab="leaves"><span class="material-symbols-outlined">event_busy</span>Leaves</button>
+<button type="button" data-atab="topics"><span class="material-symbols-outlined">edit_note</span>Daily Topics</button>
 <button type="button" data-atab="students"><span class="material-symbols-outlined">school</span>Students</button>
 <button type="button" data-atab="groups"><span class="material-symbols-outlined">group</span>Groups</button>
 <button type="button" data-atab="homework"><span class="material-symbols-outlined">assignment</span>Homework</button>
@@ -810,6 +813,14 @@ table{min-width:520px}
 <h4 style="margin:6px 0">Leave Applications</h4>
 <p class="note" style="margin-top:0">Parents apply for leave from the Parent Dashboard. Approve or reject each application here.</p>
 <div id="leavesList" style="margin-top:10px"></div>
+</div>
+
+<div class="atab" id="atab-topics">
+<h4 style="margin:6px 0">Daily Topics</h4>
+<p class="note" style="margin-top:0">Students write the topic they studied in class each day. Pick a date to see who submitted.</p>
+<div style="margin:6px 0 10px"><label for="dtDate">Date:</label> <input id="dtDate" type="date" style="width:auto"></div>
+<p id="dtSummary" style="margin:6px 0"></p>
+<div id="topicsList" style="margin-top:10px"></div>
 </div>
 
 <div class="atab" id="atab-videos">
@@ -2106,9 +2117,18 @@ function renderStudentDash(){
   var slots = studentSlots(st);
   var myResults = [];
   data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
+  var todayTopicDate = todayStr();
+  var todayTopic = (fbData.topics || []).filter(function(t){ return t.roll === st.roll && t.date === todayTopicDate; })[0];
   var html = '<p style="font-size:1.1rem">Welcome, <b>' + esc(st.name) + '</b></p>'
     + '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + '</p>'
     + '<p><b>Class Time:</b> ' + esc(st.time_slot || 'Not set yet') + '</p>'
+    + '<h4>Today\'s Topic — ' + esc(todayTopicDate) + '</h4>'
+    + '<div class="card" style="margin-bottom:12px"><p class="note" style="margin-top:0">Write what you studied in class today. The admin can see it — it shows you use the portal every day.</p>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="dtTopic" type="text" style="flex:1;min-width:200px" placeholder="e.g. Past Simple Tense" value="' + esc(todayTopic ? todayTopic.topic : '') + '">'
+    + '<button class="btn small" id="dtSaveBtn" type="button">Save Topic</button></div>'
+    + '<div class="msg" id="dtMsg"></div>'
+    + (todayTopic ? '<p style="margin:8px 0 0">Saved today: <b>' + esc(todayTopic.topic) + '</b></p>' : '')
+    + '</div>'
     + '<div class="stu-dash"><h4>My Timetable</h4>';
   if(!slots.length) html += '<p class="note">No classes assigned yet. The admin will add your classes to the timetable.</p>';
   else {
@@ -2123,6 +2143,29 @@ function renderStudentDash(){
   html += studentHomeworkHTML(st);
   html += '<h4>Study Material</h4><p><a class="btn small" href="#notes" onclick="closeModal(\'studentPanel\')">Notes &amp; PDFs</a> <a class="btn small outline" href="#videos" onclick="closeModal(\'studentPanel\')">Videos</a></p></div>';
   $('studentDash').innerHTML = html;
+  var dtb = $('dtSaveBtn'); if(dtb) dtb.addEventListener('click', saveDailyTopic);
+}
+async function saveDailyTopic(){
+  if(!currentStudent) return;
+  var st = currentStudent;
+  var topic = $('dtTopic') ? $('dtTopic').value.trim() : '';
+  if(!topic){ setMsg('dtMsg', 'Please write today\'s topic first.', 'err'); return; }
+  if(!fb.ready || !fb.db){ setMsg('dtMsg', 'Live data is unavailable. Saving today\'s topic needs the live database — please try again when the connection returns.', 'err'); return; }
+  try{
+    var today = todayStr();
+    var existing = (fbData.topics || []).filter(function(t){ return t.roll === st.roll && t.date === today; })[0];
+    if(existing){
+      await fb.db.collection('academy_daily_topics').doc(existing.id).update({topic:topic});
+      existing.topic = topic;
+    } else {
+      var rec = {roll:st.roll, studentName:st.name, date:today, topic:topic, createdAt:today};
+      var ref = await fb.db.collection('academy_daily_topics').add(rec);
+      rec.id = ref.id;
+      fbData.topics.push(rec);
+    }
+    setMsg('dtMsg', 'Today\'s topic saved — thank you!', 'ok');
+    renderStudentDash();
+  }catch(e){ setMsg('dtMsg', 'Could not save: ' + fbErrText(e), 'err'); }
 }
 function updateStudentBtn(){
   updateAuthButtons();
@@ -2253,7 +2296,7 @@ function shareBase(p, basis){
   if(basis === 'received+adm') r += num(p.admission_fee);
   return r;
 }
-var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
+var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], topics:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
 try{ var _sr = JSON.parse(localStorage.getItem(SHARE_LS_KEY) || 'null'); if(_sr) fbData.shareRules = normShareRules(_sr); }catch(e){}
 var currentTeacher = null;
 var FB_MONTH = (function(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); })();
@@ -2640,6 +2683,9 @@ function renderParentDash(){
     html += '<div style="margin:6px 0 10px"><label for="prChildSel">Child:</label><select id="prChildSel" style="width:auto">' + kids.map(function(k){ return '<option value="' + esc(k.roll) + '"' + (k.roll === parentViewRoll ? ' selected' : '') + '>' + esc(k.name) + ' (' + esc(k.roll) + ')</option>'; }).join('') + '</select></div>';
   }
   html += '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + ' &nbsp;·&nbsp; <b>Class Time:</b> ' + esc(st.time_slot || 'Not set yet') + '</p>';
+  var pToday = todayStr();
+  var pTopic = (fbData.topics || []).filter(function(t){ return t.roll === st.roll && t.date === pToday; })[0];
+  if(pTopic) html += '<p><b>Today\'s Topic:</b> ' + esc(pTopic.topic) + '</p>';
   var myResults = [];
   data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
   html += '<h4>Results</h4>';
@@ -2692,6 +2738,7 @@ function fbLoadParentOwn(rolls){
     fb.db.collection('academy_attendance').where('student_roll_no', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.attendance.some(function(x){ return x.id === o.id; })) fbData.attendance.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
     fb.db.collection('academy_challans').where('roll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.challans.some(function(x){ return x.id === o.id; })) fbData.challans.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
     fb.db.collection('academy_leaves').where('roll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.leaves.some(function(x){ return x.id === o.id; })) fbData.leaves.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
+    fb.db.collection('academy_daily_topics').where('roll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.topics.some(function(x){ return x.id === o.id; })) fbData.topics.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
     fb.db.collection('academy_homework').where('targetRoll', '==', roll).get().then(function(snap){ snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.homework.some(function(x){ return x.id === o.id; })) fbData.homework.push(o); }); if(currentParent) renderParentDash(); }).catch(function(){});
   });
 }
@@ -2775,6 +2822,8 @@ async function fbLoadFinance(){
     fbData.marks = []; mkSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.marks.push(o); });
     var lvSnap = await fb.db.collection('academy_leaves').get();
     fbData.leaves = []; lvSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.leaves.push(o); });
+    var tpSnap = await fb.db.collection('academy_daily_topics').get();
+    fbData.topics = []; tpSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.topics.push(o); });
     if(fb.role === 'admin'){
       var auSnap = await fb.db.collection('academy_audit').orderBy('at', 'desc').limit(200).get();
       fbData.audit = []; auSnap.forEach(function(d){ var o = d.data(); o.id = d.id; fbData.audit.push(o); });
@@ -3180,6 +3229,27 @@ async function decideLeave(id, status){
     auditLog('leave-' + status, 'Leave application ' + status + ' (id ' + id + ').', 'leave', id);
     renderLeaves();
   }catch(e){ alert('Could not update: ' + fbErrText(e)); }
+}
+var topicsViewDate = '';
+function renderTopics(){
+  var el = $('topicsList'); if(!el) return;
+  var dEl = $('dtDate');
+  if(dEl && !dEl._topicsBound){ dEl._topicsBound = true; dEl.addEventListener('change', function(){ topicsViewDate = this.value; renderTopics(); }); }
+  if(!topicsViewDate) topicsViewDate = todayStr();
+  if(dEl && !dEl.value) dEl.value = topicsViewDate;
+  var date = dEl ? dEl.value : topicsViewDate;
+  topicsViewDate = date;
+  var list = (fbData.topics || []).filter(function(t){ return t.date === date; });
+  var sumEl = $('dtSummary');
+  if(sumEl) sumEl.innerHTML = '<b>' + list.length + '</b> student' + (list.length === 1 ? '' : 's') + ' submitted a topic on <b>' + esc(date) + '</b>.';
+  if(!list.length){ el.innerHTML = '<p class="note">No topics submitted on this date yet.</p>'; return; }
+  var html = '<div class="table-scroll"><table><thead><tr><th>Student</th><th>Roll</th><th>Class / Group</th><th>Topic</th></tr></thead><tbody>';
+  list.forEach(function(t){
+    var st = null; data.students.forEach(function(s){ if(s.roll === t.roll) st = s; });
+    html += '<tr><td><b>' + esc(t.studentName || (st ? st.name : '')) + '</b></td><td>' + esc(t.roll || '') + '</td><td>' + esc(st ? (st.className + (st.group ? ' \u00b7 ' + st.group : '')) : '') + '</td><td>' + esc(t.topic || '') + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  el.innerHTML = html;
 }
 function renderTeacherPay(){
   var s = financeSummary(FB_MONTH);
@@ -4492,6 +4562,7 @@ function renderAdminFinance(){
   renderHomeworkAdmin();
   renderExams();
   renderLeaves();
+  renderTopics();
   renderActivityLog();
   renderPaymentsList();
   var mEl = $('feeMonthLabel');
@@ -4554,6 +4625,10 @@ function fbLoadStudentOwn(roll){
   });
   fb.db.collection('academy_challans').where('roll', '==', roll).get().then(function(snap){
     snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.challans.some(function(x){ return x.id === o.id; })) fbData.challans.push(o); });
+    if(currentStudent) renderStudentDash();
+  }).catch(function(){});
+  fb.db.collection('academy_daily_topics').where('roll', '==', roll).get().then(function(snap){
+    snap.forEach(function(d){ var o = d.data(); o.id = d.id; if(!fbData.topics.some(function(x){ return x.id === o.id; })) fbData.topics.push(o); });
     if(currentStudent) renderStudentDash();
   }).catch(function(){});
 }
@@ -4823,6 +4898,7 @@ function renderSeSubChecks(checked){
   });
   nav.addEventListener('click',function(e){ if(e.target&&e.target.tagName==='A') closeNav(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeNav(); });
+  window.addEventListener('resize',function(){ if(window.innerWidth > 900) closeNav(); });
   ['btnLogin'].forEach(function(id){ var b=$(id); if(b) b.addEventListener('click',closeNav); });
 })();
 bindV12();
