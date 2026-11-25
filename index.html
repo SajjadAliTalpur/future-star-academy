@@ -52,6 +52,7 @@ h2.sec{font-size:1.6rem;color:var(--blue);margin:0 0 6px}
 .grid{display:grid;gap:16px}
 .grid.two{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.grid.four{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .owner h3{margin:0 0 4px;color:var(--blue)}
 .owner .role{color:var(--muted);font-weight:600;font-size:.92rem}
 .table-scroll{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}
@@ -240,7 +241,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.3: mobile admin card system ---------- */
+/* ---------- v1.4.4: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -784,7 +785,7 @@ table{min-width:520px}
 </div>
 
 <div class="atab" id="atab-students">
-<p class="note" style="margin-top:0">Passwords are not shown here. A student's default password is their phone number. CSV columns: name,phone,roll_number,class,group</p>
+<p class="note" style="margin-top:0">Passwords are not shown here. A student's default password is their phone number. CSV columns: name,phone,roll_number,class,group — the full template also has a Shift column (Morning/Evening, default Evening)</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
 <button class="btn small" id="stCsvTemplateBtn" type="button">Download CSV Template</button>
 <label class="btn small outline" for="stCsvFile" style="cursor:pointer">Import Students CSV</label>
@@ -815,6 +816,7 @@ table{min-width:520px}
 <div><label for="seFee">Monthly Fee (Rs)</label><input id="seFee" type="number" min="0"></div>
 <div><label for="seAdmFee">Admission Fee (Rs)</label><input id="seAdmFee" type="number" min="0"></div>
 <div><label for="seOld">Old Dues (Rs)</label><input id="seOld" type="number" min="0"></div>
+<div><label for="seShift">Shift</label><select id="seShift"><option value="Evening">Evening</option><option value="Morning">Morning</option></select></div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="seSaveBtn" type="button">Save Student</button>
@@ -1905,7 +1907,7 @@ $('btnChangePw').addEventListener('click', async function(){
 });
 
 /* ---------- CSV: students import/export ---------- */
-var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot','gender','subjects'];
+var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot','gender','subjects','shift'];
 function parseCSVLine(line){
   var out = [], cur = '', inQ = false;
   for(var i = 0; i < line.length; i++){
@@ -1936,14 +1938,15 @@ function parseCSV(text){
   for(var j = headerIdx + 1; j < lines.length; j++){
     if(lines[j].trim() === '') continue;
     var cols = parseCSVLine(lines[j]);
-    if(cols.length !== 5 && cols.length !== 15 && cols.length !== 16 && cols.length !== 17){ rows.push({skip:true, line:j + 1, reason:'Expected 5, 15, 16 or 17 columns, found ' + cols.length}); continue; }
+    if(cols.length !== 5 && cols.length !== 15 && cols.length !== 16 && cols.length !== 17 && cols.length !== 18){ rows.push({skip:true, line:j + 1, reason:'Expected 5, 15, 16, 17 or 18 columns, found ' + cols.length}); continue; }
     var r = {name:cols[0], phone:cols[1], roll:cols[2], className:cols[3], group:cols[4], line:j + 1};
-    if(cols.length === 15 || cols.length === 16){
+    if(cols.length === 15 || cols.length === 16 || cols.length === 17 || cols.length === 18){
       r.father_name = cols[5]; r.caste = cols[6]; r.father_phone = cols[7]; r.address = cols[8];
       r.course = cols[9]; r.monthly_fee = num(cols[10]); r.admission_fee = num(cols[11]);
       r.old_dues = num(cols[12]); r.admission_date = cols[13]; r.time_slot = cols[14];
-      if(cols.length === 16) r.gender = cols[15];
-      if(cols.length === 17){ r.gender = cols[15]; r.subjects = cols[16] ? cols[16].split(';').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : []; }
+      if(cols.length === 16 || cols.length === 17 || cols.length === 18) r.gender = cols[15];
+      if(cols.length === 17 || cols.length === 18){ r.subjects = cols[16] ? cols[16].split(';').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : []; }
+      if(cols.length === 18) r.shift = (String(cols[17]).trim() === 'Morning') ? 'Morning' : 'Evening';
     }
     rows.push(r);
   }
@@ -1963,6 +1966,7 @@ function importStudentsCSV(text){
       course:r.course || r.className || '', monthly_fee:num(r.monthly_fee), admission_fee:num(r.admission_fee),
       old_dues:num(r.old_dues), admission_date:r.admission_date || '', time_slot:r.time_slot || '', subjects:r.subjects || []};
     if(r.gender) rec.gender = r.gender;
+    if(r.shift) rec.shift = r.shift;
     if(found){
       Object.keys(rec).forEach(function(k){ found[k] = rec[k]; });
       updated++;
@@ -1982,11 +1986,11 @@ function csvEscape(v){
 function studentsToCSV(){
   var lines = [CSV_HEADER.join(',')];
   data.students.forEach(function(s){
-    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot, s.gender || '', (s.subjects || []).join(';')].map(csvEscape).join(','));
+    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot, s.gender || '', (s.subjects || []).join(';'), s.shift || 'Evening'].map(csvEscape).join(','));
   });
   return lines.join('\n');
 }
-var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot,gender,subjects\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM,,English;Maths\n';
+var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot,gender,subjects,shift\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM,,English;Maths,Evening\n';
 function downloadFile(name, content, type){
   var blob = new Blob([content], {type: type || 'text/plain'});
   var a = document.createElement('a');
@@ -2002,10 +2006,11 @@ async function loadNovData(){
   var added = 0, updated = 0, sampleRolls = [];
   data.students.forEach(function(s){ if(s.sample) sampleRolls.push(String(s.roll || '').toUpperCase()); });
   NOV_DATA.forEach(function(r){
+    if(r.shift !== 'Morning' && r.shift !== 'Evening') delete r.shift;
     var idx = -1;
     data.students.forEach(function(s, j){ if(String(s.roll || '').toUpperCase() === String(r.roll || '').toUpperCase()) idx = j; });
     if(idx >= 0){ data.students[idx] = Object.assign({}, data.students[idx], r); updated++; }
-    else { data.students.push(r); added++; }
+    else { if(!r.shift) r.shift = 'Evening'; data.students.push(r); added++; }
   });
   data.students = data.students.filter(function(s){ return !s.sample; });
   saveData();
@@ -2028,15 +2033,16 @@ function renderAdminStudents(){
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>Phone</th><th>Roll Number</th><th>Class</th><th>Group</th><th>Shift</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     var cards = '';
     data.students.forEach(function(s, i){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
-      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
       cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
         + '<div class="mcard-row"><span>Course</span><b>' + esc(s.course) + '</b></div>'
         + '<div class="mcard-row"><span>Group</span><b>' + esc(s.group) + '</b></div>'
+        + '<div class="mcard-row"><span>Shift</span><b>' + esc(s.shift || 'Evening') + '</b></div>'
         + '<div class="mcard-row"><span>Monthly Fee</span><b>' + rs(s.monthly_fee) + '</b></div>'
         + '<div class="mcard-row"><span>Balance Due</span><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></div>'
         + '<div class="mcard-actions"><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></div></div>';
@@ -2336,8 +2342,10 @@ function shareBase(p, basis){
   if(basis === 'received+adm') r += num(p.admission_fee);
   return r;
 }
-var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], topics:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}};
+var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], topics:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}, morningPartnerPct:0};
 try{ var _sr = JSON.parse(localStorage.getItem(SHARE_LS_KEY) || 'null'); if(_sr) fbData.shareRules = normShareRules(_sr); }catch(e){}
+var MORNING_PCT_LS_KEY = 'fscc_morning_pct_v1';
+try{ var _mp = JSON.parse(localStorage.getItem(MORNING_PCT_LS_KEY) || 'null'); if(_mp != null) fbData.morningPartnerPct = Math.max(0, Math.min(100, num(_mp))); }catch(e){}
 var currentTeacher = null;
 var FB_MONTH = (function(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); })();
 var TEACHERS_SEED = [{name:'Sir Sumair', phone:'03330394038', subjects:['English'], status:'pending'}];
@@ -2429,7 +2437,7 @@ function studentFromDoc(doc){
   var d = doc.data();
   return {name:d.name || '', phone:'', roll:doc.id, className:d.course || '', course:d.course || '', group:d.group || '',
     father_name:d.father_name || '', caste:d.caste || '', admission_date:d.admission_date || '', time_slot:d.time_slot || '',
-    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
+    monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), shift:d.shift || 'Evening', gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
     subjects:Array.isArray(d.subjects) ? d.subjects.slice() : [], slotIds:Array.isArray(d.slotIds) ? d.slotIds.slice() : []};
 }
 function applySiteDoc(d){
@@ -2446,6 +2454,7 @@ function applySiteDoc(d){
   if(d.receiptInstructions != null) data.receiptInstructions = d.receiptInstructions;
   var ri = $('rcInstructions'); if(ri) ri.value = data.receiptInstructions || '';
   if(d.shareRules){ fbData.shareRules = normShareRules(d.shareRules); try{ localStorage.setItem(SHARE_LS_KEY, JSON.stringify(fbData.shareRules)); }catch(e){} }
+  if(d.morningPartnerPct != null){ fbData.morningPartnerPct = Math.max(0, Math.min(100, num(d.morningPartnerPct))); try{ localStorage.setItem(MORNING_PCT_LS_KEY, JSON.stringify(fbData.morningPartnerPct)); }catch(e){} }
   if(d.subjects){ var _sj = normSubjects(d.subjects); if(_sj.length){ fbData.subjects = _sj; try{ localStorage.setItem(SUBJ_LS_KEY, JSON.stringify(_sj)); }catch(e){} } }
   if(d.migrated_v11) fbData.migrated = true;
   fb.siteReady = true;
@@ -2484,7 +2493,7 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
 function saveReceiptNote(){
@@ -2671,7 +2680,7 @@ async function saveStudentToFb(s){
     await fb.db.collection('academy_students').doc(String(s.roll).toUpperCase()).set({
       name:s.name || '', course:s.course || s.className || '', course_type:'Monthly',
       admission_date:s.admission_date || '', time_slot:s.time_slot || '',
-      monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues),
+      monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues), shift:s.shift || 'Evening',
       group:s.group || '', gender:s.gender || '', status:s.status || 'Active', phoneHash:ph, passwordHash:pwHash, fatherPhoneHash:fph, parentPasswordHash:pph, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
     await fb.db.collection('academy_contacts').doc(String(s.roll).toUpperCase()).set({
       student_phone:s.phone || '', father_phone:s.father_phone || '', address:s.address || ''}, {merge:true});
@@ -2935,23 +2944,42 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-function financeSummary(month){
+/* ---------- v1.4.4: shifts + morning partner share ---------- */
+function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
+function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
+function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
+function isOwnerTeacher(name){ return isSajjadTeacher(name) || isAhmedTeacher(name); }
+function shiftSplitFor(month){
   var incomeByCourse = {}, income = 0, teacherDue = {}, teacherTotal = 0;
   var commonIncome = 0, teacherSubjectIncome = 0, academyShareTotal = 0;
+  var morningTotal = 0, eveningTotal = 0, programmingTotal = 0;
+  var mPct = num(fbData.morningPartnerPct); if(mPct < 0) mPct = 0; if(mPct > 100) mPct = 100;
   fbData.payments.forEach(function(p){
     if(p.month !== month || p.reversed) return;
     var amt = num(p.amount_received) + num(p.admission_fee);
     income += amt;
     incomeByCourse[p.course || 'Other'] = (incomeByCourse[p.course || 'Other'] || 0) + amt;
-    var sh = teacherShareFor(p);
-    if(sh){ teacherDue[sh.teacher] = (teacherDue[sh.teacher] || 0) + sh.share; teacherTotal += sh.share; teacherSubjectIncome += amt; academyShareTotal += sh.academy; }
-    else { commonIncome += amt; }
+    var st = studentByRoll(p.student_roll_no);
+    if(studentShift(st) === 'Morning'){ morningTotal += amt; }
+    else {
+      eveningTotal += amt;
+      var subj = subjectByName(p.course || '');
+      if(subj && isSajjadTeacher(subj.teacher)){ programmingTotal += amt; }
+      else if(subj && isOwnerTeacher(subj.teacher)){ commonIncome += amt; }
+      else {
+        var sh = teacherShareFor(p);
+        if(sh){ teacherDue[sh.teacher] = (teacherDue[sh.teacher] || 0) + sh.share; teacherTotal += sh.share; teacherSubjectIncome += amt; academyShareTotal += sh.academy; }
+        else { commonIncome += amt; }
+      }
+    }
   });
+  var morningSajjad = Math.round(morningTotal * mPct) / 100;
+  var morningAhmed = morningTotal - morningSajjad;
   var expense = 0, expenseByCat = {};
   fbData.expenses.forEach(function(x){ expense += num(x.amount); expenseByCat[x.category || 'Other'] = (expenseByCat[x.category || 'Other'] || 0) + num(x.amount); });
   var remaining = income - expense;
   var commonRemaining = commonIncome - expense;
-  var distributable = commonRemaining;
+  var distributable = commonRemaining + academyShareTotal;
   var ownerShare = distributable / 2;
   var taken = {'Ahmed Raza':0, 'Sir Sajjad Ali':0};
   fbData.drawings.forEach(function(d){ if(taken[d.owner] != null) taken[d.owner] += num(d.amount); });
@@ -2966,8 +2994,9 @@ function financeSummary(month){
     var bal = (teacherDue[t] || 0) - (teacherPaid[t] || 0);
     if(bal !== 0) toGive.push({who:t, amount:bal});
   });
+  var ownerEntitlement = {'Ahmed Raza': ownerShare + morningAhmed, 'Sir Sajjad Ali': ownerShare + morningSajjad + programmingTotal};
   ['Ahmed Raza', 'Sir Sajjad Ali'].forEach(function(o){
-    var bal = ownerShare - (taken[o] || 0);
+    var bal = ownerEntitlement[o] - (taken[o] || 0);
     if(bal !== 0) toGive.push({who:o + ' (owner share)', amount:bal});
   });
   var toGiveTotal = 0; toGive.forEach(function(g){ toGiveTotal += g.amount; });
@@ -2975,10 +3004,12 @@ function financeSummary(month){
   return {month:month, income:income, incomeByCourse:incomeByCourse, expense:expense, expenseByCat:expenseByCat,
     remaining:remaining, teacherTotal:teacherTotal, teacherDue:teacherDue, teacherPaid:teacherPaid,
     commonIncome:commonIncome, teacherSubjectIncome:teacherSubjectIncome, academyShareTotal:academyShareTotal,
+    morningTotal:morningTotal, morningSajjad:morningSajjad, morningAhmed:morningAhmed, morningPct:mPct, eveningTotal:eveningTotal, programmingTotal:programmingTotal, sajjadTotal:ownerEntitlement['Sir Sajjad Ali'], ahmedTotal:ownerEntitlement['Ahmed Raza'],
     commonRemaining:commonRemaining, teacherPaidTotal:teacherPaidTotal,
     distributable:distributable, ownerShare:ownerShare, taken:taken, inHand:income - expense - teacherPaidTotal - (taken['Ahmed Raza'] + taken['Sir Sajjad Ali']),
     toGive:toGive, toGiveTotal:toGiveTotal};
 }
+function financeSummary(month){ return shiftSplitFor(month); }
 async function nextReceiptNo(month){
   var ref = fb.db.collection('academy_settings').doc('receipts');
   var y = month.slice(0, 4), m = month.slice(5, 7);
@@ -3328,11 +3359,11 @@ function renderTeacherPay(){
   if(rulesEl){
     var _parts = [];
     fbData.subjects.forEach(function(sj){
-      if(!sj.teacher) return;
+      if(!sj.teacher || isOwnerTeacher(sj.teacher)) return;
       var _r = fbData.shareRules[sj.name] || {};
       _parts.push(sj.name + ': ' + sj.teacher + ' ' + num(_r.teacherPct) + '% of (' + (_r.basis === 'received+adm' ? 'Received + Admission Fee' : 'Received') + ')');
     });
-    rulesEl.innerHTML = '<p>Share rules — ' + (_parts.join(' · ') || 'none yet') + '. Subjects with no teacher go to the common pool (50/50 owners).</p>';
+    rulesEl.innerHTML = '<p>Share rules — ' + (_parts.join(' · ') || 'none yet') + '. Subjects with no teacher go to the common pool (50/50 owners). Owner-taught courses do not use teacher shares: Programming goes 100% to Sir Sajjad Ali; Office / Graphics go to the common pool.</p>';
   }
   var tpSel = $('tpTeacher');
   if(tpSel){
@@ -3381,10 +3412,11 @@ function renderShareEditor(){
   var typed = {};
   el.querySelectorAll('[data-shpct]').forEach(function(p){ typed[p.getAttribute('data-shpct')] = p.value; });
   el.querySelectorAll('[data-shbasis]').forEach(function(b){ typed['b' + b.getAttribute('data-shbasis')] = b.value; });
-  var names = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel; });
+  var allNames = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel; });
+  var names = allNames.filter(function(n){ return !isOwnerTeacher(subjectByName(n).teacher); });
   var h = '<div style="margin-bottom:10px"><label for="shTeacherSel">Teacher:</label> <select id="shTeacherSel" style="width:auto">' + teachers.map(function(t){ return '<option' + (t === sel ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select></div>';
   if(!names.length){
-    h += '<p class="note">No subjects assigned to this teacher yet.</p>';
+    h += '<p class="note">' + (allNames.length ? 'This teacher\'s subjects are owner courses — they do not use teacher shares (Programming goes 100% to Sir Sajjad Ali; Office / Graphics go to the common pool).' : 'No subjects assigned to this teacher yet.') + '</p>';
   } else {
     h += '<div class="form-grid">';
     names.forEach(function(n){
@@ -3421,7 +3453,7 @@ function syncShareAcad(){
 async function saveShareRules(){
   var el = $('shEditor');
   var sel = $('shTeacherSel') ? $('shTeacherSel').value : '';
-  var names = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel; });
+  var names = subjectNames().filter(function(n){ var s = subjectByName(n); return s && s.teacher === sel && !isOwnerTeacher(s.teacher); });
   if(!names.length){ setMsg('shMsg', 'Please choose a teacher first.', 'err'); return; }
   var rules = {};
   Object.keys(fbData.shareRules).forEach(function(k){ rules[k] = fbData.shareRules[k]; });
@@ -3510,7 +3542,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.3: mobile admin card menu ---------- */
+/* ---------- v1.4.4: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -3660,20 +3692,58 @@ function renderReports(){
     if(!incRows) incRows = '<tr><td colspan="2" class="note">No income yet</td></tr>';
     var expRows = Object.keys(s.expenseByCat).map(function(c){ return '<tr><td>' + esc(c) + '</td><td>' + rs(s.expenseByCat[c]) + '</td></tr>'; }).join('');
     if(!expRows) expRows = '<tr><td colspan="2" class="note">No expenses yet</td></tr>';
-    var sumRows = [['Common pool income (DIT / CIT / Office / Special)', s.commonIncome], ['Expenses (common pool only)', s.expense], ['Common pool balance', s.commonRemaining], ['Teacher-subject income', s.teacherSubjectIncome], ['Teacher shares set aside', s.teacherTotal], ['Academy share (teacher subjects)', s.academyShareTotal], ['Distributable to owners', s.distributable], ['Each owner (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand], ['Still to give', s.toGiveTotal]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
+    var tot = s.income;
+    var segs = [
+      {label:'Sir Sajjad Ali', amount:s.sajjadTotal, color:'#0b3d91'},
+      {label:'Ahmed Raza', amount:s.ahmedTotal, color:'#c9a227'},
+      {label:'Teachers', amount:s.teacherTotal, color:'#0e7c7b'},
+      {label:'Expenses', amount:s.expense, color:'#b03a2e'}
+    ];
+    var barHtml = '';
+    if(tot > 0){
+      barHtml = '<div style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0">' + segs.map(function(g){ var w = tot ? (g.amount / tot * 100) : 0; return w > 0 ? '<div style="width:' + w.toFixed(1) + '%;background:' + g.color + '" title="' + esc(g.label) + ' ' + rs(g.amount) + '"></div>' : ''; }).join('') + '</div>'
+        + '<div>' + segs.map(function(g){ return '<span style="display:inline-block;margin:0 12px 4px 0"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:' + g.color + ';margin-right:5px"></span>' + esc(g.label) + ': <b>' + rs(g.amount) + '</b></span>'; }).join('') + '</div>';
+    } else {
+      barHtml = '<p class="note">No income yet this month — nothing to split.</p>';
+    }
+    var whoRows = [['Sir Sajjad Ali', s.sajjadTotal], ['Ahmed Raza', s.ahmedTotal]];
+    fbData.subjects.forEach(function(sj){
+      if(sj.teacher && !isOwnerTeacher(sj.teacher) && whoRows.every(function(r){ return r[0] !== sj.teacher; })) whoRows.push([sj.teacher + ' (' + sj.name + ')', s.teacherDue[sj.teacher] || 0]);
+    });
+    whoRows.push(['Expenses', s.expense]);
+    var whoHtml = whoRows.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
     el.innerHTML = '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Monthly Finance Summary — ' + FB_MONTH + '</h3>'
+      + '<div class="grid four">'
+      + '<div class="card"><h4 style="margin:0 0 4px">Total received</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.income) + '</b></p></div>'
+      + '<div class="card"><h4 style="margin:0 0 4px">Morning total</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.morningTotal) + '</b></p></div>'
+      + '<div class="card"><h4 style="margin:0 0 4px">Evening total</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.eveningTotal) + '</b></p></div>'
+      + '<div class="card"><h4 style="margin:0 0 4px">Expenses</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.expense) + '</b></p></div>'
+      + '</div>'
+      + '<h4>Where the money goes</h4>' + barHtml
+      + '<div class="grid two">'
+      + '<div class="card"><h4 style="margin-top:0;color:var(--blue)">Morning shift</h4>'
+      + '<p>Total: <b>' + rs(s.morningTotal) + '</b><br>Sajjad\'s share (' + s.morningPct + '%): <b>' + rs(s.morningSajjad) + '</b><br>Ahmed\'s share: <b>' + rs(s.morningAhmed) + '</b></p>'
+      + '<div><label for="morningPct">Sajjad\'s share of morning income (%)</label><input id="morningPct" type="number" min="0" max="100" step="0.5" value="' + s.morningPct + '" style="width:90px"> <button class="btn small" type="button" onclick="saveMorningPct()">Save</button></div>'
+      + '<p class="note">0% means all morning income goes to Ahmed. Set a % when Sajjad should also get a share of morning income (for example, to cover shared costs like electricity).</p></div>'
+      + '<div class="card"><h4 style="margin-top:0;color:var(--blue)">Evening shift</h4>'
+      + '<p>DIT / CIT / Office pool: <b>' + rs(s.commonIncome) + '</b><br>Expenses (from this pool only): <b>' + rs(s.expense) + '</b><br>Common pool balance: <b>' + rs(s.commonRemaining) + '</b></p>'
+      + '<p>Teacher subjects: <b>' + rs(s.teacherSubjectIncome) + '</b> (teachers: <b>' + rs(s.teacherTotal) + '</b> · academy share: <b>' + rs(s.academyShareTotal) + '</b>)<br>Programming (owner course): <b>' + rs(s.programmingTotal) + '</b> → Sir Sajjad Ali</p>'
+      + '<p>Distributable to owners: <b>' + rs(s.distributable) + '</b> · Each owner (50/50): <b>' + rs(s.ownerShare) + '</b></p></div>'
+      + '</div>'
+      + '<h4>Who gets what — ' + FB_MONTH + '</h4><div class="table-scroll"><table><thead><tr><th>Person</th><th>Amount</th></tr></thead><tbody>' + whoHtml
+      + '<tr><td><b>Total</b></td><td><b>' + rs(s.income) + '</b></td></tr></tbody></table></div>'
+      + '<p class="note">Amounts are for this month, before owner drawings and teacher payments. What is already taken or paid is shown in Teacher Pay and Owner Drawings.</p>'
       + '<h4>Income by Course</h4><div class="table-scroll"><table><thead><tr><th>Course</th><th>Amount</th></tr></thead><tbody>' + incRows
       + '<tr><td><b>Total income</b></td><td><b>' + rs(s.income) + '</b></td></tr></tbody></table></div>'
       + '<h4>Expenses by Category</h4><div class="table-scroll"><table><thead><tr><th>Category</th><th>Amount</th></tr></thead><tbody>' + expRows
-      + '<tr><td><b>Total expenses</b></td><td><b>' + rs(s.expense) + '</b></td></tr></tbody></table></div>'
-      + '<h4>Summary</h4><div class="table-scroll"><table><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>' + sumRows + '</tbody></table></div></div>';
+      + '<tr><td><b>Total expenses</b></td><td><b>' + rs(s.expense) + '</b></td></tr></tbody></table></div></div>';
   }
   var dues = renderDues('All');
   var dEl = $('rpDues'); if(dEl) dEl.innerHTML = dues.html;
   var aEl = $('rpArrears');
   if(aEl){
     var arr = arrearsSheetHTML();
-    aEl.innerHTML = arr.html + '<p style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small outline" type="button" onclick="exportReport(\'arrears\')">Arrears CSV</button> <button class="btn small outline" type="button" onclick="printArrears()">Print Arrears Sheet</button></p>';
+    aEl.innerHTML = arr.html + '<p style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small outline" type="button" onclick="exportReport(\'arrears\')">Arrears CSV</button> <button class="btn small outline" type="button" onclick="printArrears()">Print Arrears Sheet</button><button class="btn small outline" type="button" onclick="downloadArrearsSheet()">Download Arrears Sheet</button><label class="btn small outline" for="arrCsvFile" style="cursor:pointer">Upload Arrears Sheet</label><input id="arrCsvFile" type="file" accept=".csv,text/csv" style="display:none" onchange="uploadArrearsSheet(event)"></p>';
   }
   var coll = fbData.payments.slice().sort(function(a, b){ return (a.date < b.date ? 1 : -1); });
   var cEl = $('rpCollection');
@@ -3694,6 +3764,71 @@ function renderReports(){
     html += '</tbody></table></div>';
     tEl.innerHTML = html;
   }
+}
+/* ---------- v1.4.4: morning partner share ---------- */
+async function saveMorningPct(){
+  var el = $('morningPct'); if(!el) return;
+  var v = Number(el.value);
+  if(isNaN(v) || v < 0 || v > 100){ setMsg('rpMsg', 'Please enter a number from 0 to 100 for Sajjad\'s share of morning income.', 'err'); return; }
+  fbData.morningPartnerPct = v;
+  try{ localStorage.setItem(MORNING_PCT_LS_KEY, JSON.stringify(v)); }catch(e){}
+  auditLog('settings', 'Morning partner share set to ' + v + '% (Sajjad\'s share of morning income).', 'settings', '');
+  renderReports();
+  if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady){
+    setMsg('rpMsg', 'Morning share saved in this browser (' + v + '%). Sign in as admin with the live database to share it with everyone.', 'ok');
+    return;
+  }
+  try{
+    await fb.db.collection('academy_settings').doc('site').set({morningPartnerPct:v}, {merge:true});
+    setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
+  }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
+}
+/* ---------- v1.4.4: bulk arrears sheet (download / upload) ---------- */
+function downloadArrearsSheet(){
+  var rows = [];
+  data.students.forEach(function(st){
+    if((st.status || 'Active') === 'Left') return;
+    rows.push([st.roll, st.name, num(st.old_dues)]);
+  });
+  rows.sort(function(a, b){ return String(a[0]).localeCompare(String(b[0])); });
+  downloadFile('fscc-arrears-sheet-' + FB_MONTH + '.csv', reportRowsToCSV(['Roll', 'Name', 'Old Dues (Rs)'], rows), 'text/csv');
+  setMsg('rpMsg', 'Arrears sheet downloaded — ' + rows.length + ' students. Edit the Old Dues column, then upload it back here.', 'ok');
+}
+function uploadArrearsSheet(e){
+  var f = e.target.files && e.target.files[0]; if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    var res = applyArrearsSheet(String(reader.result || ''));
+    var msg = 'Arrears updated for ' + res.updated + ' students.';
+    if(res.notFound.length) msg += ' Rolls not found — skipped: ' + res.notFound.join(', ') + '.';
+    if(res.skipped.length) msg += ' Rows skipped: ' + res.skipped.join(', ') + '.';
+    setMsg('rpMsg', msg, 'ok');
+    renderAdminStudents(); renderReports();
+    e.target.value = '';
+  };
+  reader.readAsText(f);
+}
+function applyArrearsSheet(text){
+  var lines = String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  var updated = 0, notFound = [], skipped = [], seen = {};
+  lines.forEach(function(line, idx){
+    if(!line.trim()) return;
+    var cols = parseCSVLine(line);
+    if(cols[0] && cols[0].toLowerCase() === 'roll' && cols[1] && cols[1].toLowerCase() === 'name') return;
+    var roll = String(cols[0] || '').trim().toUpperCase();
+    if(!roll){ skipped.push('line ' + (idx + 1) + ' (no roll)'); return; }
+    var v = parseFloat(cols[2]);
+    if(isNaN(v) || v < 0){ skipped.push(roll + ' (bad amount)'); return; }
+    if(seen[roll]) return;
+    seen[roll] = true;
+    var found = null;
+    data.students.forEach(function(s){ if(String(s.roll || '').trim().toUpperCase() === roll) found = s; });
+    if(!found){ notFound.push(roll); return; }
+    found.old_dues = num(v);
+    updated++;
+    saveStudentToFb(found);
+  });
+  return {updated:updated, notFound:notFound, skipped:skipped};
 }
 function arrearsSheetHTML(){
   var rows = [], total = 0;
@@ -4870,6 +5005,7 @@ function editStu(i){
   $('seFatherPhone').value = s.father_phone || ''; $('seAddress').value = s.address || '';
   $('seAdmDate').value = s.admission_date || ''; $('seTime').value = s.time_slot || '';
   $('seGender').value = s.gender || '';
+  $('seShift').value = (s.shift === 'Morning') ? 'Morning' : 'Evening';
   $('seStatus').value = s.status || 'Active';
   editingStuRoll = s.roll || '';
   renderSeSubChecks(s.subjects && s.subjects.length ? s.subjects : (s.course ? [s.course] : []));
@@ -4889,6 +5025,7 @@ function addStu(){
   $('seFatherPhone').value = ''; $('seAddress').value = '';
   $('seAdmDate').value = ''; $('seTime').value = '';
   $('seGender').value = '';
+  $('seShift').value = 'Evening';
   $('seStatus').value = 'Active';
   editingStuRoll = '';
   renderSeSubChecks([]);
@@ -4957,6 +5094,7 @@ function saveStuEdit(){
   s.father_phone = $('seFatherPhone').value.trim(); s.address = $('seAddress').value.trim();
   s.admission_date = $('seAdmDate').value; s.time_slot = $('seTime').value.trim();
   s.gender = $('seGender').value;
+  s.shift = ($('seShift').value === 'Morning') ? 'Morning' : 'Evening';
   s.status = $('seStatus').value || 'Active';
   s.subjects = [];
   document.querySelectorAll('#seSubChecks input:checked').forEach(function(cb){ s.subjects.push(cb.getAttribute('data-sesub')); });
