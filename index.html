@@ -241,7 +241,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.4: mobile admin card system ---------- */
+/* ---------- v1.4.5: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -821,6 +821,27 @@ table{min-width:520px}
 <div style="margin-top:10px;display:flex;gap:10px">
 <button class="btn small" id="seSaveBtn" type="button">Save Student</button>
 <button class="btn small outline" id="seCancelBtn" type="button">Cancel</button>
+</div>
+<div id="stLifecycle" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:10px">
+<h4 style="margin:6px 0">Student Lifecycle</h4>
+<p class="note" style="margin-top:0">Transfer to another course, drop one subject, or mark the student as having left the academy. The roll number never changes, and past payments and challans are kept.</p>
+<div class="msg" id="lcMsg"></div>
+<h5 style="margin:10px 0 4px">Transfer Course</h5>
+<div class="form-grid">
+<div><label for="trCourse">New Course</label><select id="trCourse"></select></div>
+<div><label for="trGroup">New Group</label><input id="trGroup" type="text"></div>
+<div><label for="trFee">New Monthly Fee (Rs)</label><input id="trFee" type="number" min="0"></div>
+</div>
+<div style="margin-top:8px"><button class="btn small" id="trBtn" type="button">Transfer Course</button></div>
+<h5 style="margin:14px 0 4px">Drop a Subject</h5>
+<div class="form-grid">
+<div><label for="drSubject">Subject to drop</label><select id="drSubject"></select></div>
+<div><label for="drFee">Monthly Fee after drop (Rs)</label><input id="drFee" type="number" min="0"></div>
+</div>
+<div style="margin-top:8px"><button class="btn small" id="drBtn" type="button">Drop Subject</button></div>
+<h5 style="margin:14px 0 4px">Leave Academy</h5>
+<p class="note" style="margin:4px 0">Marks the student as Left. No new challans will be created, and the student disappears from active lists — but all past payments, challans and attendance stay in the records. Re-admit later by setting Status back to Active in the form above.</p>
+<div><button class="btn small" id="lvBtn" type="button">Mark as Left</button></div>
 </div>
 </div>
 <div id="stList" style="margin-top:10px"></div>
@@ -2037,7 +2058,7 @@ function renderAdminStudents(){
     var cards = '';
     data.students.forEach(function(s, i){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
-      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(s.monthly_fee) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="openLifecycle(' + i + ')">Transfer</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></td></tr>';
       cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
         + '<div class="mcard-row"><span>Course</span><b>' + esc(s.course) + '</b></div>'
@@ -2045,7 +2066,7 @@ function renderAdminStudents(){
         + '<div class="mcard-row"><span>Shift</span><b>' + esc(s.shift || 'Evening') + '</b></div>'
         + '<div class="mcard-row"><span>Monthly Fee</span><b>' + rs(s.monthly_fee) + '</b></div>'
         + '<div class="mcard-row"><span>Balance Due</span><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></div>'
-        + '<div class="mcard-actions"><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></div></div>';
+        + '<div class="mcard-actions"><button class="btn small outline" type="button" onclick="editStu(' + i + ')">Edit</button> <button class="btn small outline" type="button" onclick="openLifecycle(' + i + ')">Transfer</button> <button class="btn small outline" type="button" onclick="resetStuPw(' + i + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="delStu(' + i + ')">Delete</button></div></div>';
     });
     html += '</tbody></table></div>';
     html += '<div class="mob-cards">' + cards + '</div>';
@@ -2944,7 +2965,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-/* ---------- v1.4.4: shifts + morning partner share ---------- */
+/* ---------- v1.4.5: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -3542,7 +3563,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.4: mobile admin card menu ---------- */
+/* ---------- v1.4.5: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -3765,7 +3786,7 @@ function renderReports(){
     tEl.innerHTML = html;
   }
 }
-/* ---------- v1.4.4: morning partner share ---------- */
+/* ---------- v1.4.5: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -3783,7 +3804,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.4: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.5: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -5010,6 +5031,7 @@ function editStu(i){
   editingStuRoll = s.roll || '';
   renderSeSubChecks(s.subjects && s.subjects.length ? s.subjects : (s.course ? [s.course] : []));
   $('seFee').value = num(s.monthly_fee); $('seAdmFee').value = num(s.admission_fee); $('seOld').value = num(s.old_dues);
+  renderLifecyclePanel();
   $('stEditForm').style.display = '';
   $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
@@ -5031,6 +5053,7 @@ function addStu(){
   renderSeSubChecks([]);
   $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = '';
   $('seFormTitle').textContent = 'Add New Student';
+  renderLifecyclePanel();
   $('stEditForm').style.display = '';
   $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
   setTimeout(function(){ $('seName').focus(); }, 50);
@@ -5127,10 +5150,142 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
+/* ---------- v1.4.5: student lifecycle — transfer course, drop subject, leave academy ---------- */
+function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
+function effectiveSubjects(st){
+  var subs = (st.subjects || []).slice();
+  if(!subs.length && st.course) subs = [st.course];
+  return subs;
+}
+function renderLifecyclePanel(){
+  var s = lifecycleStudent(); var el = $('stLifecycle'); if(!el) return;
+  if(!s){ el.style.display = 'none'; return; }
+  el.style.display = '';
+  var tc = $('trCourse');
+  if(tc) tc.innerHTML = subjectNames().map(function(n){ return '<option' + (n === s.course ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
+  $('trGroup').value = s.group || '';
+  $('trFee').value = num(s.monthly_fee);
+  var ds = $('drSubject');
+  if(ds) ds.innerHTML = effectiveSubjects(s).map(function(n){ return '<option>' + esc(n) + '</option>'; }).join('');
+  $('drFee').value = num(s.monthly_fee);
+}
+function applyTransfer(st, newCourse, newGroup, newFee){
+  var oldCourse = st.course || '';
+  var subs = (st.subjects || []).slice();
+  subs = subs.filter(function(x){ return x !== newCourse; });
+  subs.unshift(newCourse);
+  st.subjects = subs;
+  st.course = newCourse;
+  st.group = newGroup;
+  st.monthly_fee = num(newFee);
+  return {oldCourse:oldCourse, newCourse:newCourse};
+}
+function applyDropSubject(st, subj){
+  var subs = effectiveSubjects(st);
+  if(subs.length <= 1) return {ok:false, reason:'last'};
+  if(subs.indexOf(subj) < 0) return {ok:false, reason:'not-enrolled'};
+  subs = subs.filter(function(x){ return x !== subj; });
+  st.subjects = subs;
+  var mainChanged = false;
+  if(st.course === subj){ st.course = subs[0]; mainChanged = true; }
+  return {ok:true, mainChanged:mainChanged, newMain:st.course};
+}
+function applyLeave(st){
+  st.status = 'Left';
+  return {ok:true};
+}
+function voidableChallansFor(st, month){
+  return fbData.challans.filter(function(c){ return c.roll === st.roll && c.month === month && c.status === 'unpaid' && num(c.paid) === 0; });
+}
+async function voidChallansForLifecycle(st, month, reason){
+  var list = voidableChallansFor(st, month);
+  for(var i = 0; i < list.length; i++){
+    var c = list[i];
+    c.status = 'void'; c.voidReason = reason;
+    if(fbNeedLive() && c.id){
+      try{ await fb.db.collection('academy_challans').doc(c.id).update({status:'void', voidedBy:fb.userName || 'admin', voidedAt:firebase.firestore.FieldValue.serverTimestamp(), voidReason:reason}); }catch(e){}
+    }
+  }
+  return list.length;
+}
+function removeFromSlotsBySubject(name, subject){
+  var n = 0;
+  data.slots.forEach(function(x){ if(x.subject === subject && (x.students || []).indexOf(name) >= 0){ x.students = x.students.filter(function(m){ return m !== name; }); n++; } });
+  return n;
+}
+function removeFromAllSlotsAndGroups(name){
+  data.groups.forEach(function(g){ g.members = (g.members || []).filter(function(m){ return m !== name; }); });
+  data.slots.forEach(function(x){ x.students = (x.students || []).filter(function(m){ return m !== name; }); });
+}
+function moveStudentToGroup(name, groupName){
+  var target = null;
+  data.groups.forEach(function(g){ if(g.name === groupName) target = g; });
+  data.groups.forEach(function(g){ g.members = (g.members || []).filter(function(m){ return m !== name; }); });
+  if(target){ if((target.members || []).indexOf(name) < 0){ target.members = target.members || []; target.members.push(name); } return true; }
+  return false;
+}
+function openLifecycle(i){
+  editStu(i);
+  setTimeout(function(){ var el = $('stLifecycle'); if(el) el.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 80);
+}
+async function transferStudent(){
+  var s = lifecycleStudent(); if(!s) return;
+  var newCourse = $('trCourse').value;
+  var newGroup = $('trGroup').value.trim();
+  var newFee = num($('trFee').value);
+  if(!newCourse){ setMsg('lcMsg', 'Please choose a new course.', 'err'); return; }
+  if(newCourse === (s.course || '')){ setMsg('lcMsg', s.name + ' is already on ' + newCourse + '.', 'err'); return; }
+  if(!confirm('Transfer ' + s.name + ' (' + s.roll + ') from ' + (s.course || '—') + ' to ' + newCourse + '? The roll number and old dues stay the same.')) return;
+  var oldCourse = s.course || '', oldGroup = s.group || '';
+  applyTransfer(s, newCourse, newGroup, newFee);
+  removeFromSlotsBySubject(s.name, oldCourse);
+  var grpNote = '';
+  if(newGroup && newGroup !== oldGroup){
+    if(moveStudentToGroup(s.name, newGroup)) grpNote = ' Moved to group ' + newGroup + '.';
+    else grpNote = ' Group ' + newGroup + ' does not exist yet — add the student to it from the Groups section.';
+  }
+  var voided = await voidChallansForLifecycle(s, FB_MONTH, 'Auto-voided on transfer to ' + newCourse);
+  saveStudentToFb(s); saveData();
+  auditLog('student-transfer', 'Student ' + s.name + ' (' + s.roll + ') transferred ' + oldCourse + ' → ' + newCourse + '.' + (voided ? ' ' + voided + ' unpaid challan(s) for ' + FB_MONTH + ' voided.' : ''), 'student', s.roll);
+  editStu(editingStu); renderAdminStudents(); renderChallans(); renderAdminFinance();
+  setMsg('lcMsg', 'Transferred ' + s.name + ' to ' + newCourse + '.' + (voided ? ' Unpaid challan for ' + FB_MONTH + ' voided — create a new challan for the new course.' : ' No unpaid challan for ' + FB_MONTH + ' to void.') + grpNote, 'ok');
+}
+async function dropStudentSubject(){
+  var s = lifecycleStudent(); if(!s) return;
+  var subj = $('drSubject').value;
+  if(!subj){ setMsg('lcMsg', 'Please choose a subject to drop.', 'err'); return; }
+  var subs = effectiveSubjects(s);
+  if(subs.length <= 1){ setMsg('lcMsg', s.name + ' has only one subject. Use Leave Academy instead of dropping the last subject.', 'err'); return; }
+  if(subs.indexOf(subj) < 0){ setMsg('lcMsg', s.name + ' is not enrolled in ' + subj + '.', 'err'); return; }
+  if(!confirm('Drop ' + subj + ' for ' + s.name + ' (' + s.roll + ')?')) return;
+  var res = applyDropSubject(s, subj);
+  if(!res.ok){ setMsg('lcMsg', 'Could not drop ' + subj + '.', 'err'); return; }
+  s.monthly_fee = num($('drFee').value);
+  removeFromSlotsBySubject(s.name, subj);
+  var voided = await voidChallansForLifecycle(s, FB_MONTH, 'Auto-voided after dropping ' + subj);
+  saveStudentToFb(s); saveData();
+  auditLog('student-drop-subject', 'Student ' + s.name + ' (' + s.roll + ') dropped subject ' + subj + (res.mainChanged ? '. Main course is now ' + res.newMain + '.' : '.') + (voided ? ' ' + voided + ' unpaid challan(s) for ' + FB_MONTH + ' voided.' : ''), 'student', s.roll);
+  editStu(editingStu); renderAdminStudents(); renderChallans(); renderAdminFinance();
+  setMsg('lcMsg', 'Dropped ' + subj + ' for ' + s.name + '.' + (res.mainChanged ? ' Main course is now ' + res.newMain + '.' : '') + (voided ? ' Unpaid challan for ' + FB_MONTH + ' voided — create a new challan if needed.' : ''), 'ok');
+}
+async function leaveStudent(){
+  var s = lifecycleStudent(); if(!s) return;
+  if((s.status || 'Active') === 'Left'){ setMsg('lcMsg', s.name + ' is already marked as Left.', 'err'); return; }
+  if(!confirm('Mark ' + s.name + ' (' + s.roll + ') as having left the academy? No new challans will be created for this student. Past payments, challans and attendance stay in the records.')) return;
+  applyLeave(s);
+  removeFromAllSlotsAndGroups(s.name);
+  saveStudentToFb(s); saveData();
+  auditLog('student-leave', 'Student ' + s.name + ' (' + s.roll + ') left the academy.', 'student', s.roll);
+  editStu(editingStu); renderAdminStudents(); renderChallans(); renderAdminFinance();
+  setMsg('lcMsg', s.name + ' is marked as Left. They will no longer appear in active lists or get new challans.', 'ok');
+}
 (function(){
   var b = $('seSaveBtn'); if(b) b.addEventListener('click', saveStuEdit);
   b = $('seCancelBtn'); if(b) b.addEventListener('click', cancelStuEdit);
   b = $('stAddBtn'); if(b) b.addEventListener('click', addStu);
+  b = $('trBtn'); if(b) b.addEventListener('click', transferStudent);
+  b = $('drBtn'); if(b) b.addEventListener('click', dropStudentSubject);
+  b = $('lvBtn'); if(b) b.addEventListener('click', leaveStudent);
   var ssc = $('seSubChecks'); if(ssc) ssc.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   var sc2 = $('seCourse'); if(sc2) sc2.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   b = $('stLoadNovBtn'); if(b) b.addEventListener('click', loadNovData);
