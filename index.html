@@ -246,7 +246,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.8: mobile admin card system ---------- */
+/* ---------- v1.4.9: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -831,6 +831,7 @@ table{min-width:520px}
 <div><label for="seFatherPhone">Father's Phone</label><input id="seFatherPhone" type="text"></div>
 <div><label for="seAddress">Address</label><input id="seAddress" type="text"></div>
 <div><label for="seAdmDate">Admission Date</label><input id="seAdmDate" type="date"></div>
+<div><label for="seDob">Date of Birth</label><input id="seDob" type="date"></div>
 <div><label for="seTime">Time Slot</label><select id="seTime"></select></div>
 <div><label for="seFee">Monthly Fee (Rs)</label><input id="seFee" type="number" min="0"></div>
 <div><label for="seScholarship">Scholarship fee per subject (Rs) — blank = no scholarship</label><input id="seScholarship" type="number" min="0" placeholder="e.g. 1500"></div>
@@ -1113,7 +1114,7 @@ table{min-width:520px}
 <div class="msg" id="chCuMsg"></div>
 <div id="chCuPayPrompt" style="display:none;margin-top:10px"></div>
 <h4 style="margin:22px 0 6px">Family Challans &mdash; Siblings, One Bill</h4>
-<p class="note" style="margin-top:0">Brothers and sisters are grouped by the father&apos;s phone number. One challan is made in the eldest child&apos;s name with one line per sibling, and one receipt covers the whole family. Payments settle the oldest dues first.</p>
+<p class="note" style="margin-top:0">Brothers and sisters are grouped by the father&apos;s phone number. One challan is made in the eldest child&apos;s name (eldest by date of birth; the admission date is used only when the date of birth is missing) with one line per sibling, and one receipt covers the whole family. Payments settle the oldest dues first.</p>
 <div id="famList" style="margin-top:10px"></div>
 <div class="form-grid">
 <div><label for="famRolls">Link siblings by hand (roll numbers, comma separated)</label><input id="famRolls" type="text" placeholder="e.g. DIT16, DIT17"></div>
@@ -2100,7 +2101,7 @@ $('btnChangePw').addEventListener('click', async function(){
 });
 
 /* ---------- CSV: students import/export ---------- */
-var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot','gender','subjects','shift'];
+var CSV_HEADER = ['name','phone','roll_number','class','group','father_name','caste','father_phone','address','course','monthly_fee','admission_fee','old_dues','admission_date','time_slot','gender','subjects','shift','dob'];
 function parseCSVLine(line){
   var out = [], cur = '', inQ = false;
   for(var i = 0; i < line.length; i++){
@@ -2124,22 +2125,24 @@ function parseCSV(text){
   if(headerIdx < 0){ return {rows:[], error:'The file is empty. Expected header: ' + CSV_HEADER.join(',')}; }
   var header = parseCSVLine(lines[headerIdx]).map(function(h){ return h.toLowerCase(); });
   var isOld = header.join(',') === 'name,phone,roll_number,class,group';
-  if(!isOld && header.join(',') !== CSV_HEADER.join(',')){
+  var isFull = header.join(',') === CSV_HEADER.join(',') || header.join(',') === CSV_HEADER.slice(0, 18).join(',');
+  if(!isOld && !isFull){
     return {rows:[], error:'Missing or incorrect header. Expected header: ' + CSV_HEADER.join(',')};
   }
   var rows = [];
   for(var j = headerIdx + 1; j < lines.length; j++){
     if(lines[j].trim() === '') continue;
     var cols = parseCSVLine(lines[j]);
-    if(cols.length !== 5 && cols.length !== 15 && cols.length !== 16 && cols.length !== 17 && cols.length !== 18){ rows.push({skip:true, line:j + 1, reason:'Expected 5, 15, 16, 17 or 18 columns, found ' + cols.length}); continue; }
+    if(cols.length !== 5 && cols.length !== 15 && cols.length !== 16 && cols.length !== 17 && cols.length !== 18 && cols.length !== 19){ rows.push({skip:true, line:j + 1, reason:'Expected 5, 15, 16, 17, 18 or 19 columns, found ' + cols.length}); continue; }
     var r = {name:cols[0], phone:cols[1], roll:cols[2], className:cols[3], group:cols[4], line:j + 1};
-    if(cols.length === 15 || cols.length === 16 || cols.length === 17 || cols.length === 18){
+    if(cols.length === 15 || cols.length === 16 || cols.length === 17 || cols.length === 18 || cols.length === 19){
       r.father_name = cols[5]; r.caste = cols[6]; r.father_phone = cols[7]; r.address = cols[8];
       r.course = cols[9]; r.monthly_fee = num(cols[10]); r.admission_fee = num(cols[11]);
       r.old_dues = num(cols[12]); r.admission_date = cols[13]; r.time_slot = cols[14];
       if(cols.length === 16 || cols.length === 17 || cols.length === 18) r.gender = cols[15];
-      if(cols.length === 17 || cols.length === 18){ r.subjects = cols[16] ? cols[16].split(';').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : []; }
-      if(cols.length === 18) r.shift = (String(cols[17]).trim() === 'Morning') ? 'Morning' : 'Evening';
+      if(cols.length === 17 || cols.length === 18 || cols.length === 19){ r.subjects = cols[16] ? cols[16].split(';').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : []; }
+      if(cols.length === 18 || cols.length === 19) r.shift = (String(cols[17]).trim() === 'Morning') ? 'Morning' : 'Evening';
+      if(cols.length === 19) r.dob = cols[18];
     }
     rows.push(r);
   }
@@ -2161,12 +2164,13 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.8: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.9: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
+    if(r.dob && !parseAdmDate(r.dob)){ warnings.push('Line ' + r.line + ': date of birth "' + r.dob + '" is not a valid date — left blank.'); }
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
       father_name:r.father_name || '', caste:r.caste || '', father_phone:(r.father_phone && validPhone(fatherPhone)) ? fatherPhone : (r.father_phone || ''), address:r.address || '',
       course:r.course || r.className || '', monthly_fee:num(r.monthly_fee), admission_fee:num(r.admission_fee),
-      old_dues:num(r.old_dues), admission_date:parseAdmDate(r.admission_date), time_slot:r.time_slot || '', subjects:r.subjects || []};
+      old_dues:num(r.old_dues), admission_date:parseAdmDate(r.admission_date), time_slot:r.time_slot || '', subjects:r.subjects || [], dob:parseAdmDate(r.dob || '')};
     if(r.gender) rec.gender = r.gender;
     if(r.shift) rec.shift = r.shift;
     if(found){
@@ -2189,11 +2193,11 @@ function csvEscape(v){
 function studentsToCSV(){
   var lines = [CSV_HEADER.join(',')];
   data.students.forEach(function(s){
-    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot, s.gender || '', (s.subjects || []).join(';'), s.shift || 'Evening'].map(csvEscape).join(','));
+    lines.push([s.name, s.phone, s.roll, s.className, s.group, s.father_name, s.caste, s.father_phone, s.address, s.course, s.monthly_fee, s.admission_fee, s.old_dues, s.admission_date, s.time_slot, s.gender || '', (s.subjects || []).join(';'), s.shift || 'Evening', s.dob || ''].map(csvEscape).join(','));
   });
   return lines.join('\n');
 }
-var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot,gender,subjects,shift\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM,,English;Maths,Evening\n';
+var CSV_TEMPLATE = 'name,phone,roll_number,class,group,father_name,caste,father_phone,address,course,monthly_fee,admission_fee,old_dues,admission_date,time_slot,gender,subjects,shift,dob\nSample Student,03070000001,FSCC-001,Class 9th,Group A,,,,DIT,2000,0,0,,4:00 PM,,English;Maths,Evening,\n';
 function downloadFile(name, content, type){
   var blob = new Blob([content], {type: type || 'text/plain'});
   var a = document.createElement('a');
@@ -2240,11 +2244,12 @@ function renderAdminStudents(){
     var cards = '';
     data.students.forEach(function(s, i){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
-      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(effectiveFee(s)) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td style="white-space:nowrap"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></td></tr>';
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + (s.dob ? '<br><small>DOB: ' + esc(s.dob) + '</small>' : '') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td>' + esc(s.className) + '</td><td>' + esc(s.group) + '</td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(effectiveFee(s)) + '</td><td><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td style="white-space:nowrap"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></td></tr>';
       cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
         + '<div class="mcard-row"><span>Course</span><b>' + esc(s.course) + '</b></div>'
         + '<div class="mcard-row"><span>Group</span><b>' + esc(s.group) + '</b></div>'
+        + (s.dob ? '<div class="mcard-row"><span>DOB</span><b>' + esc(s.dob) + '</b></div>' : '')
         + '<div class="mcard-row"><span>Shift</span><b>' + esc(s.shift || 'Evening') + '</b></div>'
         + '<div class="mcard-row"><span>Monthly Fee</span><b>' + rs(effectiveFee(s)) + '</b></div>'
         + '<div class="mcard-row"><span>Balance Due</span><b>' + rs(feeBalance(s, FB_MONTH)) + '</b></div>'
@@ -2656,7 +2661,7 @@ function fbInit(){
 function studentFromDoc(doc){
   var d = doc.data();
   return {name:d.name || '', phone:'', roll:doc.id, className:d.course || '', course:d.course || '', group:d.group || '',
-    father_name:d.father_name || '', caste:d.caste || '', admission_date:d.admission_date || '', time_slot:d.time_slot || '',
+    father_name:d.father_name || '', caste:d.caste || '', admission_date:d.admission_date || '', dob:d.dob || '', time_slot:d.time_slot || '',
     monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), scholarship_fee:num(d.scholarship_fee), shift:d.shift || 'Evening', gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
     subjects:Array.isArray(d.subjects) ? d.subjects.slice() : [], slotIds:Array.isArray(d.slotIds) ? d.slotIds.slice() : [], feePeriod:d.feePeriod || '', loginDisabled:!!d.loginDisabled, parentLoginDisabled:!!d.parentLoginDisabled};
 }
@@ -2913,7 +2918,7 @@ async function saveStudentToFb(s){
     var pph = (fn && !s.parentLoginDisabled) ? ((fn && pwStore['parent:' + fn]) ? await sha256Hex(pwStore['parent:' + fn]) : fph) : '';
     await fb.db.collection('academy_students').doc(String(s.roll).toUpperCase()).set({
       name:s.name || '', course:s.course || s.className || '', course_type:'Monthly',
-      admission_date:s.admission_date || '', time_slot:s.time_slot || '',
+      admission_date:s.admission_date || '', dob:s.dob || '', time_slot:s.time_slot || '',
       monthly_fee:num(s.monthly_fee), admission_fee:num(s.admission_fee), old_dues:num(s.old_dues), scholarship_fee:num(s.scholarship_fee), shift:s.shift || 'Evening',
       group:s.group || '', gender:s.gender || '', status:s.status || 'Active', phoneHash:ph, passwordHash:pwHash, fatherPhoneHash:fph, parentPasswordHash:pph, feePeriod:s.feePeriod || '', loginDisabled:!!s.loginDisabled, parentLoginDisabled:!!s.parentLoginDisabled, subjects:s.subjects || [], slotIds:s.slotIds || []}, {merge:true});
     await fb.db.collection('academy_contacts').doc(String(s.roll).toUpperCase()).set({
@@ -3144,7 +3149,7 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
-/* ---------- v1.4.8: carried-forward balances — every rupee counted exactly once ---------- */
+/* ---------- v1.4.9: carried-forward balances — every rupee counted exactly once ---------- */
 /* When a new challan is created, unpaid balances of earlier challans are rolled into it as
    arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
    then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
@@ -3249,7 +3254,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-/* ---------- v1.4.8: shifts + morning partner share ---------- */
+/* ---------- v1.4.9: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -3369,7 +3374,7 @@ function fillFeeForm(p, roll){
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.8 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.9 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -3386,7 +3391,7 @@ function challanLinesForReceipt(c){
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
 }
-/* ---------- v1.4.8: oldest-first payment allocation ---------- */
+/* ---------- v1.4.9: oldest-first payment allocation ---------- */
 /* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
    the student's own open challans, oldest first, so the amount due drops by exactly the amount
    paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
@@ -3461,7 +3466,7 @@ async function savePayment(p){
       }
       pendingChallanId = null;
     } else {
-      /* v1.4.8: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      /* v1.4.9: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
       var _alloc = allocatePaymentToChallans(st, amount, discount);
       if(_alloc.length){
         rec.challanId = _alloc[0].challanId;
@@ -3951,7 +3956,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.8: mobile admin card menu ---------- */
+/* ---------- v1.4.9: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4177,7 +4182,7 @@ function renderReports(){
     tEl.innerHTML = html;
   }
 }
-/* ---------- v1.4.8: morning partner share ---------- */
+/* ---------- v1.4.9: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -4195,7 +4200,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.8: fee per subject + scholarship ---------- */
+/* ---------- v1.4.9: fee per subject + scholarship ---------- */
 function saveFeePerSubject(){
   var v = num($('feePerSubject').value);
   if(v <= 0){ setMsg('fpsMsg', 'Enter a fee above 0.', 'err'); return; }
@@ -4208,7 +4213,7 @@ function bindFeePerSubject(){
   var b = $('btnFeePerSubject'); if(b) b.addEventListener('click', saveFeePerSubject);
   var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
 }
-/* ---------- v1.4.8: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.9: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -5010,7 +5015,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.8: result cards ---------- */
+/* ---------- v1.4.9: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -5243,7 +5248,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.8 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.9 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -5637,7 +5642,7 @@ function editStu(i){
   $('seClass').value = s.className || ''; renderSeGroupOptions(s.group || ''); $('seCourse').value = s.course || '';
   $('seFather').value = s.father_name || ''; $('seCaste').value = s.caste || '';
   $('seFatherPhone').value = s.father_phone || ''; $('seAddress').value = s.address || '';
-  $('seAdmDate').value = s.admission_date || ''; renderSeTimeOptions(s.time_slot || '');
+  $('seAdmDate').value = s.admission_date || ''; $('seDob').value = s.dob || ''; renderSeTimeOptions(s.time_slot || '');
   $('seGender').value = s.gender || '';
   $('seShift').value = (s.shift === 'Morning') ? 'Morning' : 'Evening';
   $('seStatus').value = s.status || 'Active';
@@ -5658,7 +5663,7 @@ function addStu(){
   $('seClass').value = ''; renderSeGroupOptions(''); $('seCourse').value = '';
   $('seFather').value = ''; $('seCaste').value = '';
   $('seFatherPhone').value = ''; $('seAddress').value = '';
-  $('seAdmDate').value = ''; renderSeTimeOptions('');
+  $('seAdmDate').value = ''; $('seDob').value = ''; renderSeTimeOptions('');
   $('seGender').value = '';
   $('seShift').value = 'Evening';
   $('seStatus').value = 'Active';
@@ -5728,7 +5733,7 @@ function saveStuEdit(){
   s.group = ($('seGroup').value === '__new__') ? $('seGroupNew').value.trim() : $('seGroup').value; s.course = $('seCourse').value.trim() || s.className;
   s.father_name = $('seFather').value.trim(); s.caste = $('seCaste').value.trim();
   s.father_phone = $('seFatherPhone').value.trim(); s.address = $('seAddress').value.trim();
-  s.admission_date = $('seAdmDate').value; s.time_slot = $('seTime').value;
+  s.admission_date = $('seAdmDate').value; s.dob = $('seDob').value; s.time_slot = $('seTime').value;
   s.gender = $('seGender').value;
   s.shift = ($('seShift').value === 'Morning') ? 'Morning' : 'Evening';
   s.status = $('seStatus').value || 'Active';
@@ -5764,7 +5769,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.8: group dropdown ---------- */
+/* ---------- v1.4.9: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -5792,7 +5797,7 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* ---------- v1.4.8: scholarship ---------- */
+/* ---------- v1.4.9: scholarship ---------- */
 function scholarshipInfo(st){
   var rate = num(st && st.scholarship_fee);
   if(rate <= 0) return null;
@@ -5814,7 +5819,7 @@ function suggestFee(){
   var sch = num($('seScholarship').value);
   feeEl.value = n * (sch > 0 ? sch : (num(fbData.feePerSubject) || 2000));
 }
-/* ---------- v1.4.8: time slots ---------- */
+/* ---------- v1.4.9: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -5853,7 +5858,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.8: new student flow ---------- */
+/* ---------- v1.4.9: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -5895,7 +5900,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.8: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.9: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -6052,7 +6057,7 @@ async function leaveStudent(){
   var sch = $('seScholarship'); if(sch) sch.addEventListener('input', suggestFee);
 })();
 
-/* ---------- v1.4.8: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.9: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -6099,7 +6104,13 @@ function waReminderBtn(st, amount){
 /* --- families (item A) --- */
 function familyKeyOf(st){ var f = normPhone(st.father_phone || ''); return f || ''; }
 function parseAdmDateNum(s){ var d = parseAdmDate(s); return d ? d : '9999-99-99'; }
-function eldestOf(members){ var best = members[0]; members.forEach(function(m){ if(parseAdmDateNum(m.admission_date) < parseAdmDateNum(best.admission_date)) best = m; }); return best; }
+/* v1.4.9: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
+   only the fallback when a member has no usable DOB. elderKey ranks DOB ('0') ahead of
+   admission date ('1') ahead of no date ('2'), so within a rank the earliest date wins and
+   a member with a DOB always beats one known only by admission date. If neither member has
+   any date, the first in the list stays head. The admin head override still wins. */
+function elderKey(m){ if(m.dob && parseAdmDate(m.dob)) return '0' + parseAdmDate(m.dob); if(m.admission_date && parseAdmDate(m.admission_date)) return '1' + parseAdmDate(m.admission_date); return '2'; }
+function eldestOf(members){ var best = members[0]; members.forEach(function(m){ if(elderKey(m) < elderKey(best)) best = m; }); return best; }
 function getFamilies(){
   var byKey = {};
   data.students.forEach(function(st){
@@ -6175,7 +6186,7 @@ function familyMemberShare(c, roll, map){
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
   var balance = Math.max(0, total - paid);
-  /* v1.4.8: a member share already rolled into a later family challan is not owed twice. */
+  /* v1.4.9: a member share already rolled into a later family challan is not owed twice. */
   balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
   return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
@@ -6497,7 +6508,7 @@ function renderBoardFeeList(){
   el.innerHTML = h;
 }
 
-/* ---------- v1.4.8: students per fee period ---------- */
+/* ---------- v1.4.9: students per fee period ---------- */
 /* How many students were enrolled in a period. The current period counts live: Active students
    whose feePeriod is this period, or blank (created before periods existed — they belong to the
    current period). Old periods keep the snapshot taken at migration time (the Active students who
@@ -6567,7 +6578,7 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
-    /* v1.4.8: snapshot the old period's enrolment before the students move — after migration
+    /* v1.4.9: snapshot the old period's enrolment before the students move — after migration
        every student carries the new period, so without this the old row would show 0 students. */
     fbData.feePeriodStudents = fbData.feePeriodStudents || {};
     fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
@@ -6581,7 +6592,7 @@ async function migrateFeePeriod(){
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.8', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.9', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
     fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
@@ -6825,7 +6836,7 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.8 wiring --- */
+/* --- v1.4.9 wiring --- */
 (function(){
   var b;
   b = $('fsSaveBtn'); if(b) b.addEventListener('click', saveFeeSettings);
