@@ -180,6 +180,36 @@ body *{visibility:hidden}
 .stat.pink{background:linear-gradient(135deg,#a4137a,#e0529b)}
 .stat.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}
 .stat.red{background:linear-gradient(135deg,#b91c1c,#ef4444)}
+/* ---------- v1.4.13: portal dashboards (student / parent / teacher) ---------- */
+#studentPanel .modal-box.portal-box,#parentPanel .modal-box.portal-box,#teacherPanel .modal-box.portal-box{max-width:1180px;padding:0;min-height:calc(100vh - 48px);overflow:hidden}
+.portal-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.portal-head .portal-logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
+.portal-head h3{margin:0;color:#fff;font-size:1.4rem}
+.portal-head p{margin:4px 0 0;color:#dbe7ff}
+.portal-head .btn{margin-left:auto}
+.portal-head .btn.outline{background:#fff;border-color:#fff;color:var(--blue) !important}
+.portal-body{padding:20px 24px 26px}
+.portal-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.portal-stat{background:#fff;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(11,61,145,.06)}
+.portal-stat .v{font-size:1.5rem;font-weight:800;color:var(--blue);line-height:1.15}
+.portal-stat .l{color:var(--muted);font-size:.88rem;font-weight:700;margin-top:2px}
+.portal-stat.green{border-left-color:var(--green)}.portal-stat.green .v{color:var(--green)}
+.portal-stat.gold{border-left-color:var(--gold)}.portal-stat.gold .v{color:#b45309}
+.portal-stat.teal{border-left-color:#0aa5a0}.portal-stat.teal .v{color:#0a7d78}
+.portal-stat.red{border-left-color:var(--red)}.portal-stat.red .v{color:var(--red)}
+.portal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.portal-section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+.portal-section>h4:first-child{margin-top:0}
+.portal-kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:16px}
+.portal-kid{background:#fff;border:2px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+.portal-kid:hover{border-color:var(--blue2)}
+.portal-kid.on{border-color:var(--blue);background:#eef4ff;box-shadow:0 0 0 2px rgba(11,61,145,.2)}
+.portal-kid h4{margin:0 0 4px;color:var(--blue)}
+.portal-kid .kid-meta{color:var(--muted);font-size:.9rem}
+.portal-kid .kid-nums{display:flex;gap:16px;margin:8px 0;font-size:.92rem;flex-wrap:wrap}
+.portal-kid .kid-nums b{color:var(--blue)}
+.portal-kid .kid-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:720px){.portal-body{padding:14px}.portal-head{padding:16px}.portal-head .portal-logo{width:44px;height:44px}.portal-stat .v{font-size:1.25rem}}
 .bar-row{margin:10px 0}
 .bar-row .bar-lbl{display:flex;justify-content:space-between;font-weight:600;font-size:.9rem}
 .bar-track{height:14px;background:#e8edf5;border-radius:999px;overflow:hidden;margin-top:3px}
@@ -246,7 +276,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.11: mobile admin card system ---------- */
+/* ---------- v1.4.13: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -489,12 +519,10 @@ table{min-width:520px}
 </div>
 
 <div class="modal" id="studentPanel">
-<div class="modal-box wide">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-<h3 style="margin:0">Student Dashboard</h3>
-<button class="btn small outline" id="stLogoutBtn" type="button">Log out</button>
-</div>
-<div id="studentDash" style="margin-top:14px"></div>
+<div class="modal-box wide portal-box">
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Student Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="stLogoutBtn" type="button">Log out</button></div>
+<div class="portal-body">
+<div id="studentDash" style="margin-top:4px"></div>
 <h4 style="margin:22px 0 6px">Change Password</h4>
 <div class="form-grid">
 <div><label for="stPwOld">Current Password</label><input id="stPwOld" type="password"></div>
@@ -505,14 +533,13 @@ table{min-width:520px}
 <div class="msg" id="stPwMsg"></div>
 </div>
 </div>
+</div>
 
 <div class="modal" id="parentPanel">
-<div class="modal-box wide">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-<h3 style="margin:0">Parent Dashboard</h3>
-<button class="btn small outline" id="prLogoutBtn" type="button">Log out</button>
-</div>
-<div id="parentDash" style="margin-top:14px"></div>
+<div class="modal-box wide portal-box">
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Parent Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="prLogoutBtn" type="button">Log out</button></div>
+<div class="portal-body">
+<div id="parentDash" style="margin-top:4px"></div>
 <h4 style="margin:22px 0 6px">Change Password</h4>
 <div class="form-grid">
 <div><label for="prPwOld">Current Password</label><input id="prPwOld" type="password"></div>
@@ -521,6 +548,7 @@ table{min-width:520px}
 </div>
 <button class="btn small" id="prChangePwBtn" type="button" style="margin-top:10px">Change Password</button>
 <div class="msg" id="prPwMsg"></div>
+</div>
 </div>
 </div>
 
@@ -557,17 +585,16 @@ table{min-width:520px}
 </div>
 
 <div class="modal" id="teacherPanel">
-<div class="modal-box wide">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-<h3 style="margin:0">Teacher Panel</h3>
-<button class="btn small outline" id="tcLogoutBtn" type="button">Log out</button>
-</div>
-<div id="teacherPanelBody" style="margin-top:14px"></div>
+<div class="modal-box wide portal-box">
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Teacher Panel</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="tcLogoutBtn" type="button">Log out</button></div>
+<div class="portal-body">
+<div id="teacherPanelBody" style="margin-top:4px"></div>
 <div class="tabs" id="teacherTabs">
 <button type="button" data-ttab="att" class="on">Attendance</button>
 <button type="button" data-ttab="students">My Students</button>
 <button type="button" data-ttab="homework">Homework &amp; Tests</button>
 <button type="button" data-ttab="results">Results</button>
+<button type="button" data-ttab="marks">Marks Entry</button>
 <button type="button" data-ttab="fee">Collect Fee</button>
 <button type="button" data-ttab="pw">Change Password</button>
 </div>
@@ -629,6 +656,15 @@ table{min-width:520px}
 </div>
 <div id="tResBody" style="margin-top:10px"></div>
 </div>
+<div class="atab" id="ttab-marks">
+<h4 style="margin:6px 0">Marks Entry — My Subjects</h4>
+<p class="note" style="margin-top:0">Enter marks for exams in your own subjects. Students see marks only after the admin publishes them.</p>
+<div class="form-grid">
+<div><label for="tMkExam">Exam</label><select id="tMkExam"></select></div>
+</div>
+<div id="tMkBody" style="margin-top:10px"></div>
+<div class="msg" id="tMkMsg"></div>
+</div>
 <div class="atab" id="ttab-pw">
 <div class="form-grid">
 <div><label for="tcPwOld">Current Password</label><input id="tcPwOld" type="password"></div>
@@ -637,6 +673,7 @@ table{min-width:520px}
 </div>
 <button class="btn small" id="tcChangePwBtn" type="button" style="margin-top:10px">Change Password</button>
 <div class="msg" id="tcPwMsg"></div>
+</div>
 </div>
 </div>
 </div>
@@ -785,6 +822,7 @@ table{min-width:520px}
 <div id="exmMarks" style="margin-top:10px"></div>
 <div id="exmResults" style="margin-top:10px"></div>
 <div id="exmCards" style="margin-top:10px"></div>
+<div id="exmPublish" style="margin-top:10px"></div>
 </div>
 
 <div class="atab" id="atab-groups">
@@ -792,7 +830,7 @@ table{min-width:520px}
 <div><label for="grName">Group Name</label><input id="grName" type="text" placeholder="e.g. Group A"></div>
 <div><label for="grSubject">Subject</label><select id="grSubject"></select></div>
 <div><label for="grTeacher">Teacher (optional)</label><input id="grTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
-<div class="full"><label>Members — tick students from the Students list</label><div id="grMembers" style="border:2px solid var(--line);border-radius:9px;padding:10px 12px;max-height:280px;overflow-y:auto"></div></div>
+<div class="full"><label>Members — search by name, roll or phone, then tick to add</label><input id="grMemberSearch" type="text" placeholder="Search name, roll or phone…" style="width:100%;margin-bottom:6px"><div id="grMembers" style="border:2px solid var(--line);border-radius:9px;padding:10px 12px;max-height:280px;overflow-y:auto"></div></div>
 <div class="full"><label for="grTime">Time</label><input id="grTime" type="text" placeholder="e.g. Mon–Wed 4:00 PM"></div>
 <div><label for="grSlot">Time Slot</label><select id="grSlot"></select></div>
 </div>
@@ -865,6 +903,8 @@ table{min-width:520px}
 <div><button class="btn small" id="lvBtn" type="button">Mark as Left</button></div>
 </div>
 </div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center"><input id="stuSearch" type="text" placeholder="Search name, father name, phone or roll…" style="flex:1;min-width:220px"><button class="btn small outline" id="stuSearchClear" type="button">Clear</button></div>
+<p class="note" id="stuCount" style="margin:6px 0 0"></p>
 <div id="stList" style="margin-top:10px"></div>
 </div>
 
@@ -1476,6 +1516,7 @@ function lockBodyScroll(){ document.body.style.overflow = 'hidden'; }
 function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
 function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel' || id === 'parentPanel') lockBodyScroll(); if(id === 'adminPanel' && window.innerWidth <= 900) showAdminMenu(); }
 function closeModal(id){ $(id).classList.remove('open'); unlockBodyScroll(); }
+function portalGo(panelId, secId){ var p = $(panelId); if(!p) return; var el = p.querySelector('#' + secId); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
 function tryLogin(){ tryLoginFb(); }
 /* ---------- Unified login: one button, role from the ID ---------- */
 function openLoginModal(){
@@ -1500,7 +1541,7 @@ async function tryUnifiedLogin(){
   var live = fb.ready && !fb.offline && fb.db;
   if(live){
     if(n && n.length >= 10){
-      /* v1.4.11: never gate on the local student list. The public page has no phones
+      /* v1.4.13: never gate on the local student list. The public page has no phones
          (academy_contacts is admin/teacher-only and studentFromDoc carries phone:''),
          so a local findStudentByPhone can never match on a fresh load. Try the
          hash-based logins directly against Firestore instead. */
@@ -1594,6 +1635,7 @@ $('adminLoginCancel').addEventListener('click', function(){ closeModal('adminMod
 $('adminCloseBtn').addEventListener('click', function(){ closeModal('adminPanel'); });
 var _hl = document.querySelector('header.site .logo');
 if(_hl && $('adminLogoImg')) $('adminLogoImg').src = _hl.src;
+if(_hl) document.querySelectorAll('.portal-logo').forEach(function(im){ im.src = _hl.src; });
 $('adminLogoutBtn').addEventListener('click', function(){ fbSignOut(); closeModal('adminPanel'); });
 var ADMIN_GROUPS = ['academics', 'finance', 'manage'];
 function loadAdminGroups(){ try{ return JSON.parse(localStorage.getItem('fscc_admin_groups') || '{}'); }catch(e){ return {}; } }
@@ -1919,6 +1961,7 @@ $('rsCancelEdit').addEventListener('click', cancelRs);
 
 /* ---------- Admin: groups ---------- */
 var grEditMembers = [];
+var grMemberQuery = '';
 function renderGrSubjectOptions(){
   var el = $('grSubject'); if(!el) return;
   var cur = el.value;
@@ -1936,13 +1979,18 @@ function renderGrMembers(){
       (g.members || []).forEach(function(m){ used[m] = true; });
     });
     var hidden = 0;
+    var q = (grMemberQuery || '').trim().toLowerCase();
     var list = data.students.filter(function(s){
       if((s.status || 'Active') === 'Left') return false;
       if(used[s.name] && grEditMembers.indexOf(s.name) < 0){ hidden++; return false; }
+      if(q){
+        var hay = ((s.name || '') + ' ' + (s.roll || '') + ' ' + (s.phone || '') + ' ' + (s.father_phone || '')).toLowerCase();
+        if(hay.indexOf(q) < 0 && normPhone(s.phone || '').indexOf(q) < 0 && normPhone(s.father_phone || '').indexOf(q) < 0) return false;
+      }
       return true;
     });
     if(!list.length){
-      html = '<p class="note" style="margin:0">No students available to add — every student is already in another group.</p>';
+      html = '<p class="note" style="margin:0">' + (q ? 'No student matches "' + esc(grMemberQuery.trim()) + '".' : 'No students available to add — every student is already in another group.') + '</p>';
     } else {
       html = '<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Father\'s Name</th><th>Course</th><th>Time</th><th>Phone</th></tr></thead><tbody>';
       list.forEach(function(s){
@@ -1976,6 +2024,7 @@ function editGr(i){
   $('grName').value = g.name; $('grSubject').value = g.subject; $('grTeacher').value = g.teacher || '';
   $('grTime').value = g.time; renderGrSlotOptions(g.slotId || '');
   grEditMembers = (g.members || []).slice();
+  grMemberQuery = ''; if($('grMemberSearch')) $('grMemberSearch').value = '';
   renderGrMembers();
   editing.gr = i; $('grAddBtn').textContent = 'Save Changes'; $('grCancelEdit').style.display = '';
 }
@@ -1986,7 +2035,7 @@ function delGr(i){
 function cancelGr(){
   editing.gr = -1;
   $('grName').value = ''; $('grSubject').value = ''; $('grTeacher').value = ''; $('grTime').value = ''; renderGrSlotOptions('');
-  grEditMembers = []; renderGrSubjectOptions(); renderGrMembers();
+  grEditMembers = []; grMemberQuery = ''; renderGrSubjectOptions(); renderGrMembers();
   $('grAddBtn').textContent = 'Add Group'; $('grCancelEdit').style.display = 'none';
 }
 $('grMembers').addEventListener('change', function(e){
@@ -1996,18 +2045,39 @@ $('grMembers').addEventListener('change', function(e){
   if(cb.checked){ if(grEditMembers.indexOf(nm) < 0) grEditMembers.push(nm); }
   else grEditMembers = grEditMembers.filter(function(m){ return m !== nm; });
 });
-$('grAddBtn').addEventListener('click', function(){
+var grMemberSearchEl = $('grMemberSearch');
+if(grMemberSearchEl) grMemberSearchEl.addEventListener('input', function(){ grMemberQuery = this.value; renderGrMembers(); });
+var stuSearchEl = $('stuSearch');
+if(stuSearchEl) stuSearchEl.addEventListener('input', function(){ stuSearchQ = this.value; renderAdminStudents(); });
+var stuSearchClearEl = $('stuSearchClear');
+if(stuSearchClearEl) stuSearchClearEl.addEventListener('click', function(){ stuSearchQ = ''; if(stuSearchEl) stuSearchEl.value = ''; renderAdminStudents(); });
+function saveGroup(){
   var name = $('grName').value.trim();
   if(!name){ alert('Please enter a group name.'); return; }
   var subj = $('grSubject').value;
   if(!subj){ alert('Please choose a subject.'); return; }
+  var oldMembers = editing.gr >= 0 ? ((data.groups[editing.gr].members || []).slice()) : [];
+  var oldName = editing.gr >= 0 ? data.groups[editing.gr].name : '';
   var g = {id: editing.gr >= 0 ? (data.groups[editing.gr].id || ('g' + Date.now())) : ('g' + Date.now()),
     name:name, subject:subj, teacher:$('grTeacher').value.trim(),
     time:$('grTime').value.trim(), slotId:$('grSlot').value || '', members:grEditMembers.slice()};
   if(editing.gr >= 0){ g.sample = !!data.groups[editing.gr].sample; data.groups[editing.gr] = g; }
   else data.groups.push(g);
+  /* v1.4.13: a member's time becomes the group's time — set the student's group
+     and clear their own time_slot ('' = use group time), then save the student.
+     A student removed from the group loses the group but keeps their own time. */
+  (g.members || []).forEach(function(m){
+    var s = null; data.students.forEach(function(x){ if(x.name === m && !s) s = x; });
+    if(s){ s.group = name; s.time_slot = ''; saveStudentToFb(s); }
+  });
+  oldMembers.forEach(function(m){
+    if((g.members || []).indexOf(m) >= 0) return;
+    var s = null; data.students.forEach(function(x){ if(x.name === m && !s) s = x; });
+    if(s && (s.group === oldName || s.group === name)){ s.group = ''; saveStudentToFb(s); }
+  });
   cancelGr(); saveData();
-});
+}
+$('grAddBtn').addEventListener('click', saveGroup);
 $('grCancelEdit').addEventListener('click', cancelGr);
 
 /* ---------- Admin: notes ---------- */
@@ -2211,7 +2281,7 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.11: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.13: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
     if(r.dob && !parseAdmDate(r.dob)){ warnings.push('Line ' + r.line + ': date of birth "' + r.dob + '" is not a valid date — left blank.'); }
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
@@ -2230,7 +2300,7 @@ function importStudentsCSV(text){
       saveStudentToFb(rec);
     }
     if(phone) seenPhones[phone] = rec.roll;
-    /* v1.4.11: old dues become an automatic previous-month 'Previous dues' challan. */
+    /* v1.4.13: old dues become an automatic previous-month 'Previous dues' challan. */
     if(num(r.old_dues) > 0) ensureOldDuesChallan(found || rec, num(r.old_dues), warnings);
   });
   return {added:added, updated:updated, skipped:skippedRows.length, error:'', skippedRows:skippedRows, warnings:warnings};
@@ -2283,17 +2353,31 @@ async function loadNovData(){
 
 /* ---------- Admin: students ---------- */
 var stStatusFilterQ = 'All';
+var stuSearchQ = '';
+function stuMatchesSearch(s, q){
+  q = (q || '').trim().toLowerCase(); if(!q) return true;
+  var qd = q.replace(/[^0-9]/g, '');
+  if((s.name || '').toLowerCase().indexOf(q) >= 0) return true;
+  if((s.father_name || '').toLowerCase().indexOf(q) >= 0) return true;
+  if((s.roll || '').toLowerCase().indexOf(q) >= 0) return true;
+  if(qd && normPhone(s.phone).indexOf(qd) >= 0) return true;
+  if(qd && normPhone(s.father_phone).indexOf(qd) >= 0) return true;
+  return false;
+}
 function renderAdminStudents(){
   var f = stStatusFilterQ;
   var html = '<p><label>Show: </label><select id="stStatusFilter" style="width:auto" onchange="stStatusFilterQ=this.value;renderAdminStudents()">' + ['All', 'Active', 'Left'].map(function(o){ return '<option' + (f === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></p>';
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    /* v1.4.11: Students table — no Class column; father name + phone nest under Name; Group in small font. */
+    /* v1.4.13: Students table — no Class column; father name + phone nest under Name; Group in small font. */
     html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>DOB</th><th>Gender</th><th>Phone</th><th>Roll Number</th><th>Group</th><th>Shift</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     var cards = '';
+    var shownCount = 0;
     data.students.forEach(function(s, i){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
+      if(!stuMatchesSearch(s, stuSearchQ)) return;
+      shownCount++;
       html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + (s.father_name ? '<br><small>' + esc(s.father_name) + '</small>' : '') + (s.father_phone ? '<br><small>' + esc(s.father_phone) + '</small>' : '') + '</td><td>' + esc(s.dob || '—') + '</td><td>' + esc(s.gender || '—') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td><small>' + esc(s.group) + '</small></td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(effectiveFee(s)) + '</td><td><b>' + rs(studentDue(s)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td style="white-space:nowrap"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></td></tr>';
       cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
@@ -2311,6 +2395,8 @@ function renderAdminStudents(){
     html += '</tbody></table></div>';
     html += '<div class="mob-cards">' + cards + '</div>';
   }
+  var stuCnt = $('stuCount');
+  if(stuCnt) stuCnt.textContent = (stuSearchQ || '').trim() ? ('Showing ' + shownCount + ' of ' + data.students.length + ' students') : '';
   $('stList').innerHTML = html;
   renderIncompleteLogins();
 }
@@ -2435,33 +2521,50 @@ function studentSlots(st){
 function renderStudentDash(){
   var st = currentStudent; if(!st) return;
   var slots = studentSlots(st);
-  var myResults = [];
-  data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
+  var myResults = publishedExamResultsFor(st.roll);
   var todayTopicDate = todayStr();
   var todayTopic = (fbData.topics || []).filter(function(t){ return t.roll === st.roll && t.date === todayTopicDate; })[0];
-  var html = '<p style="font-size:1.1rem">Welcome, <b>' + esc(st.name) + '</b></p>'
-    + '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + '</p>'
-    + '<p><b>Class Time:</b> ' + esc(studentTimeText(st) || 'Not set yet') + '</p>'
-    + '<h4>Today\'s Topic — ' + esc(todayTopicDate) + '</h4>'
-    + '<div class="card" style="margin-bottom:12px"><p class="note" style="margin-top:0">Write what you studied in class today. The admin can see it — it shows you use the portal every day.</p>'
+  var due = studentDue(st);
+  var paid = receivedThisMonth(st.roll, FB_MONTH);
+  var attD = attDaysFor(st.roll, FB_MONTH);
+  /* v1.4.13: full software dashboard — header, real stat cards, action buttons, sections */
+  var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(st.name) + '</h3><p>Roll ' + esc(st.roll) + ' &nbsp;·&nbsp; ' + esc(st.className) + ' &nbsp;·&nbsp; Group ' + esc(st.group || '—') + ' &nbsp;·&nbsp; ' + esc(st.shift || 'Evening') + ' Shift &nbsp;·&nbsp; ' + esc(studentTimeText(st) || 'Time not set yet') + '</p></div></div>'
+    + '<div class="portal-stats">'
+    + '<div class="portal-stat' + (due > 0 ? ' red' : ' green') + '"><div class="v">Rs ' + due.toLocaleString('en-US') + '</div><div class="l">Balance Due</div></div>'
+    + '<div class="portal-stat green"><div class="v">Rs ' + paid.toLocaleString('en-US') + '</div><div class="l">Paid this month</div></div>'
+    + (attD.total ? '<div class="portal-stat teal"><div class="v">' + attD.present + ' / ' + attD.total + '</div><div class="l">Attendance this month</div></div>' : '')
+    + '<div class="portal-stat gold"><div class="v">Rs ' + effectiveFee(st).toLocaleString('en-US') + '</div><div class="l">Monthly Fee</div></div>'
+    + '</div>'
+    + '<div class="portal-actions">'
+    + '<button class="btn small" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-fees\')">View Challans</button>'
+    + '<button class="btn small" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-fees\')">Receipts</button>'
+    + '<button class="btn small" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-homework\')">Homework</button>'
+    + '<button class="btn small" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-timetable\')">Timetable</button>'
+    + '<button class="btn small" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-attendance\')">Attendance</button>'
+    + '<button class="btn small outline" type="button" onclick="portalGo(\'studentPanel\',\'sec-st-topic\')">Today\'s Topic</button>'
+    + '</div>'
+    + '<div class="portal-section" id="sec-st-topic"><h4>Today\'s Topic — ' + esc(todayTopicDate) + '</h4>'
+    + '<p class="note" style="margin-top:0">Write what you studied in class today. The admin can see it — it shows you use the portal every day.</p>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="dtTopic" type="text" style="flex:1;min-width:200px" placeholder="e.g. Past Simple Tense" value="' + esc(todayTopic ? todayTopic.topic : '') + '">'
     + '<button class="btn small" id="dtSaveBtn" type="button">Save Topic</button></div>'
     + '<div class="msg" id="dtMsg"></div>'
     + (todayTopic ? '<p style="margin:8px 0 0">Saved today: <b>' + esc(todayTopic.topic) + '</b></p>' : '')
     + '</div>'
-    + '<div class="stu-dash"><h4>My Timetable</h4>';
+    + '<div class="portal-section" id="sec-st-timetable"><h4>My Timetable</h4>';
   if(!slots.length) html += '<p class="note">No classes assigned yet. The admin will add your classes to the timetable.</p>';
   else {
     slots.forEach(function(x){
       html += '<div class="card slot"><div class="t">' + esc(x.day) + ' · ' + esc(fmtTime12(x.start)) + ' – ' + esc(fmtTime12(x.end)) + '</div><div class="meta">' + esc(x.subject) + ' · ' + esc(x.teacher) + ' · ' + esc(x.section) + (x.group ? ' · ' + esc(x.group) : '') + '</div></div>';
     });
   }
-  html += '<h4>My Results</h4>';
+  html += '</div>'
+    + '<div class="portal-section"><h4>My Results</h4>';
   if(!myResults.length) html += '<p class="note">No results published for your roll number yet.</p>';
-  else myResults.forEach(function(r){ html += resultCardHTML(r); });
-  html += studentFeeHTML(st);
-  html += studentHomeworkHTML(st);
-  html += '<h4>Study Material</h4><p><a class="btn small" href="#notes" onclick="closeModal(\'studentPanel\')">Notes &amp; PDFs</a> <a class="btn small outline" href="#videos" onclick="closeModal(\'studentPanel\')">Videos</a></p></div>';
+  else myResults.forEach(function(p){ html += examResultCardHTML(p.ex, p.row); });
+  html += '</div>'
+    + studentFeeHTML(st, 'st-')
+    + studentHomeworkHTML(st, 'st-')
+    + '<div class="portal-section"><h4>Study Material</h4><p><a class="btn small" href="#notes" onclick="closeModal(\'studentPanel\')">Notes &amp; PDFs</a> <a class="btn small outline" href="#videos" onclick="closeModal(\'studentPanel\')">Videos</a></p></div>';
   $('studentDash').innerHTML = html;
   var dtb = $('dtSaveBtn'); if(dtb) dtb.addEventListener('click', saveDailyTopic);
 }
@@ -2770,7 +2873,7 @@ function fbLoadStudents(){
     renderAll();
   }, function(){});
 }
-/* v1.4.11: contacts merge — academy_contacts holds the real phones. The merge used to
+/* v1.4.13: contacts merge — academy_contacts holds the real phones. The merge used to
    run only from the students snapshot when the role was already known; auth can resolve
    after the snapshot (or contacts can arrive before students), so cache the contacts
    and apply them on every students snapshot too. */
@@ -2956,7 +3059,7 @@ async function changeStudentPwAsync(phone, cur, nw, nw2){
   st.passwordHash = newHash;
   return {ok:true, msg:'Password changed. It works on all devices now.'};
 }
-/* v1.4.11: reset by phoneHash directly — never depends on the local student list,
+/* v1.4.13: reset by phoneHash directly — never depends on the local student list,
    so it works right after a reload even before the contacts merge has run. */
 async function resetStudentPwFb(phone){
   var n = normPhone(phone);
@@ -3032,40 +3135,59 @@ function renderParentDash(){
   if(!kids.length){ $('parentDash').innerHTML = '<p class="note">No children found for this phone number.</p>'; return; }
   if(!parentViewRoll || !kids.some(function(k){ return k.roll === parentViewRoll; })) parentViewRoll = kids[0].roll;
   var st = null; kids.forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
-  var html = '<p style="font-size:1.1rem">Welcome, parent of <b>' + esc(st.name) + '</b></p>';
-  if(kids.length > 1){
-    html += '<div style="margin:6px 0 10px"><label for="prChildSel">Child:</label><select id="prChildSel" style="width:auto">' + kids.map(function(k){ return '<option value="' + esc(k.roll) + '"' + (k.roll === parentViewRoll ? ' selected' : '') + '>' + esc(k.name) + ' (' + esc(k.roll) + ')</option>'; }).join('') + '</select></div>';
-  }
-  html += '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + ' &nbsp;·&nbsp; <b>Class Time:</b> ' + esc(studentTimeText(st) || 'Not set yet') + '</p>';
+  var dad = (kids[0] && kids[0].father_name) ? kids[0].father_name : ('Parent of ' + st.name);
+  /* v1.4.13: full software dashboard — header, one card per child, detail for the selected child */
+  var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(dad) + '</h3><p>' + kids.length + ' child' + (kids.length === 1 ? '' : 'ren') + ' enrolled at Future Star Academy &nbsp;·&nbsp; viewing ' + esc(st.name) + ' (' + esc(st.roll) + ')</p></div></div>';
+  html += '<div class="portal-kids">';
+  kids.forEach(function(k){
+    html += '<div class="portal-kid' + (k.roll === parentViewRoll ? ' on' : '') + '" onclick="parentViewRoll=\'' + esc(k.roll) + '\';renderParentDash();">'
+      + '<h4>' + esc(k.name) + '</h4>'
+      + '<div class="kid-meta">Roll ' + esc(k.roll) + ' &nbsp;·&nbsp; ' + esc(k.className) + ' &nbsp;·&nbsp; Group ' + esc(k.group || '—') + '</div>'
+      + '<div class="kid-nums"><span>Balance Due: <b>Rs ' + studentDue(k).toLocaleString('en-US') + '</b></span><span>Paid this month: <b>Rs ' + receivedThisMonth(k.roll, FB_MONTH).toLocaleString('en-US') + '</b></span></div>'
+      + '<div class="kid-btns"><button class="btn small" type="button" onclick="portalGo(\'parentPanel\',\'sec-pr-fees\')">View Challans</button><button class="btn small" type="button" onclick="portalGo(\'parentPanel\',\'sec-pr-homework\')">Homework</button><button class="btn small" type="button" onclick="portalGo(\'parentPanel\',\'sec-pr-timetable\')">Timetable</button><button class="btn small" type="button" onclick="portalGo(\'parentPanel\',\'sec-pr-attendance\')">Attendance</button></div>'
+      + '</div>';
+  });
+  html += '</div>';
   var pToday = todayStr();
   var pTopic = (fbData.topics || []).filter(function(t){ return t.roll === st.roll && t.date === pToday; })[0];
-  if(pTopic) html += '<p><b>Today\'s Topic:</b> ' + esc(pTopic.topic) + '</p>';
-  var myResults = [];
-  data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === String(st.roll).trim().toUpperCase()) myResults.push(r); });
-  html += '<h4>Results</h4>';
-  if(!myResults.length) html += '<p class="note">No results published for this roll number yet.</p>';
-  else myResults.forEach(function(r){ html += resultCardHTML(r); });
-  html += studentFeeHTML(st);
-  html += studentHomeworkHTML(st);
-  html += '<h4>Announcements</h4>';
+  html += '<div class="portal-section" id="sec-pr-topic"><h4>' + esc(st.name) + ' — Today\'s Topic — ' + esc(pToday) + '</h4>'
+    + (pTopic ? '<p><b>Today\'s Topic:</b> ' + esc(pTopic.topic) + '</p>' : '<p class="note">No topic sent today yet.</p>')
+    + '<p><b>Class:</b> ' + esc(st.className) + ' &nbsp;·&nbsp; <b>Group:</b> ' + esc(st.group || '—') + ' &nbsp;·&nbsp; <b>Roll Number:</b> ' + esc(st.roll) + ' &nbsp;·&nbsp; <b>Class Time:</b> ' + esc(studentTimeText(st) || 'Not set yet') + '</p></div>'
+    + '<div class="portal-section" id="sec-pr-timetable"><h4>Timetable — ' + esc(st.name) + '</h4>';
+  var slots = studentSlots(st);
+  if(!slots.length) html += '<p class="note">No classes assigned yet.</p>';
+  else slots.forEach(function(x){
+    html += '<div class="card slot"><div class="t">' + esc(x.day) + ' · ' + esc(fmtTime12(x.start)) + ' – ' + esc(fmtTime12(x.end)) + '</div><div class="meta">' + esc(x.subject) + ' · ' + esc(x.teacher) + ' · ' + esc(x.section) + (x.group ? ' · ' + esc(x.group) : '') + '</div></div>';
+  });
+  html += '</div>'
+    + '<div class="portal-section"><h4>Results — ' + esc(st.name) + '</h4>';
+  var myResults = publishedExamResultsFor(st.roll);
+  if(!myResults.length) html += '<p class="note">No results published for your roll number yet.</p>';
+  else myResults.forEach(function(p){ html += examResultCardHTML(p.ex, p.row); });
+  html += '</div>'
+    + studentFeeHTML(st, 'pr-')
+    + studentHomeworkHTML(st, 'pr-')
+    + '<div class="portal-section"><h4>Announcements</h4>';
   if(!data.announcements.length) html += '<p class="note">No announcements yet.</p>';
   else html += data.announcements.map(function(a){ return '<p><b>' + esc(a.date) + ':</b> ' + esc(a.text) + '</p>'; }).join('');
-  html += '<h4>Apply for Leave</h4><div class="form-grid">'
+  html += '</div>'
+    + '<div class="portal-section" id="sec-pr-leave"><h4>Apply for Leave</h4>'
+    + '<div class="form-grid">'
     + '<div><label for="lvFrom">From Date</label><input id="lvFrom" type="date"></div>'
     + '<div><label for="lvTo">To Date</label><input id="lvTo" type="date"></div>'
     + '<div class="full"><label for="lvReason">Reason</label><input id="lvReason" type="text" placeholder="e.g. Family wedding"></div></div>'
     + '<div style="margin-top:10px"><button class="btn small" id="lvApplyBtn" type="button">Submit Leave Application</button></div>'
-    + '<div class="msg" id="lvMsg"></div>';
+    + '<div class="msg" id="lvMsg"></div></div>';
   var myLeaves = (fbData.leaves || []).filter(function(l){ return l.roll === st.roll; }).sort(function(a, b){ return (a.createdAt < b.createdAt ? 1 : -1); });
-  html += '<h4>My Leave Applications</h4>';
+  html += '<div class="portal-section"><h4>My Leave Applications</h4>';
   if(!myLeaves.length) html += '<p class="note">No leave applications yet.</p>';
   else {
     html += '<div class="table-scroll"><table><thead><tr><th>From</th><th>To</th><th>Reason</th><th>Status</th></tr></thead><tbody>';
     myLeaves.forEach(function(l){ html += '<tr><td>' + esc(l.fromDate) + '</td><td>' + esc(l.toDate) + '</td><td>' + esc(l.reason) + '</td><td><b>' + esc(l.status) + '</b></td></tr>'; });
     html += '</tbody></table></div>';
   }
+  html += '</div>';
   $('parentDash').innerHTML = html;
-  var cs = $('prChildSel'); if(cs) cs.addEventListener('change', function(){ parentViewRoll = this.value; renderParentDash(); });
   var ab = $('lvApplyBtn'); if(ab) ab.addEventListener('click', submitLeave);
 }
 async function submitLeave(){
@@ -3213,7 +3335,7 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
-/* ---------- v1.4.11: carried-forward balances — every rupee counted exactly once ---------- */
+/* ---------- v1.4.13: carried-forward balances — every rupee counted exactly once ---------- */
 /* When a new challan is created, unpaid balances of earlier challans are rolled into it as
    arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
    then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
@@ -3281,7 +3403,7 @@ function studentDue(st){
   var map = carriedOutMap();
   var chs = studentChallans(st.roll);
   var fam = familyChallansFor(st.roll);
-  /* v1.4.11: no challan, no fee — the owner makes every challan himself. */
+  /* v1.4.13: no challan, no fee — the owner makes every challan himself. */
   if(!chs.length && !fam.length) return 0;
   var t = 0;
   chs.forEach(function(c){ if(!c.family) t += effectiveChallanBalance(c, map); }); /* family challans count by member share below, not in full — the head would double-count; carried-forward balances count once, inside the newer challan */
@@ -3319,7 +3441,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-/* ---------- v1.4.11: shifts + morning partner share ---------- */
+/* ---------- v1.4.13: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -3439,7 +3561,7 @@ function fillFeeForm(p, roll){
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.11 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.13 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -3456,7 +3578,7 @@ function challanLinesForReceipt(c){
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
 }
-/* ---------- v1.4.11: oldest-first payment allocation ---------- */
+/* ---------- v1.4.13: oldest-first payment allocation ---------- */
 /* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
    the student's own open challans, oldest first, so the amount due drops by exactly the amount
    paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
@@ -3531,7 +3653,7 @@ async function savePayment(p){
       }
       pendingChallanId = null;
     } else {
-      /* v1.4.11: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      /* v1.4.13: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
       var _alloc = allocatePaymentToChallans(st, amount, discount);
       if(_alloc.length){
         rec.challanId = _alloc[0].challanId;
@@ -4021,7 +4143,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.11: mobile admin card menu ---------- */
+/* ---------- v1.4.13: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4093,6 +4215,31 @@ function dashBars(title, icon, rows, total, colors, money){
   });
   return html + '</div>';
 }
+/* v1.4.13: "Students at a glance" cards for the Admin Dashboard — Active students only,
+   Morning/Evening split (blank shift = Evening, same as v1.4.4), one card per
+   subject/course with at least one Active student. Membership via studentHasSubject,
+   so the numbers match the rest of the site. Built inside renderDashboard, so the
+   cards re-render with the dashboard whenever students change. */
+function studentsAtAGlanceHTML(){
+  var active = data.students.filter(function(s){ return (s.status || 'Active') === 'Active'; });
+  var morning = 0, evening = 0;
+  active.forEach(function(s){ if((s.shift || 'Evening') === 'Morning') morning++; else evening++; });
+  var names = [];
+  active.forEach(function(s){
+    var all = effectiveSubjects(s).slice();
+    var c = s.course || s.className || '';
+    if(c && all.indexOf(c) < 0) all.push(c);
+    all.forEach(function(n){ if(n && names.indexOf(n) < 0) names.push(n); });
+  });
+  var cards = '<div class="portal-stat"><div class="v">' + active.length + '</div><div class="l">Total Students (Active)</div></div>'
+    + '<div class="portal-stat gold"><div class="v">' + morning + '</div><div class="l">Morning Shift</div></div>'
+    + '<div class="portal-stat teal"><div class="v">' + evening + '</div><div class="l">Evening Shift</div></div>';
+  names.forEach(function(n){
+    var c = active.filter(function(s){ return studentHasSubject(s, n); }).length;
+    if(c > 0) cards += '<div class="portal-stat"><div class="v">' + c + '</div><div class="l">' + esc(n) + '</div></div>';
+  });
+  return '<div class="portal-section"><h4>Students at a Glance</h4><div class="portal-stats">' + cards + '</div></div>';
+}
 function renderDashboard(){
   var el = $('dashBody'); if(!el) return;
   var today = todayStr();
@@ -4131,6 +4278,7 @@ function renderDashboard(){
     + '<div class="stat pink"><span class="material-symbols-outlined ic">girl</span><div class="num">' + girls + '</div><div class="lbl">Total Girls</div><div class="sub">' + (unset ? unset + ' gender not set' : 'all students counted') + '</div></div>'
     + '<div class="stat red"><span class="material-symbols-outlined ic">event_busy</span><div class="num">' + absentees.length + '</div><div class="lbl">Absentees Today</div><div class="sub">' + (todayMarked ? todayMarked + ' marked today' : 'no attendance marked today') + '</div></div>'
     + '</div>'
+    + studentsAtAGlanceHTML()
     + '<div class="grid two">' + dashBars('Attendance Today', 'fact_check', attRows, scheduledCount || todayMarked, ['teal', 'red', 'amber', ''], false)
     + '<div class="card"><h3 style="margin-top:0;color:var(--blue)"><span class="material-symbols-outlined">schedule</span> Today\'s Classes &mdash; ' + esc(todayName) + '</h3>'
     + (todayClassRows ? '<div class="table-scroll tt-compact"><table><thead><tr><th>Time</th><th>Subject</th><th>Teacher</th><th>Section</th></tr></thead><tbody>' + todayClassRows + '</tbody></table></div>' : '<p class="note">No classes scheduled for today.</p>') + '</div></div>'
@@ -4247,7 +4395,7 @@ function renderReports(){
     tEl.innerHTML = html;
   }
 }
-/* ---------- v1.4.11: morning partner share ---------- */
+/* ---------- v1.4.13: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -4265,7 +4413,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.11: fee per subject + scholarship ---------- */
+/* ---------- v1.4.13: fee per subject + scholarship ---------- */
 function saveFeePerSubject(){
   var v = num($('feePerSubject').value);
   if(v <= 0){ setMsg('fpsMsg', 'Enter a fee above 0.', 'err'); return; }
@@ -4278,7 +4426,7 @@ function bindFeePerSubject(){
   var b = $('btnFeePerSubject'); if(b) b.addEventListener('click', saveFeePerSubject);
   var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
 }
-/* ---------- v1.4.11: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.13: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -4323,7 +4471,7 @@ function applyArrearsSheet(text){
     found.old_dues = num(v);
     updated++;
     saveStudentToFb(found);
-    /* v1.4.11: corrected old dues create/update the automatic previous-dues challan. */
+    /* v1.4.13: corrected old dues create/update the automatic previous-dues challan. */
     if(num(v) > 0) ensureOldDuesChallan(found, num(v), warnings);
   });
   return {updated:updated, notFound:notFound, skipped:skipped, warnings:warnings};
@@ -4697,19 +4845,39 @@ async function saveStudentTime(roll){
 /* ---------- Teacher panel ---------- */
 function renderTeacherPanel(){
   if(!currentTeacher) return;
+  var t = currentTeacher;
+  var subs = (t.subjects && t.subjects.length ? t.subjects : [t.subject || t.course || '']);
+  var todayName = new Date().toLocaleDateString('en-US', {weekday:'long'});
+  var todaySlots = data.slots.filter(function(x){ return x.day === todayName && (x.teacher === t.name || (t.subjects || []).indexOf(x.subject) >= 0); });
+  var myStudents = teacherStudents(t);
+  var s = financeSummary(FB_MONTH);
+  var due = s.teacherDue[t.name] || 0, paid = s.teacherPaid[t.name] || 0;
+  /* v1.4.13: full software dashboard — header, real stat cards, today's classes */
   var el = $('teacherPanelBody');
   if(el){
-    var s = financeSummary(FB_MONTH);
-    var due = s.teacherDue[currentTeacher.name] || 0, paid = s.teacherPaid[currentTeacher.name] || 0;
-    el.innerHTML = '<p>Welcome, <b>' + esc(currentTeacher.name) + '</b> · Subjects: ' + esc(currentTeacher.subjects.join(', ')) + '</p>'
-      + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">My Pay — ' + FB_MONTH + '</h3>'
+    var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(t.name) + '</h3><p>' + esc(subs.join(', ')) + ' &nbsp;·&nbsp; ' + esc(todayName) + '</p></div></div>'
+      + '<div class="portal-stats">'
+      + '<div class="portal-stat"><div class="v">' + myStudents.length + '</div><div class="l">My Students</div></div>'
+      + '<div class="portal-stat gold"><div class="v">Rs ' + due.toLocaleString('en-US') + '</div><div class="l">Share Due</div></div>'
+      + '<div class="portal-stat green"><div class="v">Rs ' + paid.toLocaleString('en-US') + '</div><div class="l">Share Paid</div></div>'
+      + '<div class="portal-stat teal"><div class="v">' + todaySlots.length + '</div><div class="l">Classes Today</div></div>'
+      + '</div>'
+      + '<div class="portal-section"><h4>Today\'s Classes — ' + esc(todayName) + '</h4>';
+    if(!todaySlots.length) html += '<p class="note">No classes scheduled for today.</p>';
+    else todaySlots.forEach(function(x){
+      html += '<div class="card slot"><div class="t">' + esc(fmtTime12(x.start)) + ' – ' + esc(fmtTime12(x.end)) + ' · ' + esc(x.subject) + '</div><div class="meta">' + esc(x.section) + (x.group ? ' · ' + esc(x.group) : '') + '</div></div>';
+    });
+    html += '</div>'
+      + '<div class="portal-section"><h3 style="margin-top:0;color:var(--blue)">My Pay — ' + FB_MONTH + '</h3>'
       + '<p>Share due: <b>' + rs(due) + '</b> · Paid: <b>' + rs(paid) + '</b> · Balance: <b>' + rs(due - paid) + '</b></p>'
       + '<p class="note">Share is calculated from the fees collected for your subjects this month. The admin pays you and records it here.</p></div>'
-      + teacherStudentFeesHTML(currentTeacher);
+      + '<div class="portal-section"><h4>My Fees</h4>' + teacherStudentFeesHTML(t) + '</div>';
+    el.innerHTML = html;
   }
   renderTeacherStudents();
   renderTeacherHomework();
   renderTeacherResults();
+  if(typeof renderTeacherMarks === 'function') renderTeacherMarks();
   renderAttendance('tAtt', 'teacher');
   var feeEl = $('tFeeName');
   if(feeEl) feeEl.textContent = '';
@@ -4831,18 +4999,18 @@ async function delHomework(id){
     renderTeacherHomework();
   }catch(e){ setMsg('hwMsg', 'Could not delete: ' + fbErrText(e), 'err'); }
 }
-function studentHomeworkHTML(st){
+function studentHomeworkHTML(st, pfx){
   var mine = fbData.homework.filter(function(h){
     if(h.targetType === 'one') return h.targetRoll === st.roll;
     return studentHasSubject(st, h.subject);
   }).sort(function(a, b){ return (a.date < b.date ? -1 : 1); });
-  var h = '<h4>Homework &amp; Tests</h4>';
+  var h = '<div class="portal-section" id="sec-' + (pfx || '') + 'homework"><h4>Homework &amp; Tests</h4>';
   if(!mine.length) return h + '<p class="note">No homework or tests assigned to you yet.</p>';
   h += '<div class="table-scroll"><table><thead><tr><th>Date</th><th>Type</th><th>Subject</th><th>Title &amp; Outline</th><th>Teacher</th><th>Status</th></tr></thead><tbody>';
   mine.forEach(function(it){
     h += '<tr><td>' + esc(it.date) + '</td><td>' + (it.kind === 'test' ? '<b>Test</b>' : 'Homework') + '</td><td>' + esc(it.subject) + '</td><td><b>' + esc(it.title) + '</b><br>' + esc(it.detail || '') + '</td><td>' + esc(it.teacherName || '') + '</td><td>' + (it.done ? '<b style="color:green">Done ✓ ' + esc(it.doneAt || '') + '</b>' : 'Pending') + '</td></tr>';
   });
-  return h + '</tbody></table></div>';
+  return h + '</tbody></table></div></div>';
 }
 function renderHomeworkAdmin(){
   var el = $('hwAdminList'); if(!el) return;
@@ -4942,6 +5110,18 @@ var editingExam = null, openExamId = null;
 function examStudents(exam){
   return data.students.filter(function(s){ return (s.status || 'Active') !== 'Left' && studentHasSubject(s, exam.subject); });
 }
+/* ---------- v1.4.13: marks publishing — students/parents see only published marks ---------- */
+function normRoll(r){ return String(r || '').trim().toUpperCase(); }
+function publishedRollsOf(ex){ return (ex.publishedRolls || []).map(function(r){ return normRoll(r); }); }
+function isMarkPublished(ex, roll){ return publishedRollsOf(ex).indexOf(normRoll(roll)) >= 0; }
+function publishedExamResultsFor(roll){
+  var out = [];
+  (fbData.exams || []).forEach(function(ex){
+    if(!isMarkPublished(ex, roll)) return;
+    examResultRows(ex).forEach(function(r){ if(normRoll(r.roll) === normRoll(roll)) out.push({ex:ex, row:r}); });
+  });
+  return out;
+}
 function renderExams(){
   var subjEl = $('exmSubject');
   if(subjEl){
@@ -4954,8 +5134,13 @@ function renderExams(){
   var h = '';
   list.forEach(function(ex){
     var n = fbData.marks.filter(function(m){ return m.examId === ex.id; }).length;
-    h += '<div class="admin-row"><div><b>' + esc(ex.title) + '</b><small>' + esc(ex.subject) + ' · ' + esc(ex.date) + ' · ' + ex.totalQuestions + ' questions · ' + ex.totalMarks + ' marks · ' + n + ' marks entered</small></div>'
+    var pubRolls = publishedRollsOf(ex);
+    var exStuds = examStudents(ex);
+    var pubCount = exStuds.filter(function(s){ return pubRolls.indexOf(normRoll(s.roll)) >= 0; }).length;
+    var pubBadge = pubRolls.length ? ' · <b style="color:green">Published: ' + pubCount + ' of ' + exStuds.length + '</b>' : ' · <b style="color:#b8860b">Unpublished</b>';
+    h += '<div class="admin-row"><div><b>' + esc(ex.title) + '</b><small>' + esc(ex.subject) + ' · ' + esc(ex.date) + ' · ' + ex.totalQuestions + ' questions · ' + ex.totalMarks + ' marks · ' + n + ' marks entered' + pubBadge + '</small></div>'
       + '<div><button class="btn small outline" type="button" onclick="openMarks(\'' + ex.id + '\')">Enter Marks</button> '
+      + '<button class="btn small outline" type="button" onclick="openPublish(\'' + ex.id + '\')">Publish</button> '
       + '<button class="btn small outline" type="button" onclick="openExamResults(\'' + ex.id + '\')">Results</button> '
       + '<button class="btn small outline" type="button" onclick="openExamCards(\'' + ex.id + '\')">Result Cards</button> '
       + '<button class="btn small outline" type="button" onclick="editExam(\'' + ex.id + '\')">Edit</button> '
@@ -4963,6 +5148,7 @@ function renderExams(){
   });
   el.innerHTML = h || '<p class="note">No exams yet.</p>';
   renderExamDetail();
+  renderPublishPanel();
 }
 async function saveExam(){
   var subj = $('exmSubject').value, title = $('exmTitle').value.trim();
@@ -4974,6 +5160,7 @@ async function saveExam(){
   if(!fbNeedLive()){ setMsg('exmMsg', 'Live data is unavailable. Exams need the live database.', 'err'); return; }
   var rec = {subject:subj, title:title, totalQuestions:q, totalMarks:tm, date:date, topN:topN,
     createdBy:fb.user ? fb.user.uid : '', createdByName:fb.userName || '', updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  if(!editingExam) rec.publishedRolls = [];
   try{
     if(editingExam){
       await fb.db.collection('academy_exams').doc(editingExam).update(rec);
@@ -5024,25 +5211,144 @@ async function delExam(id){
 }
 function openMarks(examId){ openExamId = examId; renderExamDetail(); var el = $('exmMarks'); if(el) el.scrollIntoView({behavior:'smooth'}); }
 function openExamResults(examId){ openExamId = examId; renderExamDetail(); var el = $('exmResults'); if(el) el.scrollIntoView({behavior:'smooth'}); }
+var openPublishExamId = null;
+function openPublish(examId){ openPublishExamId = examId; renderPublishPanel(); var el = $('exmPublish'); if(el) el.scrollIntoView({behavior:'smooth'}); }
+function renderPublishPanel(){
+  var el = $('exmPublish'); if(!el) return;
+  var ex = openPublishExamId ? fbData.exams.find(function(x){ return x.id === openPublishExamId; }) : null;
+  if(!ex){ el.innerHTML = ''; return; }
+  var studs = examStudents(ex);
+  var pubRolls = publishedRollsOf(ex);
+  var pubCount = studs.filter(function(s){ return pubRolls.indexOf(normRoll(s.roll)) >= 0; }).length;
+  var groups = [];
+  studs.forEach(function(s){ if(s.group && groups.indexOf(s.group) < 0) groups.push(s.group); });
+  var notPub = studs.filter(function(s){ return pubRolls.indexOf(normRoll(s.roll)) < 0; });
+  var h = '<h4 style="margin:6px 0">Publish Results — ' + esc(ex.title) + ' (' + esc(ex.subject) + ')</h4>'
+    + '<p class="note" style="margin:4px 0">Enter and save marks first, then publish. Students and parents see marks only after you publish them. Published: <b>' + pubCount + ' of ' + studs.length + '</b> students.</p>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0">'
+    + '<button class="btn small" type="button" onclick="publishAll(\'' + ex.id + '\')">Publish All</button>'
+    + '<select id="pubGroup" style="width:auto">' + groups.map(function(g){ return '<option>' + esc(g) + '</option>'; }).join('') + '</select>'
+    + '<button class="btn small outline" type="button" onclick="publishGroup(\'' + ex.id + '\')">Publish Group</button>'
+    + '<select id="pubStudent" style="width:auto">' + notPub.map(function(s){ return '<option value="' + esc(s.roll) + '">' + esc(s.name) + ' (' + esc(s.roll) + ')</option>'; }).join('') + '</select>'
+    + '<button class="btn small outline" type="button" onclick="publishStudent(\'' + ex.id + '\')">Publish Student</button>'
+    + '<button class="btn small outline" type="button" onclick="unpublishAll(\'' + ex.id + '\')">Unpublish All</button>'
+    + '</div>';
+  if(pubRolls.length){
+    h += '<p style="margin:6px 0"><b>Published:</b> ';
+    groups.forEach(function(g){
+      var members = studs.filter(function(s){ return s.group === g; });
+      if(members.length && members.every(function(s){ return pubRolls.indexOf(normRoll(s.roll)) >= 0; })){
+        h += '<span style="display:inline-block;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:12px;padding:2px 8px;margin:2px">' + esc(g) + ' ✓ <a href="javascript:void(0)" onclick="unpublishGroup(\'' + ex.id + '\',\'' + esc(g) + '\')" title="Unpublish this group">×</a></span> ';
+      }
+    });
+    studs.forEach(function(s){
+      if(pubRolls.indexOf(normRoll(s.roll)) < 0) return;
+      h += '<span style="display:inline-block;background:#e3f2fd;border:1px solid #90caf9;border-radius:12px;padding:2px 8px;margin:2px">' + esc(s.name) + ' (' + esc(s.roll) + ') <a href="javascript:void(0)" onclick="unpublishRoll(\'' + ex.id + '\',\'' + esc(s.roll) + '\')" title="Unpublish this student">×</a></span> ';
+    });
+    h += '</p>';
+  }
+  el.innerHTML = h;
+}
+async function setExamPublished(examId, rolls, label){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  if(!fbNeedLive()){ setMsg('exmMsg', 'Live data is unavailable. Publishing needs the live database.', 'err'); return; }
+  var uniq = [];
+  rolls.forEach(function(r){ var u = normRoll(r); if(u && uniq.indexOf(u) < 0) uniq.push(u); });
+  try{
+    await fb.db.collection('academy_exams').doc(examId).update({publishedRolls:uniq});
+    ex.publishedRolls = uniq;
+    auditLog('publish', label + ' — ' + ex.title + ' (' + ex.subject + ').', 'exam', examId);
+    setMsg('exmMsg', label + '.', 'ok');
+    renderExams();
+  }catch(e){ setMsg('exmMsg', 'Could not publish: ' + fbErrText(e), 'err'); }
+}
+function publishAll(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  var rolls = publishedRollsOf(ex).concat(examStudents(ex).map(function(s){ return s.roll; }));
+  setExamPublished(examId, rolls, 'Published all ' + examStudents(ex).length + ' students for ' + ex.title);
+}
+function publishGroup(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  var g = $('pubGroup') ? $('pubGroup').value : '';
+  if(!g){ setMsg('exmMsg', 'Please pick a group first.', 'err'); return; }
+  var rolls = publishedRollsOf(ex).concat(examStudents(ex).filter(function(s){ return s.group === g; }).map(function(s){ return s.roll; }));
+  setExamPublished(examId, rolls, 'Published group ' + g + ' for ' + ex.title);
+}
+function publishStudent(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  var r = $('pubStudent') ? $('pubStudent').value : '';
+  if(!r){ setMsg('exmMsg', 'Please pick a student first.', 'err'); return; }
+  var rolls = publishedRollsOf(ex).concat([r]);
+  setExamPublished(examId, rolls, 'Published ' + r + ' for ' + ex.title);
+}
+function unpublishAll(examId){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  if(!confirm('Unpublish all results for ' + ex.title + '? Students and parents will no longer see any marks for this exam.')) return;
+  setExamPublished(examId, [], 'Unpublished all students for ' + ex.title);
+}
+function unpublishRoll(examId, roll){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  setExamPublished(examId, publishedRollsOf(ex).filter(function(r){ return normRoll(r) !== normRoll(roll); }), 'Unpublished ' + roll + ' for ' + ex.title);
+}
+function unpublishGroup(examId, group){
+  var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
+  var rolls = publishedRollsOf(ex).filter(function(r){
+    var s = examStudents(ex).find(function(x){ return normRoll(x.roll) === normRoll(r); });
+    return !(s && s.group === group);
+  });
+  setExamPublished(examId, rolls, 'Unpublished group ' + group + ' for ' + ex.title);
+}
+function mkRowMatches(name, roll, q){
+  q = (q || '').trim().toLowerCase(); if(!q) return true;
+  return (name || '').toLowerCase().indexOf(q) >= 0 || (roll || '').toLowerCase().indexOf(q) >= 0;
+}
+function mkCountText(ex){
+  var studs = examStudents(ex);
+  var entered = studs.filter(function(s){ return fbData.marks.some(function(m){ return m.examId === ex.id && normRoll(m.roll) === normRoll(s.roll); }); }).length;
+  return entered + ' of ' + studs.length + ' entered';
+}
+function mkTableHTML(ex, pfx){
+  var studs = examStudents(ex);
+  var h = '<h4 style="margin:6px 0">Enter Marks — ' + esc(ex.title) + ' (' + esc(ex.subject) + ', ' + ex.totalMarks + ' marks)</h4>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0"><input id="' + pfx + 'MkSearch" type="text" placeholder="Search name or roll…" style="flex:1;min-width:180px" oninput="filterMkRows(\'' + pfx + '\')"><span class="note" id="' + pfx + 'MkCount" style="margin:0">' + mkCountText(ex) + '</span></div>'
+    + '<div class="table-scroll"><table><thead><tr><th>Roll</th><th>Student</th><th>Obtained (out of ' + ex.totalMarks + ')</th></tr></thead><tbody>';
+  studs.forEach(function(s){
+    var mk = fbData.marks.find(function(m){ return m.examId === ex.id && normRoll(m.roll) === normRoll(s.roll); });
+    h += '<tr data-mk-row data-mk-name="' + esc((s.name || '').toLowerCase()) + '" data-mk-roll="' + esc(s.roll) + '"><td>' + esc(s.roll) + '</td><td>' + esc(s.name) + '</td><td><input type="number" min="0" max="' + ex.totalMarks + '" data-mk-roll="' + esc(s.roll) + '" value="' + (mk ? mk.obtained : '') + '" style="width:110px"></td></tr>';
+  });
+  h += '</tbody></table></div><div style="margin-top:10px"><button class="btn small" type="button" onclick="saveMarks(\'' + ex.id + '\',\'' + pfx + '\')">Save Marks</button></div>';
+  return h;
+}
+function filterMkRows(pfx){
+  var box = $(pfx + 'MkSearch'); if(!box) return;
+  var q = box.value || '';
+  var body = $(pfx === 'tMk' ? 'tMkBody' : 'exmMarks'); if(!body) return;
+  var rows = body.querySelectorAll ? body.querySelectorAll('[data-mk-row]') : [];
+  var shown = 0, entered = 0, total = 0;
+  rows.forEach(function(tr){
+    var ok = mkRowMatches(tr.getAttribute('data-mk-name') || '', tr.getAttribute('data-mk-roll') || '', q);
+    tr.style.display = ok ? '' : 'none';
+    if(ok) shown++;
+  });
+  var inputs = body.querySelectorAll ? body.querySelectorAll('[data-mk-roll]') : [];
+  inputs.forEach(function(inp){ total++; if((inp.value || '').trim() !== '') entered++; });
+  var c = $(pfx + 'MkCount'); if(c) c.textContent = entered + ' of ' + total + ' entered' + (q.trim() ? ' · ' + shown + ' shown' : '');
+}
 function renderExamDetail(){
   var ex = fbData.exams.find(function(x){ return x.id === openExamId; });
   var mEl = $('exmMarks'), rEl = $('exmResults');
   if(!ex){ if(mEl) mEl.innerHTML = ''; if(rEl) rEl.innerHTML = ''; renderExamCards(null); return; }
-  var studs = examStudents(ex);
-  var h = '<h4 style="margin:6px 0">Enter Marks — ' + esc(ex.title) + ' (' + esc(ex.subject) + ', ' + ex.totalMarks + ' marks)</h4><div class="table-scroll"><table><thead><tr><th>Roll</th><th>Student</th><th>Obtained (out of ' + ex.totalMarks + ')</th></tr></thead><tbody>';
-  studs.forEach(function(s){
-    var mk = fbData.marks.find(function(m){ return m.examId === ex.id && m.roll === s.roll; });
-    h += '<tr><td>' + esc(s.roll) + '</td><td>' + esc(s.name) + '</td><td><input type="number" min="0" max="' + ex.totalMarks + '" data-mk-roll="' + esc(s.roll) + '" value="' + (mk ? mk.obtained : '') + '" style="width:110px"></td></tr>';
-  });
-  h += '</tbody></table></div><div style="margin-top:10px"><button class="btn small" type="button" onclick="saveMarks(\'' + ex.id + '\')">Save Marks</button></div>';
-  if(mEl) mEl.innerHTML = h;
+  if(mEl) mEl.innerHTML = mkTableHTML(ex, 'exm');
   if(rEl) rEl.innerHTML = examResultsHTML(ex);
   renderExamCards(ex.id);
 }
-async function saveMarks(examId){
+async function saveMarks(examId, pfx){
   var ex = fbData.exams.find(function(x){ return x.id === examId; }); if(!ex) return;
-  if(!fbNeedLive()){ setMsg('exmMsg', 'Live data is unavailable.', 'err'); return; }
-  var inputs = document.querySelectorAll('[data-mk-roll]');
+  var isTeacher = (pfx === 'tMk');
+  var container = isTeacher ? 'tMkBody' : 'exmMarks';
+  var msgEl = isTeacher ? 'tMkMsg' : 'exmMsg';
+  if(!fbNeedLive()){ setMsg(msgEl, 'Live data is unavailable.', 'err'); return; }
+  var inputs = (typeof document !== 'undefined' && document.querySelectorAll) ? document.querySelectorAll('#' + container + ' [data-mk-roll]') : [];
   var batch = fb.db.batch(); var count = 0;
   inputs.forEach(function(inp){
     var roll = inp.getAttribute('data-mk-roll');
@@ -5059,9 +5365,9 @@ async function saveMarks(examId){
     fbData.marks = fbData.marks.filter(function(m){ return m.examId !== examId; });
     snap.forEach(function(d){ var m = d.data(); m.id = d.id; fbData.marks.push(m); });
     auditLog('marks', 'Marks entered for ' + ex.title + ' (' + count + ' students).', 'exam', examId);
-    setMsg('exmMsg', 'Saved ' + count + ' marks.', 'ok');
-    renderExams();
-  }catch(e){ setMsg('exmMsg', 'Could not save marks: ' + fbErrText(e), 'err'); }
+    setMsg(msgEl, 'Saved ' + count + ' marks.', 'ok');
+    if(isTeacher) renderTeacherMarks(); else renderExams();
+  }catch(e){ setMsg(msgEl, 'Could not save marks: ' + fbErrText(e), 'err'); }
 }
 function examResultsHTML(ex){
   var studs = examStudents(ex);
@@ -5083,7 +5389,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.11: result cards ---------- */
+/* ---------- v1.4.13: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -5205,6 +5511,22 @@ function renderTeacherResults(){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printTeacherResults()">Print Results</button></div>';
   el.innerHTML = h;
 }
+/* ---------- v1.4.13: teacher marks entry (their subjects only, no publish controls) ---------- */
+function teacherExamList(t){
+  var subs = (t.subjects && t.subjects.length ? t.subjects : [t.subject || t.course || '']);
+  return (fbData.exams || []).filter(function(x){ return subs.indexOf(x.subject) >= 0; });
+}
+function renderTeacherMarks(){
+  var sel = $('tMkExam'); var body = $('tMkBody'); if(!sel || !body) return;
+  if(!currentTeacher){ body.innerHTML = '<p class="note">Please log in as a teacher.</p>'; return; }
+  var exams = teacherExamList(currentTeacher);
+  var cur = sel.value;
+  sel.innerHTML = exams.map(function(x){ return '<option value="' + x.id + '">' + esc(x.title) + ' — ' + esc(x.subject) + ' (' + esc(x.date) + ')</option>'; }).join('') || '<option value="">No exams for your subjects yet</option>';
+  if(cur && exams.some(function(x){ return x.id === cur; })) sel.value = cur;
+  var ex = fbData.exams.find(function(x){ return x.id === sel.value; });
+  if(!ex){ body.innerHTML = '<p class="note">Pick an exam to enter marks.</p>'; return; }
+  body.innerHTML = mkTableHTML(ex, 'tMk');
+}
 function printTeacherResults(){
   var exId = $('tResExam') ? $('tResExam').value : '';
   var ex = fbData.exams.find(function(x){ return x.id === exId; }); if(!ex) return;
@@ -5235,7 +5557,7 @@ function challanArrearsFor(st, month){
   if(!hasAny && !familyChallansFor(st.roll).length && num(st.old_dues) > 0) lines.push({month:'', amount:num(st.old_dues), label:'Previous dues'});
   return lines;
 }
-/* v1.4.11: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
+/* v1.4.13: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
 function prevMonthOf(month){
   var m = String(month || '').match(/^(\d{4})-(\d{2})$/);
   if(!m) return '';
@@ -5243,13 +5565,13 @@ function prevMonthOf(month){
   if(mo === 0){ y--; mo = 12; }
   return y + '-' + ('0' + mo).slice(-2);
 }
-/* v1.4.11: old dues from a CSV import / arrears upload become an automatic custom
+/* v1.4.13: old dues from a CSV import / arrears upload become an automatic custom
    challan for the PREVIOUS month with a single 'Previous dues' line. Create-or-update:
    an unpaid auto challan for the same student+month is updated in place, never
    duplicated; if payments were already recorded on it, it is left untouched and the
    caller is warned. Live only — same guard as saveStudentToFb. When the monthly
    challan is later generated, this balance flows in as a 'Balance of <month>' arrears
-   line and the v1.4.8 carried-out logic keeps it counted exactly once. */
+   line and the carried-out logic keeps it counted exactly once. */
 function ensureOldDuesChallan(st, amount, warnings){
   if(!st || !st.roll || num(amount) <= 0) return;
   if(typeof fb === 'undefined' || !fb.ready || fb.offline || !fb.db) return;
@@ -5363,7 +5685,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.11 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.13 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -5564,11 +5886,11 @@ function renderAdminFinance(){
   if(sEl) sEl.textContent = fb.ready ? ('Live database connected (' + (fb.role || 'signed out') + '). Data is shared across all devices.') : 'Live database not connected — showing the saved copy from this browser.';
   updateMigrateBtn();
 }
-function studentFeeHTML(st){
+function studentFeeHTML(st, pfx){
   if(!st) return '';
   var pays = fbData.payments.filter(function(p){ return p.student_roll_no === st.roll; }).sort(function(a, b){ return (a.date < b.date ? 1 : -1); });
   var bal = studentDue(st);
-  var html = '<h4>My Fees — ' + FB_MONTH + '</h4>'
+  var html = '<div class="portal-section" id="sec-' + (pfx || '') + 'fees"><h4>My Fees — ' + FB_MONTH + '</h4>'
     + '<p>Monthly fee: <b>' + rs(effectiveFee(st)) + '</b> · Received this month: <b>' + rs(receivedThisMonth(st.roll, FB_MONTH)) + '</b> · <b>Balance due: ' + rs(bal) + '</b></p>'
     + (num(st.scholarship_fee) > 0 ? '<p><b>Scholarship:</b> ' + effectiveSubjects(st).length + ' subject(s) × ' + rs(num(st.scholarship_fee)) + ' per subject (base ' + rs(num(fbData.feePerSubject) || 2000) + ')</p>' : '');
   var chs = allChallansFor(st.roll);
@@ -5587,7 +5909,7 @@ function studentFeeHTML(st){
   } else {
     html += '<p>Old dues: <b>' + rs(st.old_dues) + '</b> · <span class="note">No challan created for you yet this month — the admin creates challans at the start of each month.</span></p>';
   }
-  html += '<h4>My Payment History</h4>';
+  html += '<h4 id="sec-' + (pfx || '') + 'receipts">My Payment History</h4>';
   if(!pays.length) html += '<p class="note">No fee payments recorded yet.</p>';
   else {
     html += '<div class="table-scroll"><table class="marks"><thead><tr><th>Date</th><th>Receipt</th><th>Received</th><th>Status</th><th></th></tr></thead><tbody>';
@@ -5595,7 +5917,8 @@ function studentFeeHTML(st){
     html += '</tbody></table></div>';
   }
   var attD = attDaysFor(st.roll, FB_MONTH);
-  html += '<h4>My Attendance — ' + FB_MONTH + '</h4>' + (attD.total ? '<p>Present <b>' + attD.present + '</b> out of <b>' + attD.total + '</b> marked days (' + Math.round(attD.present / attD.total * 100) + '%)</p>' : '<p class="note">No attendance recorded for you this month yet.</p>');
+  html += '<h4 id="sec-' + (pfx || '') + 'attendance">My Attendance — ' + FB_MONTH + '</h4>' + (attD.total ? '<p>Present <b>' + attD.present + '</b> out of <b>' + attD.total + '</b> marked days (' + Math.round(attD.present / attD.total * 100) + '%)</p>' : '<p class="note">No attendance recorded for you this month yet.</p>');
+  html += '</div>';
   return html;
 }
 
@@ -5664,6 +5987,7 @@ function bindV12(){
   b = $('exmCancelBtn'); if(b) b.addEventListener('click', cancelExamEdit);
   b = $('tResExam'); if(b) b.addEventListener('change', renderTeacherResults);
   b = $('tResGroup'); if(b) b.addEventListener('change', renderTeacherResults);
+  b = $('tMkExam'); if(b) b.addEventListener('change', renderTeacherMarks);
   b = $('ahwCancelBtn'); if(b) b.addEventListener('click', cancelHomeworkAdmin);
   b = $('ahwSubject'); if(b) b.addEventListener('change', ahwTargetOptions);
 $('feeSaveBtn').addEventListener('click', function(){ savePayment('fee'); });
@@ -5884,7 +6208,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.11: group dropdown ---------- */
+/* ---------- v1.4.13: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -5912,7 +6236,7 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* ---------- v1.4.11: scholarship ---------- */
+/* ---------- v1.4.13: scholarship ---------- */
 function scholarshipInfo(st){
   var rate = num(st && st.scholarship_fee);
   if(rate <= 0) return null;
@@ -5934,7 +6258,7 @@ function suggestFee(){
   var sch = num($('seScholarship').value);
   feeEl.value = n * (sch > 0 ? sch : (num(fbData.feePerSubject) || 2000));
 }
-/* ---------- v1.4.11: time slots ---------- */
+/* ---------- v1.4.13: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -5973,7 +6297,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.11: new student flow ---------- */
+/* ---------- v1.4.13: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -6015,7 +6339,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.11: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.13: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -6172,7 +6496,7 @@ async function leaveStudent(){
   var sch = $('seScholarship'); if(sch) sch.addEventListener('input', suggestFee);
 })();
 
-/* ---------- v1.4.11: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.13: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -6219,7 +6543,7 @@ function waReminderBtn(st, amount){
 /* --- families (item A) --- */
 function familyKeyOf(st){ var f = normPhone(st.father_phone || ''); return f || ''; }
 function parseAdmDateNum(s){ var d = parseAdmDate(s); return d ? d : '9999-99-99'; }
-/* v1.4.11: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
+/* v1.4.13: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
    only the fallback when a member has no usable DOB. elderKey ranks DOB ('0') ahead of
    admission date ('1') ahead of no date ('2'), so within a rank the earliest date wins and
    a member with a DOB always beats one known only by admission date. If neither member has
@@ -6301,7 +6625,7 @@ function familyMemberShare(c, roll, map){
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
   var balance = Math.max(0, total - paid);
-  /* v1.4.11: a member share already rolled into a later family challan is not owed twice. */
+  /* v1.4.13: a member share already rolled into a later family challan is not owed twice. */
   balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
   return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
@@ -6623,7 +6947,7 @@ function renderBoardFeeList(){
   el.innerHTML = h;
 }
 
-/* ---------- v1.4.11: students per fee period ---------- */
+/* ---------- v1.4.13: students per fee period ---------- */
 /* How many students were enrolled in a period. The current period counts live: Active students
    whose feePeriod is this period, or blank (created before periods existed — they belong to the
    current period). Old periods keep the snapshot taken at migration time (the Active students who
@@ -6693,7 +7017,7 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
-    /* v1.4.11: snapshot the old period's enrolment before the students move — after migration
+    /* v1.4.13: snapshot the old period's enrolment before the students move — after migration
        every student carries the new period, so without this the old row would show 0 students. */
     fbData.feePeriodStudents = fbData.feePeriodStudents || {};
     fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
@@ -6707,7 +7031,7 @@ async function migrateFeePeriod(){
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.11', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.13', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
     fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
@@ -6951,7 +7275,7 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.11 wiring --- */
+/* --- v1.4.13 wiring --- */
 (function(){
   var b;
   b = $('fsSaveBtn'); if(b) b.addEventListener('click', saveFeeSettings);
