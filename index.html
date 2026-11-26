@@ -246,7 +246,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.7: mobile admin card system ---------- */
+/* ---------- v1.4.8: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -2161,7 +2161,7 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.7: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.8: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
       father_name:r.father_name || '', caste:r.caste || '', father_phone:(r.father_phone && validPhone(fatherPhone)) ? fatherPhone : (r.father_phone || ''), address:r.address || '',
@@ -2560,7 +2560,7 @@ function shareBase(p, basis){
   if(basis === 'received+adm') r += num(p.admission_fee);
   return r;
 }
-var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], topics:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}, morningPartnerPct:0, feePerSubject:2000, feePeriod:currentFeePeriod(), feePeriods:[], boardFee:0};
+var fbData = {payments:[], teacherPayments:[], drawings:[], expenses:[], attendance:[], months:{}, teachers:[], subjects:loadSubjects(), homework:[], challans:[], exams:[], marks:[], audit:[], profiles:[], leaves:[], topics:[], shareRules:{English:{teacherPct:70, basis:'received+adm'}, Maths:{teacherPct:70, basis:'received'}, Biology:{teacherPct:75, basis:'received'}}, morningPartnerPct:0, feePerSubject:2000, feePeriod:currentFeePeriod(), feePeriods:[], boardFee:0, feePeriodStudents:{}};
 try{ var _sr = JSON.parse(localStorage.getItem(SHARE_LS_KEY) || 'null'); if(_sr) fbData.shareRules = normShareRules(_sr); }catch(e){}
 var MORNING_PCT_LS_KEY = 'fscc_morning_pct_v1';
 try{ var _mp = JSON.parse(localStorage.getItem(MORNING_PCT_LS_KEY) || 'null'); if(_mp != null) fbData.morningPartnerPct = Math.max(0, Math.min(100, num(_mp))); }catch(e){}
@@ -2679,6 +2679,7 @@ function applySiteDoc(d){
   if(d.feePerSubject != null && num(d.feePerSubject) > 0){ fbData.feePerSubject = num(d.feePerSubject); try{ localStorage.setItem(FEE_PER_SUBJECT_LS_KEY, JSON.stringify(fbData.feePerSubject)); }catch(e){} }
   if(d.feePeriod) fbData.feePeriod = d.feePeriod;
   if(d.feePeriods && d.feePeriods.length) fbData.feePeriods = d.feePeriods.slice();
+  if(d.feePeriodStudents) fbData.feePeriodStudents = d.feePeriodStudents;
   if(d.boardFee != null) fbData.boardFee = num(d.boardFee);
   if(d.manualFamilies) data.manualFamilies = d.manualFamilies;
   if(d.familyOverrides) data.familyOverrides = d.familyOverrides;
@@ -2723,7 +2724,7 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
 function saveReceiptNote(){
@@ -3143,16 +3144,78 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
+/* ---------- v1.4.8: carried-forward balances — every rupee counted exactly once ---------- */
+/* When a new challan is created, unpaid balances of earlier challans are rolled into it as
+   arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
+   then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
+   scans all open challans once and records, per (roll, month, kind), how much was rolled
+   forward. Effective balance = raw balance minus carried-out amount. This is self-healing:
+   voiding the newer challan drops its lines from the map, so the old balance counts again
+   automatically; reversing a payment raises the raw balance, and only the uncarried remainder
+   reappears as due. A challan is never edited in place for this — no data migration needed. */
+function carriedOutMap(){
+  var map = {};
+  (fbData.challans || []).forEach(function(c2){
+    if(!c2 || c2.status === 'void' || c2.status === 'closed') return;
+    function addLines(lines, roll){
+      (lines || []).forEach(function(a){
+        if(!a || !a.month) return;
+        var kind = null;
+        if(a.label && a.label.indexOf('Family challan balance of') === 0) kind = 'fam';
+        else if(a.label && a.label.indexOf('Balance of') === 0) kind = 'ind';
+        if(!kind) return;
+        var k = String(roll).toUpperCase() + '|' + a.month + '|' + kind;
+        map[k] = (map[k] || 0) + num(a.amount);
+      });
+    }
+    if(c2.family){ (c2.members || []).forEach(function(m){ addLines(m.arrears, m.roll); }); }
+    else addLines(c2.arrears, c2.roll);
+  });
+  return map;
+}
+function carriedOutFor(roll, month, kind, map){
+  var m = map || carriedOutMap();
+  return m[String(roll || '').toUpperCase() + '|' + month + '|' + kind] || 0;
+}
+/* How much of this challan's balance was already rolled into a later challan (0 if none). */
+function challanCarriedOut(c, map){
+  if(!c) return 0;
+  if(c.family){
+    var t = 0;
+    (c.members || []).forEach(function(m){ t += carriedOutFor(m.roll, c.month, 'fam', map); });
+    return t;
+  }
+  return carriedOutFor(c.roll, c.month, 'ind', map);
+}
+function effectiveChallanBalance(c, map){
+  if(!c || c.status === 'void' || c.status === 'closed') return 0;
+  if(c.family){
+    var t = 0;
+    (c.members || []).forEach(function(m){ var sh = familyMemberShare(c, m.roll, map); if(sh) t += sh.balance; });
+    return t;
+  }
+  var raw = Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
+  return Math.max(0, raw - carriedOutFor(c.roll, c.month, 'ind', map));
+}
+/* True when the whole remaining balance of this challan already lives inside a newer challan. */
+function isFullyCarried(c, map){
+  if(!c || c.status === 'void' || c.status === 'closed') return false;
+  return (num(c.total) - num(c.paid) - num(c.discount)) > 0 && effectiveChallanBalance(c, map) === 0;
+}
+function challanDisplayStatus(c, map){
+  return isFullyCarried(c, map) ? 'carried' : c.status;
+}
 function studentChallans(roll){
   return fbData.challans.filter(function(c){ return c.roll === roll && c.status !== 'void' && c.status !== 'closed'; });
 }
 function studentDue(st){
+  var map = carriedOutMap();
   var chs = studentChallans(st.roll);
   var fam = familyChallansFor(st.roll);
   if(!chs.length && !fam.length) return feeBalance(st, FB_MONTH);
   var t = 0;
-  chs.forEach(function(c){ if(!c.family) t += challanBalance(c); }); /* family challans count by member share below, not in full — the head would double-count */
-  fam.forEach(function(c){ var sh = familyMemberShare(c, st.roll); if(sh) t += sh.balance; });
+  chs.forEach(function(c){ if(!c.family) t += effectiveChallanBalance(c, map); }); /* family challans count by member share below, not in full — the head would double-count; carried-forward balances count once, inside the newer challan */
+  fam.forEach(function(c){ var sh = familyMemberShare(c, st.roll, map); if(sh) t += sh.balance; });
   return t;
 }
 function attDayStatus(statuses){
@@ -3186,7 +3249,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-/* ---------- v1.4.7: shifts + morning partner share ---------- */
+/* ---------- v1.4.8: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -3306,7 +3369,7 @@ function fillFeeForm(p, roll){
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.7 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.8 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -3322,6 +3385,39 @@ function challanLinesForReceipt(c){
     });
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
+}
+/* ---------- v1.4.8: oldest-first payment allocation ---------- */
+/* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
+   the student's own open challans, oldest first, so the amount due drops by exactly the amount
+   paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
+   in memory (the caller persists them). Family challans are NOT auto-allocated here: a family
+   settles oldest-first as one bill, so a per-member direct payment cannot be attributed to the
+   right member — collect the family challan itself for family payments. */
+function allocatePaymentToChallans(st, amount, discount){
+  var map = carriedOutMap();
+  var out = [];
+  var left = num(amount);
+  var discLeft = num(discount);
+  var entries = [];
+  studentChallans(st.roll).forEach(function(c){
+    if(c.family) return;
+    var b = effectiveChallanBalance(c, map);
+    if(b > 0) entries.push({c:c, balance:b});
+  });
+  entries.sort(function(a, b){ return (a.c.month < b.c.month ? -1 : (a.c.month > b.c.month ? 1 : 0)); });
+  entries.forEach(function(e){
+    if(left <= 0 && discLeft <= 0) return;
+    var take = Math.min(left, e.balance);
+    var disc = 0;
+    if(out.length === 0 && discLeft > 0){ disc = discLeft; discLeft = 0; }
+    if(take <= 0 && disc <= 0) return;
+    e.c.paid = num(e.c.paid) + take;
+    e.c.discount = num(e.c.discount) + disc;
+    e.c.status = (effectiveChallanBalance(e.c, map) <= 0) ? 'paid' : 'partial';
+    out.push({challanId:e.c.id, amount:take, discount:disc});
+    left -= take;
+  });
+  return out;
 }
 async function savePayment(p){
   var g = function(id){ return $(p + id); };
@@ -3360,10 +3456,22 @@ async function savePayment(p){
       if(_ch){
         _ch.paid = num(_ch.paid) + amount;
         _ch.discount = num(_ch.discount) + discount;
-        _ch.status = (challanBalance(_ch) <= 0) ? 'paid' : 'partial';
+        _ch.status = (effectiveChallanBalance(_ch) <= 0) ? 'paid' : 'partial';
         try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, discount:_ch.discount, status:_ch.status}); }catch(e){}
       }
       pendingChallanId = null;
+    } else {
+      /* v1.4.8: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      var _alloc = allocatePaymentToChallans(st, amount, discount);
+      if(_alloc.length){
+        rec.challanId = _alloc[0].challanId;
+        rec.challanAlloc = _alloc;
+        for(var _ai = 0; _ai < _alloc.length; _ai++){
+          var _ac = fbData.challans.find(function(x){ return x.id === _alloc[_ai].challanId; });
+          if(_ac){ try{ await fb.db.collection('academy_challans').doc(_ac.id).update({paid:num(_ac.paid), discount:num(_ac.discount), status:_ac.status}); }catch(e){} }
+        }
+        try{ await fb.db.collection('academy_payments').doc(rec.id).update({challanId:rec.challanId, challanAlloc:rec.challanAlloc}); }catch(e){}
+      }
     }
     auditLog('fee', 'Fee collected: ' + st.name + ' (' + st.roll + ') paid ' + rs(amount + admFee) + ', receipt ' + receiptNo + '.', 'payment', receiptNo);
     setMsg(p + 'Msg', 'Fee saved. Receipt ' + receiptNo + ' — ' + st.name + ' paid ' + rs(amount + admFee) + '. Balance now ' + rs(balanceAfter) + '.', 'ok');
@@ -3419,12 +3527,23 @@ async function reversePayment(id){
   try{
     await fb.db.collection('academy_payments').doc(id).update({reversed:true, reversedBy:fb.userName || 'admin', reversedAt:firebase.firestore.FieldValue.serverTimestamp(), reverseReason:reason});
     p.reversed = true;
-    if(p.challanId){
+    if(p.challanAlloc && p.challanAlloc.length){
+      for(var _ri = 0; _ri < p.challanAlloc.length; _ri++){
+        var _ra = p.challanAlloc[_ri];
+        var _rch = fbData.challans.find(function(x){ return x.id === _ra.challanId; });
+        if(_rch){
+          _rch.paid = Math.max(0, num(_rch.paid) - num(_ra.amount));
+          _rch.discount = Math.max(0, num(_rch.discount) - num(_ra.discount));
+          _rch.status = (effectiveChallanBalance(_rch) <= 0) ? 'paid' : (_rch.paid > 0 || num(_rch.discount) > 0 ? 'partial' : 'unpaid');
+          try{ await fb.db.collection('academy_challans').doc(_rch.id).update({paid:_rch.paid, discount:_rch.discount, status:_rch.status}); }catch(e){}
+        }
+      }
+    } else if(p.challanId){
       var _ch = fbData.challans.find(function(x){ return x.id === p.challanId; });
       if(_ch){
         _ch.paid = Math.max(0, num(_ch.paid) - num(p.amount_received));
         _ch.discount = Math.max(0, num(_ch.discount) - num(p.discount));
-        _ch.status = (challanBalance(_ch) <= 0) ? 'paid' : (_ch.paid > 0 || num(_ch.discount) > 0 ? 'partial' : 'unpaid');
+        _ch.status = (effectiveChallanBalance(_ch) <= 0) ? 'paid' : (_ch.paid > 0 || num(_ch.discount) > 0 ? 'partial' : 'unpaid');
         try{ await fb.db.collection('academy_challans').doc(_ch.id).update({paid:_ch.paid, discount:_ch.discount, status:_ch.status}); }catch(e){}
       }
     }
@@ -3444,7 +3563,7 @@ function renderDues(course){
   rows.sort(function(a, b){ return studentDue(b) - studentDue(a); });
   var html = '<div class="table-scroll"><table><thead><tr><th>Roll</th><th>Name</th><th>Course</th><th>Monthly Fee</th><th>Arrears (by month)</th><th>Received</th><th>Balance Due</th><th>Remind</th></tr></thead><tbody>';
   rows.forEach(function(st){
-    var arrTxt = studentChallans(st.roll).filter(function(c){ return challanBalance(c) > 0; }).map(function(c){ return c.month + ': ' + rs(challanBalance(c)); }).join(' · ') || rs(st.old_dues);
+    var arrTxt = studentChallans(st.roll).filter(function(c){ return effectiveChallanBalance(c) > 0; }).map(function(c){ return c.month + ': ' + rs(effectiveChallanBalance(c)); }).join(' · ') || rs(st.old_dues);
     html += '<tr><td>' + esc(st.roll) + '</td><td><b>' + esc(st.name) + '</b></td><td>' + esc(st.course || st.className || '') + '</td><td>' + rs(effectiveFee(st)) + '</td><td>' + esc(arrTxt) + '</td><td>' + rs(receivedThisMonth(st.roll, FB_MONTH)) + '</td><td><b>' + rs(studentDue(st)) + '</b></td><td>' + waReminderBtn(st, studentDue(st)) + '</td></tr>';
   });
   html += '</tbody></table></div><p style="margin-top:10px"><b>Total dues: ' + rs(total) + '</b> (' + rows.length + ' students owe fees this month)</p>';
@@ -3832,7 +3951,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.7: mobile admin card menu ---------- */
+/* ---------- v1.4.8: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4058,7 +4177,7 @@ function renderReports(){
     tEl.innerHTML = html;
   }
 }
-/* ---------- v1.4.7: morning partner share ---------- */
+/* ---------- v1.4.8: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -4076,7 +4195,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.7: fee per subject + scholarship ---------- */
+/* ---------- v1.4.8: fee per subject + scholarship ---------- */
 function saveFeePerSubject(){
   var v = num($('feePerSubject').value);
   if(v <= 0){ setMsg('fpsMsg', 'Enter a fee above 0.', 'err'); return; }
@@ -4089,7 +4208,7 @@ function bindFeePerSubject(){
   var b = $('btnFeePerSubject'); if(b) b.addEventListener('click', saveFeePerSubject);
   var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
 }
-/* ---------- v1.4.7: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.8: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -4150,7 +4269,7 @@ function arrearsSheetHTML(){
   } else {
     html += '<div class="table-scroll"><table><thead><tr><th>Roll</th><th>Name</th><th>Course</th><th>Monthly Fee</th><th>Arrears (by month)</th><th>Received</th><th>Balance Due</th><th>Remind</th></tr></thead><tbody>';
     rows.forEach(function(st){
-      var arrTxt = studentChallans(st.roll).filter(function(c){ return challanBalance(c) > 0; }).map(function(c){ return c.month + ': ' + rs(challanBalance(c)); }).join(' · ') || rs(st.old_dues);
+      var arrTxt = studentChallans(st.roll).filter(function(c){ return effectiveChallanBalance(c) > 0; }).map(function(c){ return c.month + ': ' + rs(effectiveChallanBalance(c)); }).join(' · ') || rs(st.old_dues);
       html += '<tr><td>' + esc(st.roll) + '</td><td><b>' + esc(st.name) + '</b></td><td>' + esc(st.course || st.className || '') + '</td><td>' + rs(effectiveFee(st)) + '</td><td>' + esc(arrTxt) + '</td><td>' + rs(receivedThisMonth(st.roll, FB_MONTH)) + '</td><td><b>' + rs(studentDue(st)) + '</b></td><td>' + waReminderBtn(st, studentDue(st)) + '</td></tr>';
     });
     html += '</tbody></table></div><p style="margin-top:10px"><b>Total arrears: ' + rs(total) + '</b> (' + rows.length + ' students)</p>';
@@ -4891,7 +5010,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.7: result cards ---------- */
+/* ---------- v1.4.8: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -5026,15 +5145,16 @@ function printTeacherResults(){
 var pendingChallanId = null;
 var chCustomLines = [];
 function challanArrearsFor(st, month){
+  var map = carriedOutMap();
   var lines = [];
   var prior = fbData.challans.filter(function(c){ return c.roll === st.roll && !c.family && c.status !== 'void' && c.status !== 'closed' && c.month < month; });
   prior.forEach(function(c){
-    var bal = challanBalance(c);
+    var bal = effectiveChallanBalance(c, map);
     if(bal > 0) lines.push({month:c.month, amount:bal, label:'Balance of ' + c.month});
   });
   familyChallansFor(st.roll).forEach(function(c){
     if(c.month < month){
-      var sh = familyMemberShare(c, st.roll);
+      var sh = familyMemberShare(c, st.roll, map);
       if(sh && sh.balance > 0) lines.push({month:c.month, amount:sh.balance, label:'Family challan balance of ' + c.month});
     }
   });
@@ -5123,7 +5243,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.7 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.8 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -5172,6 +5292,7 @@ async function createCustomChallan(){
 async function voidChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
   if(num(c.paid) > 0){ alert('This challan already has payments on it. Reverse those payments first, then void the challan.'); return; }
+  if(challanCarriedOut(c) > 0){ alert('This challan balance was carried forward into a newer challan - void the newer challan first, then this one.'); return; }
   var reason = prompt('Void this challan? Type a short reason (optional):', '');
   if(reason === null) return;
   if(!fbNeedLive()) return;
@@ -5207,12 +5328,12 @@ function challanSlipHTML(c){
   rows += '<tr><td><b>Total payable</b></td><td><b>' + rs(c.total) + '</b></td></tr>'
     + (num(c.discount) > 0 ? '<tr><td>Discount</td><td>' + rs(c.discount) + '</td></tr>' : '')
     + '<tr><td>Paid so far</td><td>' + rs(c.paid) + '</td></tr>'
-    + '<tr><td><b>Balance</b></td><td><b>' + rs(challanBalance(c)) + '</b></td></tr>';
+    + '<tr><td><b>Balance</b></td><td><b>' + rs(effectiveChallanBalance(c)) + '</b></td></tr>';
   return '<div class="receipt"><h3 style="margin:0;color:var(--blue)">Future Star Computer &amp; Tuition Center</h3>'
     + '<p style="margin:2px 0 12px">FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381</p>'
     + '<h3 style="margin:0;color:var(--blue)">Fee Challan — ' + esc(c.month) + '</h3>'
     + '<p><b>Challan No:</b> ' + esc(chNo) + ' &nbsp;·&nbsp; <b>Due date:</b> end of ' + esc(c.month) + '</p>'
-    + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Course:</b> ' + esc(st ? (st.course || st.className || '') : '') + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(c.status) + '</p>'
+    + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Course:</b> ' + esc(st ? (st.course || st.className || '') : '') + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(challanDisplayStatus(c)) + '</p>'
     + schNote
     + '<table class="marks"><tbody>' + rows + '</tbody></table>'
     + (c.note ? '<p>Note: ' + esc(c.note) + '</p>' : '')
@@ -5226,11 +5347,12 @@ function printChallan(id){
 }
 function collectForChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
+  if(effectiveChallanBalance(c) <= 0){ setMsg('feeMsg', 'This challan has no balance left - it was paid, or its balance was carried forward into a newer challan.', 'err'); return; }
   pendingChallanId = id;
   goAtab('fees');
   var rollEl = $('feeRoll'); if(rollEl){ rollEl.value = c.roll; fillFeeForm('fee', c.roll); }
-  var amtEl = $('feeAmount'); if(amtEl){ var bal = challanBalance(c); if(bal > 0) amtEl.value = bal; }
-  setMsg('feeMsg', 'Collecting against ' + (c.family ? 'family ' : '') + 'challan ' + c.month + ' — balance ' + rs(challanBalance(c)) + '. Save the fee to apply it to this challan.', 'ok');
+  var amtEl = $('feeAmount'); if(amtEl){ var bal = effectiveChallanBalance(c); if(bal > 0) amtEl.value = bal; }
+  setMsg('feeMsg', 'Collecting against ' + (c.family ? 'family ' : '') + 'challan ' + c.month + ' — balance ' + rs(effectiveChallanBalance(c)) + '. Save the fee to apply it to this challan.', 'ok');
 }
 function renderChallans(){
   var el = $('chList'); if(!el) return;
@@ -5245,6 +5367,7 @@ function renderChallans(){
     perSel.innerHTML = '<option value="">All periods</option>' + feePeriodList().map(function(p){ return '<option value="' + esc(p) + '"' + (p === curPer ? ' selected' : '') + '>' + esc(p) + '</option>'; }).join('');
     perFilter = perSel.value;
   }
+  var map = carriedOutMap();
   var list = fbData.challans.filter(function(c){ return c.month === month && (!perFilter || periodOf(c) === perFilter); }).sort(function(a, b){ return (a.studentName < b.studentName ? -1 : 1); });
   var h = '';
   if(!list.length) h = '<p class="note">No challans for ' + esc(month) + ' yet. Create them above — or one student at a time.</p>';
@@ -5252,15 +5375,15 @@ function renderChallans(){
     h = '<div class="table-scroll admin-table"><table><thead><tr><th>Student</th><th>Roll</th><th>Fee</th><th>Arrears</th><th>Total</th><th>Paid</th><th>Discount</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody>';
     var cards = '';
     list.forEach(function(c){
-      var bal = challanBalance(c);
+      var bal = effectiveChallanBalance(c, map);
       var arrTxt = (c.arrears || []).map(function(a){ var nm = (a.label && a.label.indexOf('Balance of') !== 0) ? a.label : (a.month || 'Previous'); return nm + ': ' + rs(a.amount); }).join(' · ') || '—';
-      h += '<tr><td><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + (c.family ? ' <span class="badge sample">family</span>' : '') + '</td><td>' + esc(c.roll) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td><b>' + rs(c.total) + '</b></td><td>' + rs(c.paid) + '</td><td>' + rs(c.discount) + '</td><td><b>' + rs(bal) + '</b></td><td>' + esc(c.status) + '</td><td style="white-space:nowrap">'
+      h += '<tr><td><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + (c.family ? ' <span class="badge sample">family</span>' : '') + '</td><td>' + esc(c.roll) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td><b>' + rs(c.total) + '</b></td><td>' + rs(c.paid) + '</td><td>' + rs(c.discount) + '</td><td><b>' + rs(bal) + '</b></td><td>' + esc(challanDisplayStatus(c, map)) + '</td><td style="white-space:nowrap">'
         + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
         + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
-        + (c.status !== 'void' && c.status !== 'closed' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
-        + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
+        + (c.status !== 'void' && c.status !== 'closed' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
+        + (c.status !== 'void' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
         + '</td></tr>';
-      cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + (c.family ? ' <span class="badge sample">family</span>' : '') + '<span class="mcard-pill">' + esc(c.status) + '</span></div>'
+      cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + (c.family ? ' <span class="badge sample">family</span>' : '') + '<span class="mcard-pill">' + esc(challanDisplayStatus(c, map)) + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(c.roll) + '</b></div>'
         + '<div class="mcard-row"><span>Month</span><b>' + esc(month) + '</b></div>'
         + '<div class="mcard-row"><span>Fee</span><b>' + rs(c.monthlyFee) + '</b></div>'
@@ -5270,8 +5393,8 @@ function renderChallans(){
         + '<div class="mcard-actions">'
         + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
         + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
-        + (c.status !== 'void' && c.status !== 'closed' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
-        + (c.status !== 'void' && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
+        + (c.status !== 'void' && c.status !== 'closed' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
+        + (c.status !== 'void' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
         + '</div></div>';
     });
     h += '</tbody></table></div>';
@@ -5334,11 +5457,11 @@ function studentFeeHTML(st){
     chs.sort(function(a, b){ return (a.c.month < b.c.month ? -1 : 1); }).forEach(function(e){
       var c = e.c;
       if(e.family){
-        html += '<tr><td>' + esc(c.month) + ' (Family)</td><td>' + rs(e.share.monthlyFee) + '</td><td>' + rs(e.share.arrearsTotal) + '</td><td>' + rs(e.share.total) + '</td><td>' + rs(e.share.paid) + '</td><td><b>' + rs(e.share.balance) + '</b></td><td>' + esc(c.status) + '</td></tr>';
+        html += '<tr><td>' + esc(c.month) + ' (Family)</td><td>' + rs(e.share.monthlyFee) + '</td><td>' + rs(e.share.arrearsTotal) + '</td><td>' + rs(e.share.total) + '</td><td>' + rs(e.share.paid) + '</td><td><b>' + rs(e.share.balance) + '</b></td><td>' + esc(challanDisplayStatus(c)) + '</td></tr>';
         return;
       }
       var arrTxt = (c.arrears || []).map(function(a){ var nm = (a.label && a.label.indexOf('Balance of') !== 0) ? a.label : (a.month || 'Previous'); return nm + ': ' + rs(a.amount); }).join(' · ') || '—';
-      html += '<tr><td>' + esc(c.month) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td>' + rs(c.total) + '</td><td>' + rs(c.paid) + '</td><td><b>' + rs(challanBalance(c)) + '</b></td><td>' + esc(c.status) + '</td></tr>';
+      html += '<tr><td>' + esc(c.month) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td>' + rs(c.total) + '</td><td>' + rs(c.paid) + '</td><td><b>' + rs(effectiveChallanBalance(c)) + '</b></td><td>' + esc(challanDisplayStatus(c)) + '</td></tr>';
     });
     html += '</tbody></table></div>';
   } else {
@@ -5641,7 +5764,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.7: group dropdown ---------- */
+/* ---------- v1.4.8: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -5669,7 +5792,7 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* ---------- v1.4.7: scholarship ---------- */
+/* ---------- v1.4.8: scholarship ---------- */
 function scholarshipInfo(st){
   var rate = num(st && st.scholarship_fee);
   if(rate <= 0) return null;
@@ -5691,7 +5814,7 @@ function suggestFee(){
   var sch = num($('seScholarship').value);
   feeEl.value = n * (sch > 0 ? sch : (num(fbData.feePerSubject) || 2000));
 }
-/* ---------- v1.4.7: time slots ---------- */
+/* ---------- v1.4.8: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -5730,7 +5853,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.7: new student flow ---------- */
+/* ---------- v1.4.8: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -5772,7 +5895,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.7: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.8: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -5817,12 +5940,12 @@ function applyLeave(st){
   return {ok:true};
 }
 function voidableChallansFor(st, month){
-  return fbData.challans.filter(function(c){ return c.roll === st.roll && c.month === month && c.status === 'unpaid' && num(c.paid) === 0; });
+  return fbData.challans.filter(function(c){ return c.roll === st.roll && c.month === month && c.status === 'unpaid' && num(c.paid) === 0 && challanCarriedOut(c) <= 0; });
 }
 async function voidChallansForLifecycle(st, month, reason){
   var famCh = familyChallanForMonth(st.roll, month);
   var famAdjusted = 0;
-  if(famCh && num(famCh.paid) <= 0 && famCh.status === 'unpaid'){
+  if(famCh && num(famCh.paid) <= 0 && famCh.status === 'unpaid' && challanCarriedOut(famCh) <= 0){
     var adj = removeMemberFromFamilyChallan(famCh, st.roll);
     if(adj){
       famAdjusted = 1;
@@ -5929,7 +6052,7 @@ async function leaveStudent(){
   var sch = $('seScholarship'); if(sch) sch.addEventListener('input', suggestFee);
 })();
 
-/* ---------- v1.4.7: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.8: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -6042,7 +6165,7 @@ function allocateFamilyPaid(c, amount){
   (c.members || []).forEach(function(m){ var a = settled[String(m.roll).toUpperCase()] || 0; if(a > 0) out.push({roll:m.roll, amount:a}); });
   return out;
 }
-function familyMemberShare(c, roll){
+function familyMemberShare(c, roll, map){
   if(!c || !c.family) return null;
   var r = String(roll || '').toUpperCase();
   var m = null;
@@ -6051,7 +6174,10 @@ function familyMemberShare(c, roll){
   var settled = allocateFamilySettled(c, num(c.paid) + num(c.discount));
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
-  return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:Math.max(0, total - paid)};
+  var balance = Math.max(0, total - paid);
+  /* v1.4.8: a member share already rolled into a later family challan is not owed twice. */
+  balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
+  return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
 function buildFamilyChallan(fam, month){
   var members = fam.members.map(function(m){
@@ -6209,6 +6335,7 @@ function applyChallanEdit(c, changes){
   if(!c) return {ok:false, msg:'Challan not found.'};
   if(num(c.paid) > 0) return {ok:false, msg:'This challan already has a payment recorded — it cannot be edited. Void it and make a new one if the amount was wrong.'};
   if(c.status === 'void' || c.status === 'closed') return {ok:false, msg:'A voided or closed challan cannot be edited.'};
+  if(isFullyCarried(c)) return {ok:false, msg:'This challan was carried forward into a newer challan - void the newer challan first.'};
   if(c.family){
     var fee = 0, arr = 0;
     (c.members || []).forEach(function(m){
@@ -6235,6 +6362,7 @@ function openChallanEdit(id){
   if(!c){ setMsg('chEdMsg', 'Challan not found.', 'err'); return; }
   if(num(c.paid) > 0){ setMsg('chEdMsg', 'This challan already has a payment recorded — it cannot be edited. Void it and make a new one if the amount was wrong.', 'err'); return; }
   if(c.status === 'void' || c.status === 'closed'){ setMsg('chEdMsg', 'A voided or closed challan cannot be edited.', 'err'); return; }
+  if(isFullyCarried(c)){ setMsg('chEdMsg', 'This challan was carried forward into a newer challan - its balance lives there now. Void the newer challan first if the amount was wrong.', 'err'); return; }
   editingChallanId = id;
   $('chEdTitle').textContent = 'Edit Challan — ' + (c.studentName || c.roll) + ' (' + c.month + ')' + (c.family ? ' (Family)' : '');
   $('chEdFee').value = num(c.monthlyFee);
@@ -6257,7 +6385,9 @@ function renderChallanEditForm(c){
   }
   if(lEl){
     if(!c.family && (c.arrears || []).length){
-      lEl.innerHTML = '<p class="note" style="margin:0 0 6px">Arrears lines (amounts can be changed):</p>' + c.arrears.map(function(a, i){
+      lEl.innerHTML = '<p class="note" style="margin:0 0 6px">Arrears lines (amounts can be changed - except balances already carried forward into a newer challan):</p>' + c.arrears.map(function(a, i){
+        var carriedLine = a.month && a.label && (a.label.indexOf('Balance of') === 0 || a.label.indexOf('Family challan balance of') === 0);
+        if(carriedLine) return '<div class="admin-row"><div><b>' + esc(a.label || ('Balance of ' + (a.month || ''))) + '</b><small>Carried forward - void the newer challan to change it.</small></div><div><b>' + rs(a.amount) + '</b></div></div>';
         return '<div class="admin-row"><div><b>' + esc(a.label || ('Balance of ' + (a.month || ''))) + '</b></div><div><input type="number" min="0" data-edline="' + i + '" value="' + num(a.amount) + '" style="width:120px"></div></div>';
       }).join('');
     } else lEl.innerHTML = '';
@@ -6367,14 +6497,36 @@ function renderBoardFeeList(){
   el.innerHTML = h;
 }
 
+/* ---------- v1.4.8: students per fee period ---------- */
+/* How many students were enrolled in a period. The current period counts live: Active students
+   whose feePeriod is this period, or blank (created before periods existed — they belong to the
+   current period). Old periods keep the snapshot taken at migration time (the Active students who
+   moved over), because after migration every student carries the NEW period. Never double-counts:
+   a student has exactly one feePeriod value. */
+function studentsInPeriod(p){
+  var cur = fbData.feePeriod || currentFeePeriod();
+  if(p === cur){
+    var n = 0;
+    data.students.forEach(function(st){
+      if((st.status || 'Active') === 'Left') return;
+      if(!st.feePeriod || st.feePeriod === p) n++;
+    });
+    return n;
+  }
+  var snap = (fbData.feePeriodStudents || {})[p];
+  if(snap && snap.length) return snap.length;
+  var m = 0;
+  data.students.forEach(function(st){ if(st.feePeriod === p) m++; });
+  return m;
+}
 /* --- fee periods (item E) --- */
 function renderFeePeriods(){
   var el = $('fpList'); if(!el) return;
-  var html = '<div class="table-scroll"><table><thead><tr><th>Period</th><th>Challans</th><th>Payments</th></tr></thead><tbody>';
+  var html = '<div class="table-scroll"><table><thead><tr><th>Period</th><th>Students</th><th>Challans</th><th>Payments</th></tr></thead><tbody>';
   feePeriodList().forEach(function(p){
     var chs = fbData.challans.filter(function(c){ return periodOf(c) === p; }).length;
     var pays = fbData.payments.filter(function(x){ return periodOf(x) === p; }).length;
-    html += '<tr><td><b>' + esc(p) + '</b>' + (p === fbData.feePeriod ? ' <span class="badge sample">current</span>' : '') + '</td><td>' + chs + '</td><td>' + pays + '</td></tr>';
+    html += '<tr><td><b>' + esc(p) + '</b>' + (p === fbData.feePeriod ? ' <span class="badge sample">current</span>' : '') + '</td><td>' + studentsInPeriod(p) + '</td><td>' + chs + '</td><td>' + pays + '</td></tr>';
   });
   html += '</tbody></table></div>';
   el.innerHTML = html;
@@ -6415,6 +6567,10 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
+    /* v1.4.8: snapshot the old period's enrolment before the students move — after migration
+       every student carries the new period, so without this the old row would show 0 students. */
+    fbData.feePeriodStudents = fbData.feePeriodStudents || {};
+    fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
     fbPushSite();
     saveData();
     auditLog('period', 'Fee period migrated ' + old + ' → ' + np + ': ' + plan.students.length + ' students, ' + rs(total) + ' carried forward as opening dues.', 'period', np);
@@ -6425,9 +6581,9 @@ async function migrateFeePeriod(){
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.7', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.8', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
-    fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
+    fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
 function mergeBackupData(backup, curData, curFb){
   var summary = {students:0, payments:0, challans:0, expenses:0, teacherPayments:0, drawings:0, attendance:0, exams:0, marks:0, leaves:0, topics:0, homework:0, teachers:0};
@@ -6669,7 +6825,7 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.7 wiring --- */
+/* --- v1.4.8 wiring --- */
 (function(){
   var b;
   b = $('fsSaveBtn'); if(b) b.addEventListener('click', saveFeeSettings);
