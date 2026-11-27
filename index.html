@@ -180,7 +180,7 @@ body *{visibility:hidden}
 .stat.pink{background:linear-gradient(135deg,#a4137a,#e0529b)}
 .stat.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}
 .stat.red{background:linear-gradient(135deg,#b91c1c,#ef4444)}
-/* ---------- v1.4.17: portal dashboards (student / parent / teacher) ---------- */
+/* ---------- v1.4.19: portal dashboards (student / parent / teacher) ---------- */
 #studentPanel .modal-box.portal-box,#parentPanel .modal-box.portal-box,#teacherPanel .modal-box.portal-box{max-width:1180px;padding:0;min-height:calc(100vh - 48px);overflow:hidden}
 .portal-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .portal-head .portal-logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
@@ -189,15 +189,15 @@ body *{visibility:hidden}
 .portal-head .btn{margin-left:auto}
 .portal-head .btn.outline{background:#fff;border-color:#fff;color:var(--blue) !important}
 .portal-head{position:relative}
-/* v1.4.17: dashboard-open state — public page disappears, background scroll locks */
+/* v1.4.19: dashboard-open state — public page disappears, background scroll locks */
 html.portal-open,body.portal-open{overflow:hidden !important;height:100%}
 body.portal-open>*:not(.modal):not(#printArea){display:none !important}
 body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.portal-open .modal#parentPanel,body.portal-open .modal#teacherPanel{background:#eef2f8}
-/* v1.4.17: red-circle-X close control, top right of each dashboard header */
+/* v1.4.19: red-circle-X close control, top right of each dashboard header */
 .dash-close{width:34px;height:34px;min-width:34px;border-radius:50%;background:#b91c1c;color:#fff;border:2px solid rgba(255,255,255,.9);font-size:17px;font-weight:800;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0}
 .dash-close:hover{background:#991b1b}
 .portal-head .dash-close{align-self:flex-start;margin-top:2px}
-/* v1.4.17: one unified admin theme — same language as the dashboard */
+/* v1.4.19: one unified admin theme — same language as the dashboard */
 #adminPanel .admin-main h4{color:var(--blue);font-size:1.05rem;margin:22px 0 8px}
 #adminPanel .admin-main h4:first-child{margin-top:6px}
 #adminPanel .admin-main .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(11,61,145,.05)}
@@ -210,9 +210,13 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .tt-shift-tabs{display:flex;gap:8px;margin:6px 0 12px}
 .tt-shift-tab{padding:8px 18px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--blue);font-weight:700;cursor:pointer}
 .tt-shift-tab.on{background:var(--blue);color:#fff !important;border-color:var(--blue)}
+.tt-download-wrap{position:relative;display:inline-block;margin-top:10px}
+.tt-menu{position:absolute;left:0;top:calc(100% + 6px);min-width:250px;background:#fff;border:2px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(11,61,145,.18);padding:6px;z-index:50}
+.tt-menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 12px;border-radius:7px;font-size:.95rem;color:var(--ink);cursor:pointer}
+.tt-menu button:hover{background:#eef3fb}
 .report-card p{color:var(--muted);margin:4px 0 12px}
 .report-card h4{margin-bottom:2px}
-/* v1.4.17: beautiful challan (A4) print layout */
+/* v1.4.19: beautiful challan (A4) print layout */
 @page challanA4{size:A4;margin:12mm}
 #printArea.challan{page:challanA4;padding:0}
 .challan-print{font-size:14px;color:#111}
@@ -226,7 +230,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .challan-print td:nth-child(2){text-align:right}
 .challan-print .ch-total td{font-weight:800;background:#eef4ff}
 .challan-print .ch-sign{display:flex;justify-content:space-between;margin-top:34px}
-/* v1.4.17: beautiful report print layout (A4) */
+/* v1.4.19: beautiful report print layout (A4) */
 .report-print{font-size:13px;color:#111}
 .report-print .rp-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:12px;padding:14px 18px;margin-bottom:14px}
 .report-print .rp-head h2{margin:0;color:#fff;font-size:1.2rem}
@@ -256,7 +260,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .portal-kid .kid-nums{display:flex;gap:16px;margin:8px 0;font-size:.92rem;flex-wrap:wrap}
 .portal-kid .kid-nums b{color:var(--blue)}
 .portal-kid .kid-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-/* v1.4.17: table-style label/value rows for portal cards — label left, value right, aligned */
+/* v1.4.19: table-style label/value rows for portal cards — label left, value right, aligned */
 .kv-table{width:100%;border-collapse:collapse}
 .kv-table td{padding:8px 10px;border-bottom:1px solid #eef2f8}
 .kv-table td:first-child{color:var(--muted)}
@@ -332,7 +336,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.17: mobile admin card system ---------- */
+/* ---------- v1.4.19: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -382,7 +386,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .tt-grp{font-size:.8rem;color:#33475e}
 .tt-compact table{min-width:0}
 .tt-compact th,.tt-compact td{padding:8px 10px;font-size:.88rem}
-/* v1.4.17: weekly timetable grid (dashboard theme) + shared branded print header */
+/* v1.4.19: weekly timetable grid (dashboard theme) + shared branded print header */
 .tt-grid{width:100%;border-collapse:collapse;table-layout:fixed}
 .tt-grid th,.tt-grid td{border:1px solid #dbe4f0;padding:8px;vertical-align:top;text-align:left;overflow-wrap:break-word}
 .tt-grid thead th{background:linear-gradient(90deg,#0b3d91,#1256b8);color:#fff;text-align:center;font-size:.85rem;padding:10px 6px}
@@ -392,6 +396,10 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .tt-grid .tt-sec{display:inline-block;background:#f5b301;color:#1a2a44;font-size:.68rem;font-weight:800;padding:0 6px;border-radius:999px}
 .tt-grid .tt-actions{margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}
 .tt-grid td.tt-empty{background:#fafbff}
+.tt-cell-add{display:block;width:100%;border:2px dashed #c3d2ea;background:transparent;color:#0b3d91;font-weight:700;border-radius:8px;padding:8px 4px;cursor:pointer}
+.tt-cell-add:hover{background:#eef4ff;border-color:#0b3d91}
+.tt-modal{position:fixed;inset:0;background:rgba(11,61,145,.45);align-items:center;justify-content:center;z-index:999}
+.tt-modal-box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:92%;max-height:90vh;overflow:auto}
 .print-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:center;margin-bottom:12px}
 .print-head img{width:52px;height:52px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
 .print-head h2{margin:0;color:#fff;font-size:1.2rem}
@@ -784,7 +792,6 @@ table{min-width:520px}
 <div class="admin-sec-body">
 <button type="button" data-atab="fees"><span class="material-symbols-outlined">payments</span>Finance</button>
 <button type="button" data-atab="challans"><span class="material-symbols-outlined">request_quote</span>Challans</button>
-<button type="button" data-atab="feestructure"><span class="material-symbols-outlined">account_balance</span>Fee Structure</button>
 <button type="button" data-atab="receipts"><span class="material-symbols-outlined">receipt_long</span>Receipts</button>
 <button type="button" data-atab="teacherpay"><span class="material-symbols-outlined">account_balance_wallet</span>Teacher Pay</button>
 <button type="button" data-atab="expenses"><span class="material-symbols-outlined">receipt</span>Expenses</button>
@@ -838,13 +845,14 @@ table{min-width:520px}
 <button class="btn small outline icon-btn" id="ttCancelEdit" type="button" title="Cancel Edit" style="display:none"><span class="material-symbols-outlined">close</span></button>
 </div>
 </div>
-<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn small outline icon-btn" id="ttPrintGirls" type="button" title="Print Girls Timetable"><span class="material-symbols-outlined">print</span></button>
-<button class="btn small outline icon-btn" id="ttPrintBoys" type="button" title="Print Boys Timetable"><span class="material-symbols-outlined">print</span></button>
-<button class="btn small outline icon-btn" id="ttPrintMaster" type="button" title="Print Master Timetable"><span class="material-symbols-outlined">print</span></button>
-<button class="btn small outline icon-btn" id="ttDownloadPdf" type="button" title="Download PDF — current shift timetable"><span class="material-symbols-outlined">download</span></button>
-<button class="btn small outline icon-btn" id="ttDownloadGirlsPdf" type="button" title="Download Girls PDF — current shift"><span class="material-symbols-outlined">download</span></button>
-<button class="btn small outline icon-btn" id="ttDownloadBoysPdf" type="button" title="Download Boys PDF — current shift"><span class="material-symbols-outlined">download</span></button>
+<div class="tt-download-wrap" id="ttDownloadWrap">
+<button class="btn small" id="ttDownloadBtn" type="button" title="Download timetable"><span class="material-symbols-outlined">download</span> Download</button>
+<div class="tt-menu" id="ttDownloadMenu" style="display:none">
+<button type="button" id="ttDlPdfShift">PDF (this shift)</button>
+<button type="button" id="ttDlPdfMaster">PDF (master — both shifts)</button>
+<button type="button" id="ttDlXlsx">Excel (.xlsx)</button>
+<button type="button" id="ttDlPrint">Print</button>
+</div>
 </div>
 <div style="margin-top:10px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
 <div><label for="ttCopyFrom">Copy from Day</label><select id="ttCopyFrom"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
@@ -867,6 +875,24 @@ table{min-width:520px}
 <div class="msg" id="tsMsg"></div>
 <div id="tsList" style="margin-top:10px"></div>
 </div>
+<div class="tt-modal" id="ttModal" style="display:none"><div class="tt-modal-box">
+<h4 style="margin:0 0 4px">Add a Class</h4>
+<p class="note" id="ttModalWhen" style="margin:0 0 10px"></p>
+<div class="form-grid">
+<div><label for="ttmDay">Day</label><select id="ttmDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+<div><label for="ttmShift">Shift</label><select id="ttmShift"><option>Morning</option><option selected>Evening</option></select></div>
+<div><label for="ttmStart">Start Time</label><input id="ttmStart" type="time"></div>
+<div><label for="ttmEnd">End Time</label><input id="ttmEnd" type="time"></div>
+<div><label for="ttmSubject">Subject</label><input id="ttmSubject" type="text" placeholder="e.g. Programming"></div>
+<div><label for="ttmTeacher">Teacher</label><input id="ttmTeacher" type="text" placeholder="e.g. Sir Sajjad Ali"></div>
+<div><label for="ttmSection">Section</label><select id="ttmSection"><option>Boys</option><option>Girls</option></select></div>
+<div><label for="ttmGroup">Group (optional)</label><select id="ttmGroup"></select></div>
+</div>
+<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn small" id="ttmSaveBtn" type="button">Save Class</button>
+<button class="btn small outline" id="ttmCancelBtn" type="button">Cancel</button>
+</div>
+</div></div>
 
 <div class="atab" id="atab-announcements">
 <div class="atab-title">Announcements</div>
@@ -969,7 +995,6 @@ table{min-width:520px}
 <div><label for="seDob">Date of Birth</label><input id="seDob" type="date"></div>
 <div><label for="seTime">Time Slot</label><select id="seTime"></select></div>
 <div><label for="seFee">Monthly Fee (Rs)</label><input id="seFee" type="number" min="0"></div>
-<div><label for="seScholarship">Scholarship fee per subject (Rs) — blank = no scholarship</label><input id="seScholarship" type="number" min="0" placeholder="e.g. 1500"></div>
 <div><label for="seAdmFee">Admission Fee (Rs)</label><input id="seAdmFee" type="number" min="0"></div>
 <div><label for="seOld">Old Dues (Rs)</label><input id="seOld" type="number" min="0"></div>
 <div><label for="seShift">Shift</label><select id="seShift"><option value="Evening">Evening</option><option value="Morning">Morning</option></select></div>
@@ -1323,50 +1348,6 @@ table{min-width:520px}
 <div id="chList" style="margin-top:10px"></div>
 </div>
 
-<div class="atab" id="atab-feestructure">
-<div class="atab-title">Fee Structure</div>
-<h4 style="margin:6px 0">Fee Structure</h4>
-<p class="note" style="margin-top:0">All fee settings, board admission fees, fee periods and the full data backup live here.</p>
-<h4 style="margin:22px 0 6px">Fee Settings</h4>
-<div class="form-grid">
-<div><label for="fsFeePerSubject">Fee per subject (Rs)</label><input id="fsFeePerSubject" type="number" min="0" value="2000"></div>
-<div><label for="fsBoardFee">Board admission fee (Rs)</label><input id="fsBoardFee" type="number" min="0" value="0"></div>
-</div>
-<div style="margin-top:10px"><button class="btn small" id="fsSaveBtn" type="button">Save Fee Settings</button></div>
-<div class="msg" id="fsMsg"></div>
-<div id="fsScholarship" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Board Admission Fee &mdash; Receive</h4>
-<p class="note" style="margin-top:0">For students taking admission to board exams. This receipt is separate from monthly fee challans.</p>
-<div class="form-grid">
-<div><label for="bdRoll">Student (Roll Number)</label><input id="bdRoll" type="text" placeholder="e.g. DIT01"></div>
-<div><label for="bdAmount">Amount (Rs)</label><input id="bdAmount" type="number" min="0" placeholder="e.g. 5000"></div>
-<div><label for="bdDate">Date</label><input id="bdDate" type="date"></div>
-<div><label for="bdBy">Received By</label><input id="bdBy" type="text" placeholder="e.g. Ahmed Raza"></div>
-</div>
-<div id="bdName" style="margin-top:10px"></div>
-<div style="margin-top:10px"><button class="btn small" id="bdBtn" type="button">Receive Board Fee &amp; Print Receipt</button></div>
-<div class="msg" id="bdMsg"></div>
-<div id="bdReceipt" style="margin-top:10px"></div>
-<div id="bdList" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Fee Period (Session)</h4>
-<p class="note" style="margin-top:0">A fee period is one academic session. When a new session starts, migrate &mdash; students move over, their unpaid balances carry forward as opening dues, and the old period stays fully visible.</p>
-<p>Current period: <b id="fpCurrent">&mdash;</b></p>
-<div class="form-grid">
-<div><label for="fpNew">Migrate to new period</label><input id="fpNew" type="text" placeholder="e.g. 2027-28"></div>
-</div>
-<div style="margin-top:10px"><button class="btn small" id="fpMigrateBtn" type="button">Migrate to New Period</button></div>
-<div class="msg" id="fpMsg"></div>
-<div id="fpList" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Backup &amp; Restore</h4>
-<p class="note" style="margin-top:0">Download a full backup (students, fees, challans, payments, exams &mdash; everything). Restore merges it back by ID and never creates duplicates.</p>
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn small" id="bkDownloadBtn" type="button">Download Full Backup</button>
-<label class="btn small outline" for="bkRestoreFile" style="cursor:pointer">Restore from Backup</label>
-<input id="bkRestoreFile" type="file" accept=".json,application/json" style="display:none">
-</div>
-<div class="msg" id="bkMsg"></div>
-</div>
-
 <div class="atab" id="atab-homework">
 <div class="atab-title">Homework</div>
 <h4 style="margin:6px 0">Homework &amp; Tests — All Teachers</h4>
@@ -1403,6 +1384,23 @@ table{min-width:520px}
 <input id="importFile" type="file" accept=".json,application/json" style="display:none">
 <button class="btn small outline" id="btnReset" type="button">Reset to Defaults</button>
 </div>
+<h4 style="margin:22px 0 6px">Fee Period (Session)</h4>
+<p class="note" style="margin-top:0">A fee period is one academic session. When a new session starts, migrate &mdash; students move over, their unpaid balances carry forward as opening dues, and the old period stays fully visible.</p>
+<p>Current period: <b id="fpCurrent">&mdash;</b></p>
+<div class="form-grid">
+<div><label for="fpNew">Migrate to new period</label><input id="fpNew" type="text" placeholder="e.g. 2027-28"></div>
+</div>
+<div style="margin-top:10px"><button class="btn small" id="fpMigrateBtn" type="button">Migrate to New Period</button></div>
+<div class="msg" id="fpMsg"></div>
+<div id="fpList" style="margin-top:10px"></div>
+<h4 style="margin:22px 0 6px">Backup &amp; Restore</h4>
+<p class="note" style="margin-top:0">Download a full backup (students, fees, challans, payments, exams &mdash; everything). Restore merges it back by ID and never creates duplicates.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn small" id="bkDownloadBtn" type="button">Download Full Backup</button>
+<label class="btn small outline" for="bkRestoreFile" style="cursor:pointer">Restore from Backup</label>
+<input id="bkRestoreFile" type="file" accept=".json,application/json" style="display:none">
+</div>
+<div class="msg" id="bkMsg"></div>
 <h4 style="margin:22px 0 6px">Receipt Note (prints on every receipt)</h4>
 <div><textarea id="rcNote" rows="2" style="width:100%" placeholder="e.g. Fees are non-refundable. Please pay before the 10th of every month."></textarea></div>
 <div style="margin-top:10px"><button class="btn small" id="btnRcNote" type="button">Save Receipt Note</button></div>
@@ -1418,13 +1416,6 @@ table{min-width:520px}
 </div>
 <div style="margin-top:10px"><button class="btn small" id="subjAddBtn" type="button">Add Subject</button></div>
 <div class="msg" id="subjMsg"></div>
-<h4 style="margin:22px 0 6px">Fees &amp; Scholarship</h4>
-<p class="note" style="margin-top:0">The base fee is charged per subject. A student with a scholarship fee pays that rate per subject instead — set it on the student in the Students tab.</p>
-<div class="form-grid">
-<div><label for="feePerSubject">Fee per subject (Rs)</label><input id="feePerSubject" type="number" min="0" value="2000"></div>
-</div>
-<div style="margin-top:10px"><button class="btn small" id="btnFeePerSubject" type="button">Save Fee per Subject</button></div>
-<div class="msg" id="fpsMsg"></div>
 <h4 style="margin:22px 0 6px">Roles &amp; Admins</h4>
 <p class="note" style="margin-top:0">Make any teacher an admin, or remove admin rights. The person needs a login first (create their teacher login, then promote them here). You cannot remove your own admin rights, and at least one admin must always remain.</p>
 <div id="rolesList" style="margin-top:10px"></div>
@@ -1518,82 +1509,71 @@ function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace
 function loadData(){
   try{
     var s = localStorage.getItem(LS_KEY);
-    if(s){ var d = JSON.parse(s); if(d && d.slots && d.groups && d.results){ d.students = (d.students || []).filter(function(x){ return !x.sample && !isSampleRoll(x.roll); }); d.slots = d.slots.filter(function(x){ return !x.sample; }); d.groups = (d.groups || []).filter(function(g){ return !g.sample; }); d.results = (d.results || []).filter(function(r){ return !r.sample && !isSampleRoll(r.roll); }); d.slots.forEach(function(x){ x.students = x.students || []; }); d.groups.forEach(function(g){ g.members = g.members || []; }); return d; } }
+    if(s){ var d = JSON.parse(s); if(d && d.slots && d.groups && d.results){ /* v1.4.19: never delete the owner's data on load — no sample/FSCC- filtering here. Only the strict one-time cleanSeededTimeSlotsOnce may remove anything, and only untouched seeds. */ d.students = d.students || []; d.slots = d.slots || []; d.groups = d.groups || []; d.results = d.results || []; d.slots.forEach(function(x){ x.students = x.students || []; }); d.groups.forEach(function(g){ g.members = g.members || []; }); return d; } }
   }catch(e){}
   return clone(DEFAULT_DATA);
 }
 var data = loadData();
 if(!data.timeSlots) data.timeSlots = [];
-/* v1.4.17: one-time purge of the old default/sample seed. The old DEFAULT_DATA shipped
-   13 default timetable slots, a sample Group A and sample students/results; deleting them
-   in the admin panel did not stick, because the live site doc (and fresh loads) kept
-   re-seeding them. The seed is now empty; this purge removes the leftovers once — from
-   this browser and, via saveData, from the live site doc — and records it in the site
-   doc (legacyDefaultsPurged) so no device ever purges again. */
-var LEGACY_DEFAULT_SLOTS = [
-  {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls'},
-  {day:'Monday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys'},
-  {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls'},
-  {day:'Tuesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys'},
-  {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Girls'},
-  {day:'Wednesday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Boys'},
-  {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls'},
-  {day:'Thursday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys'},
-  {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls'},
-  {day:'Friday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys'},
-  {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Office Automation', teacher:'Sir Ahmed Raza', section:'Girls'},
-  {day:'Saturday', start:'4:00 PM', end:'5:00 PM', subject:'Programming', teacher:'Sir Sajjad Ali', section:'Boys'}
-];
-/* v1.4.17: morning shift belongs to Sir Ahmed Raza only — no Sajjad in the morning. */
+/* v1.4.19: the legacy purge is GONE. It matched the owner's own slots against 12 old
+   seed shapes (any 4:00–5:00 PM Programming class looked like a "seed") and deleted
+   sample-flagged groups/students/results on load — that is how updates ate the owner's
+   data. No auto-deletion on load, ever again. The only cleanup that may ever remove
+   anything is the strict one-time cleanSeededTimeSlotsOnce (untouched ts1/ts2 seeds
+   only, behind the seededSlotsCleaned flag). purgeLegacyDefaults below now only runs
+   that cleanup and records the legacyDefaultsPurged flag; it filters nothing. */
+/* v1.4.19: morning shift belongs to Sir Ahmed Raza only — no Sajjad in the morning. */
 function ttMorningBlocked(teacher, start){
   return ttMin(start) < 12 * 60 && /sajjad/i.test(teacher || '');
 }
 function isSampleRoll(r){ return /^FSCC-/i.test(String(r || '')); }
-function isLegacyDefaultSlot(x){
-  if(!x) return false;
-  if(x.sample) return true;
-  if((x.students || []).length || (x.group || '')) return false;
-  return LEGACY_DEFAULT_SLOTS.some(function(d){ return d.day === x.day && d.start === x.start && d.end === x.end && d.subject === x.subject && d.teacher === x.teacher && d.section === x.section; });
-}
-/* v1.4.17: the two seeded time slots from DEFAULT_DATA (ts1/ts2) that the owner
-   never created. A slot is a seeded one only when BOTH its id and its label
-   match the seed — so an owner-created slot (ids look like 'ts' + base36 time)
-   is never touched, even if he renamed a slot to the same label. */
+
+/* v1.4.19: the two seeded time slots from DEFAULT_DATA (ts1/ts2) that the owner
+   never created. Older versions deleted ANY slot whose id+label matched the seed —
+   but editing a seeded slot keeps its id, so the owner's own edited slot was
+   deleted as a "seed". Now a slot counts as an untouched seed ONLY when it is
+   byte-identical to the seed (id + label + start + end) AND no group uses it.
+   Anything else — edited label/times, a group assigned — is the owner's slot. */
 var SEEDED_TIME_SLOTS = [
-  {id:'ts1', label:'4:00 – 5:00 PM'},
-  {id:'ts2', label:'5:00 – 5:45 PM'}
+  {id:'ts1', label:'4:00 – 5:00 PM', start:'16:00', end:'17:00'},
+  {id:'ts2', label:'5:00 – 5:45 PM', start:'17:00', end:'17:45'}
 ];
-function isSeededTimeSlot(t){
+/* Minutes since midnight, accepting BOTH '16:00' (time input) and '4:00 PM'
+   (older stored slots) — tsMin/ttMin get plain 24h times wrong. */
+function tsMin24(t){
+  var m = String(t || '').match(/(\d{1,2}):(\d{2})\s*([AP]M)?/i);
+  if(!m) return -1;
+  var h = parseInt(m[1], 10), min = parseInt(m[2], 10);
+  if(m[3]){ h = h % 12; if(/pm/i.test(m[3])) h += 12; }
+  return h * 60 + min;
+}
+function isUntouchedSeedSlot(t){
   if(!t) return false;
-  return SEEDED_TIME_SLOTS.some(function(d){ return d.id === t.id && d.label === t.label; });
+  var used = (data.groups || []).some(function(g){ return g.slotId === t.id; });
+  if(used) return false;
+  return SEEDED_TIME_SLOTS.some(function(d){ return d.id === t.id && d.label === t.label && tsMin24(t.start) === tsMin24(d.start) && tsMin24(t.end) === tsMin24(d.end); });
+}
+/* One-time cleanup of the untouched seeded slots. Runs ONCE behind the
+   seededSlotsCleaned flag (stored in data + the site doc) — never on load
+   and never on a Firestore snapshot after that. */
+function cleanSeededTimeSlotsOnce(){
+  if(data.seededSlotsCleaned) return false;
+  var n0 = (data.timeSlots || []).length;
+  data.timeSlots = (data.timeSlots || []).filter(function(t){ return !isUntouchedSeedSlot(t); });
+  var changed = data.timeSlots.length !== n0;
+  if(changed){ (data.groups || []).forEach(function(g){ if(g.slotId && !(data.timeSlots || []).some(function(t){ return t.id === g.slotId; })) g.slotId = ''; }); }
+  data.seededSlotsCleaned = true;
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){}
+  saveData();
+  return changed;
 }
 function purgeLegacyDefaults(){
-  var changed = false;
-  var n0 = (data.timeSlots || []).length;
-  data.timeSlots = (data.timeSlots || []).filter(function(t){ return !isSeededTimeSlot(t); });
-  if(data.timeSlots.length !== n0){
-    changed = true;
-    (data.groups || []).forEach(function(g){ if(g.slotId && !(data.timeSlots || []).some(function(t){ return t.id === g.slotId; })) g.slotId = ''; });
+  var changed = cleanSeededTimeSlotsOnce();
+  if(!data.legacyDefaultsPurged){
+    data.legacyDefaultsPurged = true;
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){}
+    saveData();
   }
-  if(data.legacyDefaultsPurged){
-    if(changed){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){} saveData(); }
-    return changed;
-  }
-  n0 = data.slots.length;
-  data.slots = data.slots.filter(function(x){ return !isLegacyDefaultSlot(x); });
-  if(data.slots.length !== n0) changed = true;
-  n0 = data.groups.length;
-  data.groups = data.groups.filter(function(g){ return !g.sample; });
-  if(data.groups.length !== n0) changed = true;
-  n0 = data.students.length;
-  data.students = data.students.filter(function(s){ return !s.sample && !isSampleRoll(s.roll); });
-  if(data.students.length !== n0) changed = true;
-  n0 = data.results.length;
-  data.results = data.results.filter(function(r){ return !r.sample && !isSampleRoll(r.roll); });
-  if(data.results.length !== n0) changed = true;
-  data.legacyDefaultsPurged = true;
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){}
-  if(changed) saveData();
   return changed;
 }
 purgeLegacyDefaults();
@@ -1609,6 +1589,9 @@ function saveData(){
   fbPushSite();
   renderAll();
 }
+/* v1.4.19: flush local state on tab close — localStorage is synchronous, so a
+   reload right after an edit can never lose it (the Firestore push is async). */
+window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){} });
 
 /* ---------- Public rendering ---------- */
 var DAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -1714,7 +1697,7 @@ function searchResult(){
 }
 
 /* ---------- Admin: login & panel ---------- */
-/* v1.4.17: dashboard-open state — hide the public page + lock background scroll */
+/* v1.4.19: dashboard-open state — hide the public page + lock background scroll */
 var PORTAL_IDS = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'];
 function setPortalOpen(on){ document.body.classList.toggle('portal-open', !!on); if(document.documentElement) document.documentElement.classList.toggle('portal-open', !!on); }
 function syncPortalOpen(){ var open = PORTAL_IDS.some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); setPortalOpen(open); }
@@ -1747,7 +1730,7 @@ async function tryUnifiedLogin(){
   var live = fb.ready && !fb.offline && fb.db;
   if(live){
     if(n && n.length >= 10){
-      /* v1.4.17: never gate on the local student list. The public page has no phones
+      /* v1.4.19: never gate on the local student list. The public page has no phones
          (academy_contacts is admin/teacher-only and studentFromDoc carries phone:''),
          so a local findStudentByPhone can never match on a fresh load. Try the
          hash-based logins directly against Firestore instead. */
@@ -1848,7 +1831,7 @@ var ADMIN_GROUPS = ['academics', 'finance', 'manage'];
 function loadAdminGroups(){ try{ return JSON.parse(localStorage.getItem('fscc_admin_groups') || '{}'); }catch(e){ return {}; } }
 function saveAdminGroups(st){ try{ localStorage.setItem('fscc_admin_groups', JSON.stringify(st)); }catch(e){} }
 function applyAdminGroups(){ var st = loadAdminGroups(); var opened = null; ADMIN_GROUPS.forEach(function(g){ var sec = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(!sec) return; var open = (g === 'academics') ? (st[g] !== false) : (st[g] === true); if(open && opened){ open = false; st[g] = false; } if(open) opened = g; sec.classList.toggle('collapsed', !open); }); if(opened) saveAdminGroups(st); }
-function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; var wasCollapsed = sec.classList.contains('collapsed'); var st = loadAdminGroups(); if(wasCollapsed){ /* v1.4.17 accordion: opening one dropdown closes all the others */ ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); } sec.classList.toggle('collapsed'); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
+function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; var wasCollapsed = sec.classList.contains('collapsed'); var st = loadAdminGroups(); if(wasCollapsed){ /* v1.4.19 accordion: opening one dropdown closes all the others */ ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); } sec.classList.toggle('collapsed'); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
 applyAdminGroups();
 $('adminTabs').addEventListener('click', function(e){
   var g = e.target.closest ? e.target.closest('.admin-group') : null;
@@ -1867,8 +1850,8 @@ document.querySelectorAll('.modal').forEach(function(m){
 });
 
 /* ---------- Admin: timetable ---------- */
-/* v1.4.17: timetables are per shift — Morning belongs to Sir Ahmed Raza only,
-   Evening is the main timetable. Entries saved before v1.4.17 have no shift
+/* v1.4.19: timetables are per shift — Morning belongs to Sir Ahmed Raza only,
+   Evening is the main timetable. Entries saved before v1.4.19 have no shift
    and count as Evening. */
 var ttShift = 'Evening';
 function slotShift(x){ return (x && x.shift) || 'Evening'; }
@@ -1898,12 +1881,12 @@ function renderAdminTimetable(){
       days.forEach(function(d){
         var cells = [];
         all.forEach(function(x, i){ if(slotShift(x) !== ttShift) return; if(x.day === d && ((x.start || '') + '–' + (x.end || '')) === t) cells.push({x:x, i:i}); });
-        if(!cells.length){ html += '<td class="tt-empty"></td>'; return; }
+        if(!cells.length){ html += '<td class="tt-empty"><button class="tt-cell-add" type="button" title="Add a class at this time" onclick="ttCellAdd(\'' + d + '\',\'' + parts[0] + '\',\'' + (parts[1] || '') + '\')">+ Add</button></td>'; return; }
         html += '<td>' + cells.map(function(c){
           var x = c.x;
           return '<div class="tt-entry"><b>' + esc(x.subject) + '</b> <span class="tt-sec">' + esc(x.section) + '</span><br>' + esc(x.teacher) + (x.group ? '<br>Group: ' + esc(x.group) : '')
             + '<div class="tt-actions"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editTt(' + c.i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delTt(' + c.i + ')"><span class="material-symbols-outlined">delete</span></button></div></div>';
-        }).join('') + '</td>';
+        }).join('') + '<button class="tt-cell-add" type="button" title="Add another class at this time" onclick="ttCellAdd(\'' + d + '\',\'' + parts[0] + '\',\'' + (parts[1] || '') + '\')">+</button></td>';
       });
       html += '</tr>';
     });
@@ -1936,7 +1919,7 @@ function tsCheckedGroups(){
   document.querySelectorAll('#tsGroupList input[data-tsgroup]:checked').forEach(function(cb){ out.push(cb.getAttribute('data-tsgroup')); });
   return out;
 }
-/* v1.4.17: assigning a group to a slot sets that group's slotId. A group can only
+/* v1.4.19: assigning a group to a slot sets that group's slotId. A group can only
    be on one slot, so ticking it here moves it off any other slot automatically. */
 function assignGroupsToSlot(slotId, names){
   (data.groups || []).forEach(function(g){
@@ -2060,7 +2043,7 @@ function delTt(i){
   if(!confirm('Delete this timetable slot?')) return;
   data.slots.splice(i, 1); saveData();
 }
-/* v1.4.17: Copy from Day — duplicate one day's classes (current shift) onto
+/* v1.4.19: Copy from Day — duplicate one day's classes (current shift) onto
    another day. Appends, never replaces; exact duplicates are skipped, so
    copying twice adds nothing the second time. */
 function copyTtDay(){
@@ -2092,20 +2075,59 @@ function cancelTt(){
 }
 $('ttAddBtn').addEventListener('click', function(){
   var slot = slotFromForm();
-  if(!slot.subject){ alert('Please enter a subject.'); return; }
-  if(!slot.start || !slot.end){ alert('Please enter a start and end time.'); return; }
-  if(ttMin(slot.start) >= ttMin(slot.end)){ alert('End time must be after start time.'); return; }
-  if(ttMorningBlocked(slot.teacher, slot.start)){ alert('Morning shift belongs to Sir Ahmed Raza only — please use Sir Ahmed Raza for morning slots.'); return; }
-  if(editing.tt >= 0){ slot.sample = !!data.slots[editing.tt].sample; data.slots[editing.tt] = slot; }
+  var err = slotFormError(slot);
+  if(err){ alert(err); return; }
+  if(editing.tt >= 0){ data.slots[editing.tt] = slot; } /* v1.4.19: editing clears the sample flag. */
   else data.slots.push(slot);
   cancelTt(); saveData();
 });
 $('ttCancelEdit').addEventListener('click', cancelTt);
+/* v1.4.19: RISE-style grid "+ Add" — tap a cell, the Add Class modal opens
+   pre-filled with that cell's day + row times; saving uses the same validation
+   (subject, times, end after start, morning guard) and the entry appears in
+   the grid at once and persists via saveData. */
+function renderTtmGroupOptions(selected){
+  var el = $('ttmGroup'); if(!el) return;
+  var cur = selected || el.value || '';
+  var opts = '<option value="">— No group —</option>';
+  (data.groups || []).filter(function(g){ return !g.sample; }).forEach(function(g){
+    opts += '<option value="' + esc(g.name) + '"' + (g.name === cur ? ' selected' : '') + '>' + esc(g.name) + '</option>';
+  });
+  if(cur && !(data.groups || []).some(function(g){ return g.name === cur; })) opts += '<option value="' + esc(cur) + '" selected>' + esc(cur) + '</option>';
+  el.innerHTML = opts;
+}
+function ttCellAdd(day, start12, end12){
+  cancelTt();
+  var m = $('ttModal'); if(!m) return;
+  $('ttmDay').value = day; $('ttmStart').value = to24h(start12); $('ttmEnd').value = to24h(end12); $('ttmShift').value = ttShift;
+  $('ttmSubject').value = ''; $('ttmTeacher').value = ''; $('ttmSection').value = 'Boys';
+  renderTtmGroupOptions(); $('ttmGroup').value = '';
+  var when = $('ttModalWhen'); if(when) when.textContent = day + ' · ' + fmtTime12(start12) + ' – ' + fmtTime12(end12) + ' · ' + ttShift + ' shift';
+  m.style.display = 'flex';
+  setTimeout(function(){ var s = $('ttmSubject'); if(s) s.focus(); }, 0);
+}
+function closeTtModal(){ var m = $('ttModal'); if(m) m.style.display = 'none'; }
+function slotFormError(slot){
+  if(!slot.subject) return 'Please enter a subject.';
+  if(!slot.start || !slot.end) return 'Please enter a start and end time.';
+  if(ttMin(slot.start) >= ttMin(slot.end)) return 'End time must be after start time.';
+  if(ttMorningBlocked(slot.teacher, slot.start)) return 'Morning shift belongs to Sir Ahmed Raza only — please use Sir Ahmed Raza for morning slots.';
+  return '';
+}
+function ttModalSave(){
+  var slot = {day:$('ttmDay').value, shift:$('ttmShift').value, start:to12h($('ttmStart').value), end:to12h($('ttmEnd').value), subject:$('ttmSubject').value.trim(), teacher:$('ttmTeacher').value.trim(), section:$('ttmSection').value, group:$('ttmGroup').value.trim()};
+  var err = slotFormError(slot);
+  if(err){ alert(err); return; }
+  data.slots.push(slot);
+  closeTtModal();
+  saveData();
+}
+(function(){ var s = $('ttmSaveBtn'); if(s) s.addEventListener('click', ttModalSave); var c = $('ttmCancelBtn'); if(c) c.addEventListener('click', closeTtModal); var m = $('ttModal'); if(m) m.addEventListener('click', function(e){ if(e.target === m) closeTtModal(); }); })();
   var tsb = $('tsAddBtn'); if(tsb) tsb.addEventListener('click', addTimeSlot);
   var tsq = $('tsGroupSearch'); if(tsq) tsq.addEventListener('input', renderTsGroupList);
   var tsc = $('tsCancelEdit'); if(tsc) tsc.addEventListener('click', cancelTsEdit);
   renderTsGroupList();
-/* v1.4.17: the Add Class form takes a GROUP (dropdown), never students — a
+/* v1.4.19: the Add Class form takes a GROUP (dropdown), never students — a
    class's students are simply the selected group's members. A native <select>
    is keyboard-searchable: typing the first letters jumps to the group. */
 function renderTtGroupOptions(selected){
@@ -2139,7 +2161,7 @@ function academyPrintInfo(){
 function ownersLineText(){
   return academyPrintInfo().owners.map(function(o){ return o.name + (o.phone ? ' — ' + o.phone : ''); }).join(' · ');
 }
-/* v1.4.17: one shared branded header for every print layout — logo + academy
+/* v1.4.19: one shared branded header for every print layout — logo + academy
    name + address + academy phone/email + BOTH owners. Owner phones come only
    from the stored teacher records; a missing phone is simply omitted, never
    invented. */
@@ -2150,7 +2172,7 @@ function printHeaderHTML(subtitle){
   return '<div class="print-head">' + (logo ? '<img src="' + esc(logo) + '" alt="FSCC logo">' : '') + '<div><h2>' + esc(info.name) + '</h2><p>' + esc(info.address) + ' · ' + esc(info.phone) + ' · ' + esc(info.email) + '</p><p>' + ownersLine + '</p></div></div>'
     + (subtitle ? '<h3 style="margin:12px 0 4px;color:var(--blue)">' + esc(subtitle) + '</h3>' : '');
 }
-/* v1.4.17: the timetable print header is minimal — logo + academy name +
+/* v1.4.19: the timetable print header is minimal — logo + academy name +
    "Time Table for (X) Shift" only. No address, email, phone or owners here;
    every other print keeps the full branded header (printHeaderHTML). */
 function timetablePrintHeaderHTML(label){
@@ -2193,10 +2215,44 @@ function printTimetable(section, shift){
   area.innerHTML = timetablePrintHTML(section || null, shift || null);
   window.print();
 }
-/* v1.4.17: Download PDF uses the same print-ready timetable view — the
+/* v1.4.19: Download PDF uses the same print-ready timetable view — the
    browser's Save as PDF produces the PDF file. */
 function downloadTimetablePDF(section, shift){
   printTimetable(section, shift);
+}
+/* v1.4.19: ONE Download button + menu replaces the row of print/download
+   icons (they looked like a glitch). Options: PDF (this shift), PDF (master
+   — both shifts), Excel (.xlsx), Print. The menu closes when an option is
+   picked or when clicking anywhere outside it. */
+function ttDownloadMenuIsOpen(){
+  var m = $('ttDownloadMenu'); return !!(m && m.style.display === 'block');
+}
+function toggleTtDownloadMenu(e){
+  if(e && e.stopPropagation) e.stopPropagation();
+  if(ttDownloadMenuIsOpen()){ closeTtDownloadMenu(); return; }
+  var m = $('ttDownloadMenu'); if(!m) return;
+  m.style.display = 'block';
+}
+function closeTtDownloadMenu(){
+  var m = $('ttDownloadMenu'); if(m) m.style.display = 'none';
+}
+function ttDownloadDocClick(e){
+  if(!ttDownloadMenuIsOpen()) return;
+  var t = e && e.target;
+  if(t && (t === $('ttDownloadBtn') || t === $('ttDownloadMenu'))) return;
+  closeTtDownloadMenu();
+}
+function timetableXlsxRows(shift){
+  var rows = [];
+  var slots = (data.slots || []).filter(function(x){ return !shift || slotShift(x) === shift; });
+  slots.sort(function(a, b){ var d = DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day); if(d) return d; return ttMin(a.start) - ttMin(b.start); });
+  slots.forEach(function(x){ rows.push([x.day, (x.start || '') + ' – ' + (x.end || ''), x.subject || '', x.teacher || '', x.section || '', x.group || '']); });
+  return rows;
+}
+function exportTimetableXlsx(shift){
+  var bytes = buildXLSXBytes(['Day', 'Time', 'Subject', 'Teacher', 'Section', 'Group'], timetableXlsxRows(shift));
+  downloadFile('fscc-timetable-' + (shift || 'master').toLowerCase() + '.xlsx', bytes, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  closeTtDownloadMenu();
 }
 /* ---------- Admin: announcements ---------- */
 function renderAdminAnnouncements(){
@@ -2284,7 +2340,7 @@ $('rsAddBtn').addEventListener('click', function(){
   if(!name){ alert('Please enter the student name.'); return; }
   if(!marks.length){ alert('Please enter at least one subject mark, e.g. English: 78/100'); return; }
   var rec = {roll:roll, name:name, className:$('rsClass').value.trim(), marks:marks};
-  if(editing.rs >= 0){ rec.sample = !!data.results[editing.rs].sample; data.results[editing.rs] = rec; }
+  if(editing.rs >= 0){ data.results[editing.rs] = rec; } /* v1.4.19: editing clears the sample flag — an edited item is the owner's, never auto-deleted. */
   else data.results.push(rec);
   cancelRs(); saveData();
 });
@@ -2398,9 +2454,9 @@ function saveGroup(){
   var g = {id: editing.gr >= 0 ? (data.groups[editing.gr].id || ('g' + Date.now())) : ('g' + Date.now()),
     name:name, subject:subj, teacher:$('grTeacher').value.trim(),
     time:$('grTime').value.trim(), slotId:$('grSlot').value || '', members:grEditMembers.slice()};
-  if(editing.gr >= 0){ g.sample = !!data.groups[editing.gr].sample; data.groups[editing.gr] = g; }
+  if(editing.gr >= 0){ data.groups[editing.gr] = g; } /* v1.4.19: editing clears the sample flag. */
   else data.groups.push(g);
-  /* v1.4.17: a member's time becomes the group's time — set the student's group
+  /* v1.4.19: a member's time becomes the group's time — set the student's group
      and clear their own time_slot ('' = use group time), then save the student.
      A student removed from the group loses the group but keeps their own time. */
   (g.members || []).forEach(function(m){
@@ -2619,7 +2675,7 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.17: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.19: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
     if(r.dob && !parseAdmDate(r.dob)){ warnings.push('Line ' + r.line + ': date of birth "' + r.dob + '" is not a valid date — left blank.'); }
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
@@ -2638,7 +2694,7 @@ function importStudentsCSV(text){
       saveStudentToFb(rec);
     }
     if(phone) seenPhones[phone] = rec.roll;
-    /* v1.4.17: old dues become an automatic previous-month 'Previous dues' challan. */
+    /* v1.4.19: old dues become an automatic previous-month 'Previous dues' challan. */
     if(num(r.old_dues) > 0) ensureOldDuesChallan(found || rec, num(r.old_dues), warnings);
   });
   return {added:added, updated:updated, skipped:skippedRows.length, error:'', skippedRows:skippedRows, warnings:warnings};
@@ -2708,7 +2764,7 @@ function renderAdminStudents(){
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    /* v1.4.17: Students table — no Class column; father name + phone nest under Name; Group in small font. */
+    /* v1.4.19: Students table — no Class column; father name + phone nest under Name; Group in small font. */
     html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>DOB</th><th>Gender</th><th>Phone</th><th>Roll Number</th><th>Group</th><th>Shift</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     var cards = '';
     var shownCount = 0;
@@ -2737,7 +2793,7 @@ function renderAdminStudents(){
   if(stuCnt) stuCnt.textContent = (stuSearchQ || '').trim() ? ('Showing ' + shownCount + ' of ' + data.students.length + ' students') : '';
   $('stList').innerHTML = html;
 }
-/* v1.4.17: print / PDF of the students list (respects the status filter + search). */
+/* v1.4.19: print / PDF of the students list (respects the status filter + search). */
 function printStudentsList(){
   var f = stStatusFilterQ;
   var rows = data.students.filter(function(s){ if(f !== 'All' && (s.status || 'Active') !== f) return false; return stuMatchesSearch(s, stuSearchQ); });
@@ -2877,7 +2933,7 @@ function renderStudentDash(){
   var due = studentDue(st);
   var paid = receivedThisMonth(st.roll, FB_MONTH);
   var attD = attDaysFor(st.roll, FB_MONTH);
-  /* v1.4.17: full software dashboard — header, real stat cards, action buttons, sections */
+  /* v1.4.19: full software dashboard — header, real stat cards, action buttons, sections */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(st.name) + '</h3><p>Roll ' + esc(st.roll) + ' &nbsp;·&nbsp; ' + esc(st.className) + ' &nbsp;·&nbsp; Group ' + esc(st.group || '—') + ' &nbsp;·&nbsp; ' + esc(st.shift || 'Evening') + ' Shift &nbsp;·&nbsp; ' + esc(studentTimeText(st) || 'Time not set yet') + '</p></div></div>'
     + '<div class="portal-stats">'
     + '<div class="portal-stat' + (due > 0 ? ' red' : ' green') + '"><div class="v">Rs ' + due.toLocaleString('en-US') + '</div><div class="l">Balance Due</div></div>'
@@ -2942,7 +2998,7 @@ async function saveDailyTopic(){
   }catch(e){ setMsg('dtMsg', 'Could not save: ' + fbErrText(e), 'err'); }
 }
 
-/* ---------- v1.4.17: portal self-service — My Details ---------- */
+/* ---------- v1.4.19: portal self-service — My Details ---------- */
 /* Students, parents and teachers can update their OWN basic details from their
    portal. Nothing here touches money or identity: no subjects/courses, no
    monthly fee, no roll number, no phone number (login ID), no old dues.
@@ -3120,7 +3176,7 @@ $('stChangePwBtn').addEventListener('click', async function(){
 /* ---------- Render everything ---------- */
 function renderAdminAll(){
   renderDashboard();
-  renderFeeStructure();
+  renderFeePeriods();
   renderUsers();
   renderAdminTimetable();
   renderAdminAnnouncements();
@@ -3322,13 +3378,35 @@ function studentFromDoc(doc){
     monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), scholarship_fee:num(d.scholarship_fee), shift:d.shift || 'Evening', gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
     subjects:Array.isArray(d.subjects) ? d.subjects.slice() : [], slotIds:Array.isArray(d.slotIds) ? d.slotIds.slice() : [], feePeriod:d.feePeriod || '', loginDisabled:!!d.loginDisabled, parentLoginDisabled:!!d.parentLoginDisabled};
 }
+/* v1.4.19: MERGE, never overwrite. The site doc can be stale (a push not yet
+   landed, an old tab's push, a failed save) — overwriting local slots/groups
+   with it deleted the owner's newest items on every update. Union by key:
+   local-only items survive, the doc wins on conflict, doc-only items are added.
+   Deletions still stick: the UI delete buttons call saveData, which pushes the
+   doc without the item, so a deleted key is absent locally AND in the fresh doc. */
+function mergeByKey(local, incoming, keyFn){
+  var out = (local || []).slice();
+  var keys = {};
+  out.forEach(function(x){ var k = keyFn(x); if(k != null) keys[k] = true; });
+  (incoming || []).forEach(function(x){
+    var k = keyFn(x);
+    if(k == null){ out.push(x); return; }
+    if(keys[k]){ for(var i = 0; i < out.length; i++){ if(keyFn(out[i]) === k){ out[i] = x; break; } } }
+    else { keys[k] = true; out.push(x); }
+  });
+  return out;
+}
+function slotMergeKey(x){ return [x.day, x.start, x.end, x.subject, x.teacher, x.section, x.group || '', slotShift(x)].join('|'); }
+function groupMergeKey(x){ return x.id || ('name:' + (x.name || '')); }
+function timeSlotMergeKey(x){ return x.id; }
+function resultMergeKey(x){ return String(x.roll || '').toUpperCase(); }
 function applySiteDoc(d){
   if(!d) return;
-  if(d.slots) data.slots = d.slots.filter(function(x){ return !x.sample; });
-  if(d.groups) data.groups = d.groups.filter(function(g){ return !g.sample; });
-  if(d.timeSlots) data.timeSlots = d.timeSlots.filter(function(t){ return !isSeededTimeSlot(t); });
+  if(d.slots) data.slots = mergeByKey(data.slots, d.slots, slotMergeKey);
+  if(d.groups){ var _lg = data.groups; data.groups = mergeByKey(data.groups, d.groups, groupMergeKey); data.groups.forEach(function(g){ var lg = null; _lg.forEach(function(x){ if(groupMergeKey(x) === groupMergeKey(g)) lg = x; }); if(lg && lg.members){ var _m = lg.members.slice(); (g.members || []).forEach(function(m){ if(_m.indexOf(m) < 0) _m.push(m); }); g.members = _m; } }); } /* v1.4.19: on conflict the doc wins every field except members, which are unioned — a stale doc must never drop students out of a group. */
+  if(d.timeSlots) data.timeSlots = mergeByKey(data.timeSlots, d.timeSlots, timeSlotMergeKey);
   if(d.announcements) data.announcements = d.announcements;
-  if(d.results) data.results = d.results.filter(function(r){ return !r.sample && !isSampleRoll(r.roll); });
+  if(d.results) data.results = mergeByKey(data.results, d.results, resultMergeKey);
   if(d.notes) data.notes = d.notes;
   if(d.videos) data.videos = d.videos;
   if(d.featuredPlaylist) data.featuredPlaylist = d.featuredPlaylist;
@@ -3346,10 +3424,8 @@ function applySiteDoc(d){
   if(d.manualFamilies) data.manualFamilies = d.manualFamilies;
   if(d.familyOverrides) data.familyOverrides = d.familyOverrides;
   if(d.legacyDefaultsPurged) data.legacyDefaultsPurged = true;
+  if(d.seededSlotsCleaned) data.seededSlotsCleaned = true;
   var _purged = purgeLegacyDefaults();
-  var fsfps = $('fsFeePerSubject'); if(fsfps) fsfps.value = num(fbData.feePerSubject) || 2000;
-  var fsbf = $('fsBoardFee'); if(fsbf) fsbf.value = num(fbData.boardFee) || 0;
-  var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
   if(d.subjects){ var _sj = normSubjects(d.subjects); if(_sj.length){ fbData.subjects = _sj; try{ localStorage.setItem(SUBJ_LS_KEY, JSON.stringify(_sj)); }catch(e){} } }
   if(d.migrated_v11) fbData.migrated = true;
   fb.siteReady = true;
@@ -3377,7 +3453,7 @@ function fbLoadStudents(){
     renderAll();
   }, function(){});
 }
-/* v1.4.17: contacts merge — academy_contacts holds the real phones. The merge used to
+/* v1.4.19: contacts merge — academy_contacts holds the real phones. The merge used to
    run only from the students snapshot when the role was already known; auth can resolve
    after the snapshot (or contacts can arrive before students), so cache the contacts
    and apply them on every students snapshot too. */
@@ -3401,7 +3477,7 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, legacyDefaultsPurged:!!data.legacyDefaultsPurged, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, legacyDefaultsPurged:!!data.legacyDefaultsPurged, seededSlotsCleaned:!!data.seededSlotsCleaned, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
 function saveReceiptNote(){
@@ -3565,7 +3641,7 @@ async function changeStudentPwAsync(phone, cur, nw, nw2){
   st.passwordHash = newHash;
   return {ok:true, msg:'Password changed. It works on all devices now.'};
 }
-/* v1.4.17: reset by phoneHash directly — never depends on the local student list,
+/* v1.4.19: reset by phoneHash directly — never depends on the local student list,
    so it works right after a reload even before the contacts merge has run. */
 async function resetStudentPwFb(phone){
   var n = normPhone(phone);
@@ -3642,7 +3718,7 @@ function renderParentDash(){
   if(!parentViewRoll || !kids.some(function(k){ return k.roll === parentViewRoll; })) parentViewRoll = kids[0].roll;
   var st = null; kids.forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
   var dad = (kids[0] && kids[0].father_name) ? kids[0].father_name : ('Parent of ' + st.name);
-  /* v1.4.17: full software dashboard — header, one card per child, detail for the selected child */
+  /* v1.4.19: full software dashboard — header, one card per child, detail for the selected child */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(dad) + '</h3><p>' + kids.length + ' child' + (kids.length === 1 ? '' : 'ren') + ' enrolled at Future Star Academy &nbsp;·&nbsp; viewing ' + esc(st.name) + ' (' + esc(st.roll) + ')</p></div></div>';
   html += '<div class="portal-kids">';
   kids.forEach(function(k){
@@ -3848,7 +3924,7 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
-/* ---------- v1.4.17: carried-forward balances — every rupee counted exactly once ---------- */
+/* ---------- v1.4.19: carried-forward balances — every rupee counted exactly once ---------- */
 /* When a new challan is created, unpaid balances of earlier challans are rolled into it as
    arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
    then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
@@ -3916,7 +3992,7 @@ function studentDue(st){
   var map = carriedOutMap();
   var chs = studentChallans(st.roll);
   var fam = familyChallansFor(st.roll);
-  /* v1.4.17: no challan, no fee — the owner makes every challan himself. */
+  /* v1.4.19: no challan, no fee — the owner makes every challan himself. */
   if(!chs.length && !fam.length) return 0;
   var t = 0;
   chs.forEach(function(c){ if(!c.family) t += effectiveChallanBalance(c, map); }); /* family challans count by member share below, not in full — the head would double-count; carried-forward balances count once, inside the newer challan */
@@ -3954,7 +4030,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100, rules:{basis:rule.basis, pct:pct}};
 }
-/* ---------- v1.4.17: shifts + morning partner share ---------- */
+/* ---------- v1.4.19: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -4074,12 +4150,11 @@ function fillFeeForm(p, roll){
     + '<tr><td>Received this month</td><td>' + rs(rec) + '</td></tr>'
     + '<tr class="total"><td>Balance due</td><td>' + rs(bal) + '</td></tr>'
     + '<tr><td>Last payment</td><td>' + (lastPay ? esc(lastPay.date) + ' — ' + rs(num(lastPay.amount_received) + num(lastPay.admission_fee)) + ' (Receipt ' + esc(lastPay.receipt_no || '') + ')' : 'None yet') + '</td></tr>'
-    + '</tbody></table></div>'
-    + (num(st.scholarship_fee) > 0 ? '<p class="kv-hint"><b>Scholarship:</b> ' + effectiveSubjects(st).length + ' subject(s) × ' + rs(num(st.scholarship_fee)) + ' per subject</p>' : '');
+    + '</tbody></table></div>';
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.17 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.19 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -4096,7 +4171,7 @@ function challanLinesForReceipt(c){
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
 }
-/* ---------- v1.4.17: oldest-first payment allocation ---------- */
+/* ---------- v1.4.19: oldest-first payment allocation ---------- */
 /* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
    the student's own open challans, oldest first, so the amount due drops by exactly the amount
    paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
@@ -4171,7 +4246,7 @@ async function savePayment(p){
       }
       pendingChallanId = null;
     } else {
-      /* v1.4.17: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      /* v1.4.19: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
       var _alloc = allocatePaymentToChallans(st, amount, discount);
       if(_alloc.length){
         rec.challanId = _alloc[0].challanId;
@@ -4294,7 +4369,6 @@ function receiptHTML(rec, st){
     + '<tr><td>Name</td><td><b>' + esc(st ? st.name : '') + '</b></td></tr>'
     + '<tr><td>Course</td><td>' + esc(rec.course || (st ? (st.course || st.className || '') : '')) + '</td></tr>'
     + (rec.lines && rec.lines.length ? rec.lines.map(function(l){ return '<tr><td>' + esc(l.label || 'Fee') + '</td><td>' + rs(l.amount) + '</td></tr>'; }).join('') : '<tr><td>Monthly Fees</td><td>' + rs(rec.monthly_fee) + '</td></tr>')
-    + (st && num(st.scholarship_fee) > 0 ? '<tr><td>Scholarship</td><td>' + effectiveSubjects(st).length + ' subject(s) × ' + rs(num(st.scholarship_fee)) + ' per subject (base ' + rs(num(fbData.feePerSubject) || 2000) + ')</td></tr>' : '')
     + (num(rec.admission_fee) > 0 ? '<tr><td>Admission Fee</td><td>' + rs(rec.admission_fee) + '</td></tr>' : '')
     + '<tr><td>Received</td><td><b>' + rs(num(rec.amount_received) + num(rec.admission_fee)) + '</b></td></tr>'
     + (num(rec.discount) > 0 ? '<tr><td>Discount</td><td>' + rs(rec.discount) + '</td></tr>' : '')
@@ -4459,7 +4533,7 @@ function renderTopics(){
 var tpPaySelected = '';
 function renderTeacherPay(){
   var s = financeSummary(FB_MONTH);
-  /* v1.4.17: ONE teacher at a time — pick from the dropdown, only that teacher's
+  /* v1.4.19: ONE teacher at a time — pick from the dropdown, only that teacher's
      pay table renders. Share math unchanged. */
   var _names = teacherNamesAll();
   if(!tpPaySelected || _names.indexOf(tpPaySelected) < 0) tpPaySelected = _names[0] || '';
@@ -4670,7 +4744,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ var st = loadAdminGroups(); ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); sec.classList.remove('collapsed'); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.17: mobile admin card menu ---------- */
+/* ---------- v1.4.19: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4687,7 +4761,6 @@ var ADMIN_SECTIONS = [
   ['videos', 'play_circle', 'Videos', 'Manage YouTube lesson videos'],
   ['fees', 'payments', 'Finance', 'Collect fees and see balances'],
   ['challans', 'request_quote', 'Challans', 'Monthly fee challans'],
-  ['feestructure', 'account_balance', 'Fee Structure', 'Fees, board fees and periods'],
   ['receipts', 'receipt_long', 'Receipts', 'Reprint fee receipts'],
   ['teacherpay', 'account_balance_wallet', 'Teacher Pay', 'Pay teachers and check shares'],
   ['expenses', 'receipt', 'Expenses', 'Record academy expenses'],
@@ -4742,7 +4815,7 @@ function dashBars(title, icon, rows, total, colors, money){
   });
   return html + '</div>';
 }
-/* v1.4.17: "Students at a glance" cards for the Admin Dashboard — Active students only,
+/* v1.4.19: "Students at a glance" cards for the Admin Dashboard — Active students only,
    Morning/Evening split (blank shift = Evening, same as v1.4.4), one card per
    subject/course with at least one Active student. Membership via studentHasSubject,
    so the numbers match the rest of the site. Built inside renderDashboard, so the
@@ -4834,7 +4907,7 @@ function renderDashboard(){
   q('qaFinance', function(){ goAtab('fees'); });
 }
 
-/* ---------- v1.4.17: Balance Due split, challans manager, reports, xlsx, users sub-tabs ---------- */
+/* ---------- v1.4.19: Balance Due split, challans manager, reports, xlsx, users sub-tabs ---------- */
 var usSearchQ = '';
 var usTab = 'students';
 function applyUsTabs(){
@@ -5215,7 +5288,7 @@ function renderReports(){
   var sibEl = $('rpSiblings'); if(sibEl) sibEl.innerHTML = siblingReportHTML().html;
   var exEl = $('rpExpenses'); if(exEl){ var xr = reportRows('expenses'); exEl.innerHTML = reportTableHTML(xr); }
 }
-/* ---------- v1.4.17: morning partner share ---------- */
+/* ---------- v1.4.19: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -5233,20 +5306,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.17: fee per subject + scholarship ---------- */
-function saveFeePerSubject(){
-  var v = num($('feePerSubject').value);
-  if(v <= 0){ setMsg('fpsMsg', 'Enter a fee above 0.', 'err'); return; }
-  fbData.feePerSubject = v;
-  try{ localStorage.setItem(FEE_PER_SUBJECT_LS_KEY, JSON.stringify(v)); }catch(e){}
-  fbPushSite();
-  setMsg('fpsMsg', 'Fee per subject saved: ' + rs(v) + ' per subject.', 'ok');
-}
-function bindFeePerSubject(){
-  var b = $('btnFeePerSubject'); if(b) b.addEventListener('click', saveFeePerSubject);
-  var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
-}
-/* ---------- v1.4.17: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.19: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -5291,7 +5351,7 @@ function applyArrearsSheet(text){
     found.old_dues = num(v);
     updated++;
     saveStudentToFb(found);
-    /* v1.4.17: corrected old dues create/update the automatic previous-dues challan. */
+    /* v1.4.19: corrected old dues create/update the automatic previous-dues challan. */
     if(num(v) > 0) ensureOldDuesChallan(found, num(v), warnings);
   });
   return {updated:updated, notFound:notFound, skipped:skipped, warnings:warnings};
@@ -5401,7 +5461,7 @@ function attGroupsFor(viewer){
       return (currentTeacher.subjects || []).indexOf(g.subject) >= 0 || g.teacher === currentTeacher.name;
     });
   }
-  /* v1.4.17: a group with 0 Active students must not appear as a selectable group. */
+  /* v1.4.19: a group with 0 Active students must not appear as a selectable group. */
   list = list.filter(function(g){ return attGroupStudents(g.name).length > 0; });
   return list;
 }
@@ -5590,7 +5650,7 @@ async function demoteAdmin(uid){
     renderRoles();
   }catch(e){ setMsg('rolesMsg', 'Could not change role: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.17: roles & permissions ---------- */
+/* ---------- v1.4.19: roles & permissions ---------- */
 var ROLE_SECTIONS = [
   {key:'dashboard', label:'Dashboard'}, {key:'students', label:'Students'}, {key:'fees', label:'Finance'},
   {key:'exams', label:'Exams'}, {key:'attendance', label:'Attendance'}, {key:'reports', label:'Reports'},
@@ -5837,7 +5897,7 @@ function renderTeacherPanel(){
   var myStudents = teacherStudents(t);
   var s = financeSummary(FB_MONTH);
   var due = s.teacherDue[t.name] || 0, paid = s.teacherPaid[t.name] || 0;
-  /* v1.4.17: full software dashboard — header, real stat cards, today's classes */
+  /* v1.4.19: full software dashboard — header, real stat cards, today's classes */
   var el = $('teacherPanelBody');
   if(el){
     var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(t.name) + '</h3><p>' + esc(subs.join(', ')) + ' &nbsp;·&nbsp; ' + esc(todayName) + '</p></div></div>'
@@ -6096,7 +6156,7 @@ var editingExam = null, openExamId = null;
 function examStudents(exam){
   return data.students.filter(function(s){ return (s.status || 'Active') !== 'Left' && studentHasSubject(s, exam.subject); });
 }
-/* ---------- v1.4.17: marks publishing — students/parents see only published marks ---------- */
+/* ---------- v1.4.19: marks publishing — students/parents see only published marks ---------- */
 function normRoll(r){ return String(r || '').trim().toUpperCase(); }
 function publishedRollsOf(ex){ return (ex.publishedRolls || []).map(function(r){ return normRoll(r); }); }
 function isMarkPublished(ex, roll){ return publishedRollsOf(ex).indexOf(normRoll(roll)) >= 0; }
@@ -6375,7 +6435,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.17: result cards ---------- */
+/* ---------- v1.4.19: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -6497,7 +6557,7 @@ function renderTeacherResults(){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printTeacherResults()">Print Results</button></div>';
   el.innerHTML = h;
 }
-/* ---------- v1.4.17: teacher marks entry (their subjects only, no publish controls) ---------- */
+/* ---------- v1.4.19: teacher marks entry (their subjects only, no publish controls) ---------- */
 function teacherExamList(t){
   var subs = (t.subjects && t.subjects.length ? t.subjects : [t.subject || t.course || '']);
   return (fbData.exams || []).filter(function(x){ return subs.indexOf(x.subject) >= 0; });
@@ -6543,7 +6603,7 @@ function challanArrearsFor(st, month){
   if(!hasAny && !familyChallansFor(st.roll).length && num(st.old_dues) > 0) lines.push({month:'', amount:num(st.old_dues), label:'Previous dues'});
   return lines;
 }
-/* v1.4.17: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
+/* v1.4.19: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
 function prevMonthOf(month){
   var m = String(month || '').match(/^(\d{4})-(\d{2})$/);
   if(!m) return '';
@@ -6551,7 +6611,7 @@ function prevMonthOf(month){
   if(mo === 0){ y--; mo = 12; }
   return y + '-' + ('0' + mo).slice(-2);
 }
-/* v1.4.17: old dues from a CSV import / arrears upload become an automatic custom
+/* v1.4.19: old dues from a CSV import / arrears upload become an automatic custom
    challan for the PREVIOUS month with a single 'Previous dues' line. Create-or-update:
    an unpaid auto challan for the same student+month is updated in place, never
    duplicated; if payments were already recorded on it, it is left untouched and the
@@ -6592,7 +6652,7 @@ function ensureOldDuesChallan(st, amount, warnings){
 }
 function buildChallan(st, month, monthlyFee, extraLines, custom, note){
   var arrTotal = 0; (extraLines || []).forEach(function(a){ arrTotal += num(a.amount); });
-  return {month:month, period:fbData.feePeriod || currentFeePeriod(), roll:st.roll, studentName:st.name, monthlyFee:num(monthlyFee), arrears:extraLines || [], arrearsTotal:arrTotal, total:num(monthlyFee) + arrTotal, paid:0, status:'unpaid', custom:!!custom, note:note || '', scholarship:scholarshipInfo(st), createdAt:firebase.firestore.FieldValue.serverTimestamp(), createdBy:fb.userName || 'admin'};
+  return {month:month, period:fbData.feePeriod || currentFeePeriod(), roll:st.roll, studentName:st.name, monthlyFee:num(monthlyFee), arrears:extraLines || [], arrearsTotal:arrTotal, total:num(monthlyFee) + arrTotal, paid:0, status:'unpaid', custom:!!custom, note:note || '', scholarship:null, createdAt:firebase.firestore.FieldValue.serverTimestamp(), createdBy:fb.userName || 'admin'};
 }
 /* Admission fee is charged only once per student, in the first (custom) challan. Monthly challans created here never add an admission-fee line. */
 async function createChallansFor(month, rollOrNull){
@@ -6671,7 +6731,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.17 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.19 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -6734,8 +6794,6 @@ async function voidChallan(id){
 function challanSlipHTML(c, logoSrc){
   var st = studentByRoll(c.roll);
   var chNo = 'CH-' + c.month + '-' + String(c.id || '').slice(-6).toUpperCase();
-  var sch = c.scholarship;
-  var schNote = sch ? '<p><b>Scholarship:</b> ' + sch.subjects + ' subject(s) × ' + rs(sch.rate) + ' per subject (base fee ' + rs(sch.base) + ' per subject).</p>' : '';
   var rows = '';
   if(c.family){
     rows += '<tr><td colspan="2"><b>Family challan — issued in the name of ' + esc(c.studentName || '') + ' (' + esc(c.roll) + '). One bill for the whole family; payments settle the oldest dues first.</b></td></tr>';
@@ -6762,7 +6820,6 @@ function challanSlipHTML(c, logoSrc){
     + '<h3 style="margin:14px 0 4px;color:var(--blue)">Fee Challan — ' + esc(c.month) + '</h3>'
     + '<p><b>Challan No:</b> ' + esc(chNo) + ' &nbsp;·&nbsp; <b>Due date:</b> end of ' + esc(c.month) + '</p>'
     + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Course:</b> ' + esc(st ? (st.course || st.className || '') : '') + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(challanDisplayStatus(c)) + '</p>'
-    + schNote
     + '<table><thead><tr><th>Particulars</th><th style="text-align:right">Amount</th></tr></thead><tbody>' + rows + '</tbody></table>'
     + (c.note ? '<p>Note: ' + esc(c.note) + '</p>' : '')
     + '<p style="margin-top:14px">Please pay before the end of the month. Thank you.</p>'
@@ -6890,7 +6947,6 @@ function studentFeeHTML(st, pfx){
   var chs = allChallansFor(st.roll);
   if(!chs.length) html += '<tr><td>Old dues</td><td>' + rs(st.old_dues) + '</td></tr>';
   html += '</tbody></table></div>'
-    + (num(st.scholarship_fee) > 0 ? '<p class="kv-hint"><b>Scholarship:</b> ' + effectiveSubjects(st).length + ' subject(s) × ' + rs(num(st.scholarship_fee)) + ' per subject (base ' + rs(num(fbData.feePerSubject) || 2000) + ')</p>' : '')
     + (!chs.length ? '<p class="kv-hint">No challan created for you yet this month — the admin creates challans at the start of each month.</p>' : '');
   if(chs.length){
     html += '<div class="table-scroll"><table class="marks"><thead><tr><th>Month</th><th>Fee</th><th>Arrears</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody>';
@@ -7011,12 +7067,12 @@ function pickFeeStudent(roll){ $('feeRoll').value = roll; fillFeeForm('fee', rol
   b = $('rcLoadBtn'); if(b) b.addEventListener('click', loadSingleReceipt);
   b = $('mrLoadBtn'); if(b) b.addEventListener('click', loadMultiReceipt);
   b = $('rcPrintBtn'); if(b) b.addEventListener('click', printReceipt);
-  b = $('ttPrintGirls'); if(b) b.addEventListener('click', function(){ printTimetable('Girls', ttShift); });
-  b = $('ttPrintBoys'); if(b) b.addEventListener('click', function(){ printTimetable('Boys', ttShift); });
-  b = $('ttPrintMaster'); if(b) b.addEventListener('click', function(){ printTimetable(null, ttShift); });
-  b = $('ttDownloadPdf'); if(b) b.addEventListener('click', function(){ downloadTimetablePDF(null, ttShift); });
-  b = $('ttDownloadGirlsPdf'); if(b) b.addEventListener('click', function(){ downloadTimetablePDF('Girls', ttShift); });
-  b = $('ttDownloadBoysPdf'); if(b) b.addEventListener('click', function(){ downloadTimetablePDF('Boys', ttShift); });
+  b = $('ttDownloadBtn'); if(b) b.addEventListener('click', function(e){ toggleTtDownloadMenu(e); });
+  b = $('ttDlPdfShift'); if(b) b.addEventListener('click', function(){ closeTtDownloadMenu(); downloadTimetablePDF(null, ttShift); });
+  b = $('ttDlPdfMaster'); if(b) b.addEventListener('click', function(){ closeTtDownloadMenu(); downloadTimetablePDF(null, null); });
+  b = $('ttDlXlsx'); if(b) b.addEventListener('click', function(){ exportTimetableXlsx(ttShift); });
+  b = $('ttDlPrint'); if(b) b.addEventListener('click', function(){ closeTtDownloadMenu(); printTimetable(null, ttShift); });
+  document.addEventListener('click', ttDownloadDocClick);
   b = $('ttPrintBtnPublic'); if(b) b.addEventListener('click', function(){ printTimetable(null, null); });
   b = $('ttShiftMorning'); if(b) b.addEventListener('click', function(){ setTtShift('Morning'); });
   b = $('ttShiftEvening'); if(b) b.addEventListener('click', function(){ setTtShift('Evening'); });
@@ -7024,7 +7080,6 @@ function pickFeeStudent(roll){ $('feeRoll').value = roll; fillFeeForm('fee', rol
   /* teacher pay */
   b = $('tpSaveBtn'); if(b) b.addEventListener('click', saveTeacherPayment);
   b = $('shSaveBtn'); if(b) b.addEventListener('click', saveShareRules);
-  bindFeePerSubject();
   var she = $('shEditor'); if(she) she.addEventListener('input', syncShareAcad);
   /* v1.2.6: subjects + challans + homework */
   b = $('subjAddBtn'); if(b) b.addEventListener('click', addSubject);
@@ -7093,7 +7148,7 @@ function editStu(i){
   $('seStatus').value = s.status || 'Active';
   editingStuRoll = s.roll || '';
   renderSeSubChecks(s.subjects && s.subjects.length ? s.subjects : (s.course ? [s.course] : []));
-  $('seFee').value = num(s.monthly_fee); $('seAdmFee').value = num(s.admission_fee); $('seOld').value = num(s.old_dues); $('seScholarship').value = num(s.scholarship_fee) ? num(s.scholarship_fee) : '';
+  $('seFee').value = num(s.monthly_fee); $('seAdmFee').value = num(s.admission_fee); $('seOld').value = num(s.old_dues);
   renderLifecyclePanel();
   $('stEditForm').style.display = '';
   $('stEditForm').scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -7103,7 +7158,7 @@ function cancelStuEdit(){
   editingStu = -1;
   $('stEditForm').style.display = 'none';
 }
-/* v1.4.17: reset the Edit Student form to a fresh blank "Add New Student" state.
+/* v1.4.19: reset the Edit Student form to a fresh blank "Add New Student" state.
    After save, cancel or any Student Lifecycle action the form must never show
    a stale edit — the editing state is cleared and every field is blanked, so
    switching tabs and coming back cannot resurrect the old student's data. */
@@ -7119,7 +7174,7 @@ function resetStuForm(){
   $('seStatus').value = 'Active';
   editingStuRoll = '';
   renderSeSubChecks([]);
-  $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = ''; $('seScholarship').value = '';
+  $('seFee').value = ''; $('seAdmFee').value = ''; $('seOld').value = '';
   $('seFormTitle').textContent = 'Add New Student';
   renderLifecyclePanel();
 }
@@ -7194,7 +7249,7 @@ function saveStuEdit(){
   document.querySelectorAll('#seSubChecks input:checked').forEach(function(cb){ s.subjects.push(cb.getAttribute('data-sesub')); });
   if(s.subjects.length) s.course = s.subjects[0];
   if(isNew && !s.roll) s.roll = nextRollFor(rollPrefixFor(s));
-  s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value); s.scholarship_fee = num($('seScholarship').value);
+  s.monthly_fee = num($('seFee').value); s.admission_fee = num($('seAdmFee').value); s.old_dues = num($('seOld').value);
   var oldRoll = isNew ? '' : (editingStuRoll || '');
   if(!isNew && oldRoll && oldRoll !== s.roll) changeStudentRoll(oldRoll, s.roll);
   if(!s.name || !s.roll){ setMsg('stCsvMsg', 'Please enter at least a name and a roll number.', 'err'); return; }
@@ -7222,7 +7277,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.17: group dropdown ---------- */
+/* ---------- v1.4.19: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -7250,29 +7305,14 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* ---------- v1.4.17: scholarship ---------- */
-function scholarshipInfo(st){
-  var rate = num(st && st.scholarship_fee);
-  if(rate <= 0) return null;
-  return {rate:rate, subjects:effectiveSubjects(st).length, base:num(fbData.feePerSubject) || 2000};
-}
+/* v1.4.19: fees are per-student only — the old per-subject fee tab and its
+   scholarship logic are removed. effectiveFee is always the stored monthly_fee;
+   a stored scholarship_fee (if any) is ignored, never billed. */
 function effectiveFee(st){
   if(!st) return 0;
-  var sch = scholarshipInfo(st);
-  if(sch) return sch.subjects * sch.rate;
   return num(st.monthly_fee);
 }
-function suggestFee(){
-  if(editingStu !== -2) return;
-  var feeEl = $('seFee'); if(!feeEl) return;
-  if(feeEl.value.trim() !== '') return;
-  var n = 0;
-  document.querySelectorAll('#seSubChecks input:checked').forEach(function(){ n++; });
-  if(!n) return;
-  var sch = num($('seScholarship').value);
-  feeEl.value = n * (sch > 0 ? sch : (num(fbData.feePerSubject) || 2000));
-}
-/* ---------- v1.4.17: time slots ---------- */
+/* ---------- v1.4.19: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -7311,7 +7351,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.17: new student flow ---------- */
+/* ---------- v1.4.19: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -7353,7 +7393,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.17: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.19: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -7506,11 +7546,9 @@ async function leaveStudent(){
   var ssc = $('seSubChecks'); if(ssc) ssc.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   var sc2 = $('seCourse'); if(sc2) sc2.addEventListener('change', function(){ if(!$('seRoll').value.trim()) suggestRoll(); });
   var sg = $('seGroup'); if(sg) sg.addEventListener('change', toggleSeGroupNew);
-  var ssc2 = $('seSubChecks'); if(ssc2) ssc2.addEventListener('change', suggestFee);
-  var sch = $('seScholarship'); if(sch) sch.addEventListener('input', suggestFee);
 })();
 
-/* ---------- v1.4.17: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.19: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -7557,7 +7595,7 @@ function waReminderBtn(st, amount){
 /* --- families (item A) --- */
 function familyKeyOf(st){ var f = normPhone(st.father_phone || ''); return f || ''; }
 function parseAdmDateNum(s){ var d = parseAdmDate(s); return d ? d : '9999-99-99'; }
-/* v1.4.17: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
+/* v1.4.19: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
    only the fallback when a member has no usable DOB. elderKey ranks DOB ('0') ahead of
    admission date ('1') ahead of no date ('2'), so within a rank the earliest date wins and
    a member with a DOB always beats one known only by admission date. If neither member has
@@ -7639,7 +7677,7 @@ function familyMemberShare(c, roll, map){
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
   var balance = Math.max(0, total - paid);
-  /* v1.4.17: a member share already rolled into a later family challan is not owed twice. */
+  /* v1.4.19: a member share already rolled into a later family challan is not owed twice. */
   balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
   return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
@@ -7679,7 +7717,7 @@ function removeMemberFromFamilyChallan(c, roll){
 }
 function suggestedSiblings(){
   var out = [], seen = {};
-  /* v1.4.17: never suggest a pair that is already in the same family (linked by hand
+  /* v1.4.19: never suggest a pair that is already in the same family (linked by hand
      or by the same father phone). Drop any member already linked to another member of
      this candidate group; suggest only the genuinely unlinked remainder. */
   var linkedFam = {};
@@ -7904,77 +7942,8 @@ async function saveChallanEdit(){
 }
 function cancelChallanEdit(){ editingChallanId = null; $('chEditForm').style.display = 'none'; }
 
-/* --- fee structure (item D) --- */
-function renderFeeStructure(){
-  var el = $('fsScholarship'); if(!el) return;
-  var sch = 0, rates = {};
-  data.students.forEach(function(st){
-    if(num(st.scholarship_fee) > 0){ sch++; rates[st.scholarship_fee] = (rates[st.scholarship_fee] || 0) + 1; }
-  });
-  var rateTxt = Object.keys(rates).map(function(r){ return rates[r] + ' at ' + rs(r) + '/subject'; }).join(', ') || 'none';
-  el.innerHTML = '<div class="card"><b>Scholarship summary</b><p class="note" style="margin:0">' + sch + ' student(s) on scholarship (' + esc(rateTxt) + '). Base fee is ' + rs(num(fbData.feePerSubject) || 2000) + ' per subject; board admission fee is ' + rs(num(fbData.boardFee) || 0) + '.</p></div>';
-  var cur = $('fpCurrent'); if(cur) cur.textContent = fbData.feePeriod || currentFeePeriod();
-  renderFeePeriods();
-  renderBoardFeeList();
-}
-function saveFeeSettings(){
-  var fps = num($('fsFeePerSubject').value), bf = num($('fsBoardFee').value);
-  if(fps > 0) fbData.feePerSubject = fps;
-  fbData.boardFee = bf;
-  try{ localStorage.setItem(FEE_PER_SUBJECT_LS_KEY, JSON.stringify(fbData.feePerSubject)); }catch(e){}
-  fbPushSite();
-  setMsg('fsMsg', 'Fee settings saved: ' + rs(fbData.feePerSubject) + ' per subject, board admission fee ' + rs(fbData.boardFee) + '.', 'ok');
-  renderFeeStructure();
-}
-function boardFeeReceiptHTML(p, st){
-  return '<div class="receipt"><h3 style="margin:0;color:var(--blue)">Future Star Computer &amp; Tuition Center</h3>'
-    + '<p style="margin:2px 0 12px">FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381<br>' + esc(ownersLineText()) + '</p>'
-    + '<p><b>Receipt No:</b> ' + esc(p.receipt_no || '—') + ' &nbsp;·&nbsp; <b>Date:</b> ' + esc(p.date) + '</p>'
-    + '<table class="marks"><tbody>'
-    + '<tr><td>Roll No</td><td><b>' + esc(p.student_roll_no) + '</b></td></tr>'
-    + '<tr><td>Name</td><td><b>' + esc(st ? st.name : '') + '</b></td></tr>'
-    + '<tr><td>Board Admission Fee</td><td><b>' + rs(p.amount_received) + '</b></td></tr>'
-    + '<tr><td>Received By</td><td>' + esc(p.received_by) + '</td></tr>'
-    + '</tbody></table><p style="margin-top:14px">Student Copy</p>'
-    + '<p style="border-top:1px dashed var(--line);padding-top:10px">Thank you. Please keep this receipt.</p></div>';
-}
-async function receiveBoardFee(){
-  var roll = ($('bdRoll').value || '').trim().toUpperCase();
-  var st = studentByRoll(roll);
-  if(!st){ setMsg('bdMsg', 'No student found with roll ' + roll + '.', 'err'); return; }
-  var amount = num($('bdAmount').value);
-  if(amount <= 0){ setMsg('bdMsg', 'Please enter the board fee amount.', 'err'); return; }
-  if(!fbNeedLive()){ setMsg('bdMsg', 'Live data is unavailable. Board fees need the live database.', 'err'); return; }
-  var date = $('bdDate').value || todayStr();
-  var by = ($('bdBy').value || '').trim() || 'admin';
-  var month = monthOf(date);
-  try{
-    var receiptNo = await nextReceiptNo(month);
-    var rec = {receipt_no:receiptNo, date:date, student_roll_no:st.roll, month:month, period:fbData.feePeriod || currentFeePeriod(), type:'board', challanId:'', monthly_fee:0, admission_fee:0, discount:0, amount_received:amount, old_dues_at_time:0, balance_after:studentDue(st), received_by:by, course:st.course || st.className || ''};
-    var ref = await fb.db.collection('academy_payments').add(rec);
-    rec.id = ref.id;
-    fbData.payments.push(rec);
-    auditLog('board', 'Board admission fee received from ' + st.name + ' (' + st.roll + '): ' + rs(amount) + ', receipt ' + receiptNo + '.', 'board', st.roll);
-    setMsg('bdMsg', 'Board fee received: ' + rs(amount) + ' from ' + st.name + ' — receipt ' + receiptNo + '.', 'ok');
-    var area = $('bdReceipt'); if(area) area.innerHTML = boardFeeReceiptHTML(rec, st);
-    renderBoardFeeList();
-    renderAdminFinance();
-  }catch(e){ setMsg('bdMsg', 'Could not save: ' + fbErrText(e), 'err'); }
-}
-function renderBoardFeeList(){
-  var el = $('bdList'); if(!el) return;
-  var list = fbData.payments.filter(function(p){ return p.type === 'board'; }).slice().sort(function(a, b){ return (a.date < b.date ? 1 : -1); }).slice(0, 20);
-  if(!list.length){ el.innerHTML = '<p class="note">No board admission fees received yet.</p>'; return; }
-  var h = '<div class="table-scroll"><table><thead><tr><th>Date</th><th>Roll</th><th>Name</th><th>Amount</th><th>Receipt</th><th>Received By</th></tr></thead><tbody>';
-  list.forEach(function(p){
-    var st = studentByRoll(p.student_roll_no);
-    h += '<tr><td>' + esc(p.date) + '</td><td>' + esc(p.student_roll_no) + '</td><td><b>' + esc(st ? st.name : '') + '</b></td><td><b>' + rs(p.amount_received) + '</b></td><td>' + esc(p.receipt_no || '') + '</td><td>' + esc(p.received_by || '') + '</td></tr>';
-  });
-  h += '</tbody></table></div>';
-  el.innerHTML = h;
-}
 
-/* ---------- v1.4.17: students per fee period ---------- */
+/* ---------- v1.4.19: students per fee period ---------- */
 /* How many students were enrolled in a period. The current period counts live: Active students
    whose feePeriod is this period, or blank (created before periods existed — they belong to the
    current period). Old periods keep the snapshot taken at migration time (the Active students who
@@ -7998,6 +7967,7 @@ function studentsInPeriod(p){
 }
 /* --- fee periods (item E) --- */
 function renderFeePeriods(){
+  var cur = $('fpCurrent'); if(cur) cur.textContent = fbData.feePeriod || currentFeePeriod();
   var el = $('fpList'); if(!el) return;
   var html = '<div class="table-scroll"><table><thead><tr><th>Period</th><th>Students</th><th>Challans</th><th>Payments</th></tr></thead><tbody>';
   feePeriodList().forEach(function(p){
@@ -8044,7 +8014,7 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
-    /* v1.4.17: snapshot the old period's enrolment before the students move — after migration
+    /* v1.4.19: snapshot the old period's enrolment before the students move — after migration
        every student carries the new period, so without this the old row would show 0 students. */
     fbData.feePeriodStudents = fbData.feePeriodStudents || {};
     fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
@@ -8052,13 +8022,13 @@ async function migrateFeePeriod(){
     saveData();
     auditLog('period', 'Fee period migrated ' + old + ' → ' + np + ': ' + plan.students.length + ' students, ' + rs(total) + ' carried forward as opening dues.', 'period', np);
     setMsg('fpMsg', 'Migrated to ' + np + '. ' + plan.students.length + ' students moved, ' + rs(total) + ' carried forward as opening dues. The old period is still visible in the Challans period filter.', 'ok');
-    renderFeeStructure(); renderChallans(); renderAdminStudents(); renderAdminFinance();
+    renderFeePeriods(); renderChallans(); renderAdminStudents(); renderAdminFinance();
   }catch(e){ setMsg('fpMsg', 'Migration failed: ' + fbErrText(e), 'err'); }
 }
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.17', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.19', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
     fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
@@ -8304,17 +8274,9 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.17 wiring --- */
+/* --- v1.4.19 wiring --- */
 (function(){
   var b;
-  b = $('fsSaveBtn'); if(b) b.addEventListener('click', saveFeeSettings);
-  b = $('bdRoll'); if(b) b.addEventListener('change', function(){
-    var st = studentByRoll((this.value || '').trim().toUpperCase());
-    var el = $('bdName');
-    if(el) el.innerHTML = st ? '<p class="note" style="margin:0"><b>' + esc(st.name) + '</b> (' + esc(st.roll) + ') — board fee default ' + rs(num(fbData.boardFee) || 0) + '</p>' : '';
-    var amt = $('bdAmount'); if(amt && st && !num(amt.value)) amt.value = num(fbData.boardFee) || 0;
-  });
-  b = $('bdBtn'); if(b) b.addEventListener('click', receiveBoardFee);
   b = $('fpMigrateBtn'); if(b) b.addEventListener('click', migrateFeePeriod);
   b = $('bkDownloadBtn'); if(b) b.addEventListener('click', downloadFullBackup);
   b = $('bkRestoreFile'); if(b) b.addEventListener('change', function(){ restoreFullBackup(this.files && this.files[0]); this.value = ''; });
@@ -8322,7 +8284,6 @@ function todayTopicsHTML(){
   b = $('chEdSaveBtn'); if(b) b.addEventListener('click', saveChallanEdit);
   b = $('chEdCancelBtn'); if(b) b.addEventListener('click', cancelChallanEdit);
   b = $('chPeriod'); if(b) b.addEventListener('change', function(){ renderChallans(); });
-  var bd = $('bdDate'); if(bd && !bd.value) bd.value = todayStr();
 })();
 
 (function(){
