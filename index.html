@@ -146,7 +146,7 @@ nav.main a:last-child{border-bottom:0}
 .fb-banner{display:none;background:#fff3cd;color:#7a5b00;text-align:center;padding:8px 14px;font-size:.9rem;font-weight:600;border-bottom:2px solid #f5b301}
 .att-btn{margin:2px}
 .receipt{border:1px solid var(--line);border-radius:12px;padding:18px;margin:12px 0;background:#fff}
-.receipt-thermal{width:80mm;font-size:11px;line-height:1.45;color:#000;background:#fff;padding:2mm;margin:0 auto}
+.receipt-thermal{width:58mm;font-size:10px;line-height:1.4;color:#000;background:#fff;padding:1mm;margin:0 auto}
 .receipt-thermal h3{font-size:13px;line-height:1.3;margin:0 0 6px;text-align:center}
 .receipt-thermal table{width:100%;border-collapse:collapse}
 .receipt-thermal td{padding:1px 2px;vertical-align:top}
@@ -180,7 +180,7 @@ body *{visibility:hidden}
 .stat.pink{background:linear-gradient(135deg,#a4137a,#e0529b)}
 .stat.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}
 .stat.red{background:linear-gradient(135deg,#b91c1c,#ef4444)}
-/* ---------- v1.4.13: portal dashboards (student / parent / teacher) ---------- */
+/* ---------- v1.4.14: portal dashboards (student / parent / teacher) ---------- */
 #studentPanel .modal-box.portal-box,#parentPanel .modal-box.portal-box,#teacherPanel .modal-box.portal-box{max-width:1180px;padding:0;min-height:calc(100vh - 48px);overflow:hidden}
 .portal-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .portal-head .portal-logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
@@ -188,6 +188,47 @@ body *{visibility:hidden}
 .portal-head p{margin:4px 0 0;color:#dbe7ff}
 .portal-head .btn{margin-left:auto}
 .portal-head .btn.outline{background:#fff;border-color:#fff;color:var(--blue) !important}
+.portal-head{position:relative}
+/* v1.4.14: dashboard-open state — public page disappears, background scroll locks */
+html.portal-open,body.portal-open{overflow:hidden !important;height:100%}
+body.portal-open>*:not(.modal):not(#printArea){display:none !important}
+body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.portal-open .modal#parentPanel,body.portal-open .modal#teacherPanel{background:#eef2f8}
+/* v1.4.14: red-circle-X close control, top right of each dashboard header */
+.dash-close{width:34px;height:34px;min-width:34px;border-radius:50%;background:#b91c1c;color:#fff;border:2px solid rgba(255,255,255,.9);font-size:17px;font-weight:800;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0}
+.dash-close:hover{background:#991b1b}
+.portal-head .dash-close{align-self:flex-start;margin-top:2px}
+/* v1.4.14: one unified admin theme — same language as the dashboard */
+#adminPanel .admin-main h4{color:var(--blue);font-size:1.05rem;margin:22px 0 8px}
+#adminPanel .admin-main h4:first-child{margin-top:6px}
+#adminPanel .admin-main .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+#adminPanel .admin-main .admin-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 6px rgba(11,61,145,.04)}
+#adminPanel .admin-main table thead th{background:#eef4ff;color:var(--blue)}
+#adminPanel .admin-main .portal-section{margin-bottom:16px}
+.report-card p{color:var(--muted);margin:4px 0 12px}
+.report-card h4{margin-bottom:2px}
+/* v1.4.14: beautiful challan (A4) print layout */
+@page challanA4{size:A4;margin:12mm}
+#printArea.challan{page:challanA4;padding:0}
+.challan-print{font-size:14px;color:#111}
+.challan-print .ch-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:14px;align-items:center}
+.challan-print .ch-head img{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
+.challan-print .ch-head h2{margin:0;color:#fff;font-size:1.25rem}
+.challan-print .ch-head p{margin:2px 0 0;color:#dbe7ff;font-size:.9rem}
+.challan-print table{width:100%;border-collapse:collapse;margin:14px 0}
+.challan-print th{background:#eef4ff;color:#0b3d91;text-align:left;padding:8px 10px}
+.challan-print td{padding:8px 10px;border-bottom:1px solid #e5e9f0}
+.challan-print td:nth-child(2){text-align:right}
+.challan-print .ch-total td{font-weight:800;background:#eef4ff}
+.challan-print .ch-sign{display:flex;justify-content:space-between;margin-top:34px}
+/* v1.4.14: beautiful report print layout (A4) */
+.report-print{font-size:13px;color:#111}
+.report-print .rp-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:12px;padding:14px 18px;margin-bottom:14px}
+.report-print .rp-head h2{margin:0;color:#fff;font-size:1.2rem}
+.report-print .rp-head p{margin:2px 0 0;color:#dbe7ff;font-size:.9rem}
+.report-print table{width:100%;border-collapse:collapse;margin:10px 0}
+.report-print th{background:#eef4ff;color:#0b3d91;text-align:left;padding:7px 9px}
+.report-print td{padding:7px 9px;border-bottom:1px solid #e5e9f0}
+.report-print .rp-total td{font-weight:800;background:#eef4ff}
 .portal-body{padding:20px 24px 26px}
 .portal-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
 .portal-stat{background:#fff;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(11,61,145,.06)}
@@ -276,7 +317,7 @@ body *{visibility:hidden}
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.13: mobile admin card system ---------- */
+/* ---------- v1.4.14: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -328,8 +369,8 @@ body *{visibility:hidden}
 .tt-compact th,.tt-compact td{padding:8px 10px;font-size:.88rem}
 @page ttlandscape{size:landscape;margin:10mm}
 #printArea.tt-landscape{page:ttlandscape}
-@page thermal{size:80mm auto;margin:2mm}
-#printArea.thermal{page:thermal;padding:2mm}
+@page thermal{size:58mm auto;margin:1mm}
+#printArea.thermal{page:thermal;padding:1mm}
 /* ---------- v1.2.7: responsive (mobile + desktop) ---------- */
 @media(max-width:720px){
 section{padding:28px 0}
@@ -520,7 +561,7 @@ table{min-width:520px}
 
 <div class="modal" id="studentPanel">
 <div class="modal-box wide portal-box">
-<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Student Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="stLogoutBtn" type="button">Log out</button></div>
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Student Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="stLogoutBtn" type="button">Log out</button><button class="dash-close" id="stBackBtn" type="button" title="Back to Website">&#10005;</button></div>
 <div class="portal-body">
 <div id="studentDash" style="margin-top:4px"></div>
 <h4 style="margin:22px 0 6px">Change Password</h4>
@@ -537,7 +578,7 @@ table{min-width:520px}
 
 <div class="modal" id="parentPanel">
 <div class="modal-box wide portal-box">
-<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Parent Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="prLogoutBtn" type="button">Log out</button></div>
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Parent Dashboard</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="prLogoutBtn" type="button">Log out</button><button class="dash-close" id="prBackBtn" type="button" title="Back to Website">&#10005;</button></div>
 <div class="portal-body">
 <div id="parentDash" style="margin-top:4px"></div>
 <h4 style="margin:22px 0 6px">Change Password</h4>
@@ -586,7 +627,7 @@ table{min-width:520px}
 
 <div class="modal" id="teacherPanel">
 <div class="modal-box wide portal-box">
-<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Teacher Panel</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="tcLogoutBtn" type="button">Log out</button></div>
+<div class="portal-head"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Teacher Panel</h3><p>Future Star Computer &amp; Tuition Center, Shahdadpur</p></div><button class="btn small outline" id="tcLogoutBtn" type="button">Log out</button><button class="dash-close" id="tcBackBtn" type="button" title="Back to Website">&#10005;</button></div>
 <div class="portal-body">
 <div id="teacherPanelBody" style="margin-top:4px"></div>
 <div class="tabs" id="teacherTabs">
@@ -688,7 +729,7 @@ table{min-width:520px}
 <div class="admin-div"></div>
 <div class="admin-side-head">
 <h3 style="margin:0">Admin Panel</h3>
-<button class="btn small outline" id="adminCloseBtn" type="button">Close</button>
+<button class="dash-close" id="adminCloseBtn" type="button" title="Back to Website">&#10005;</button>
 </div>
 <div class="tabs" id="adminTabs">
 <button type="button" data-atab="dashboard" class="on"><span class="material-symbols-outlined">dashboard</span>Dashboard</button>
@@ -1002,7 +1043,7 @@ table{min-width:520px}
 <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
 <button class="btn small" id="mrLoadBtn" type="button">Load Multi Receipt</button>
 <button class="btn small outline" id="rcPrintBtn" type="button">Print Receipt</button>
-<button class="btn small outline" id="rcThermalBtn" type="button">Print Thermal (80mm)</button>
+<button class="btn small outline" id="rcThermalBtn" type="button">Print Receipt (58mm)</button>
 </div>
 <div class="msg" id="rcMsg"></div>
 <div id="receiptView" style="margin-top:10px"></div>
@@ -1057,26 +1098,43 @@ table{min-width:520px}
 </div>
 
 <div class="atab" id="atab-reports">
-<h4 style="margin:6px 0">Reports</h4>
+<div class="portal-section"><h4 style="margin-top:0">Reports</h4>
+<p class="note" style="margin-top:0">Beautiful, printable reports for the month. Download any report as a PDF (prints exactly as shown) or as a real Excel (.xlsx) file.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
 <label for="rpMonth">Month:</label>
 <input id="rpMonth" type="month" style="width:auto">
 <button class="btn small" id="rpLoadBtn" type="button">Load Reports</button>
-<button class="btn small outline" id="rpFinanceCsvBtn" type="button">Finance CSV</button>
-<button class="btn small outline" id="rpDuesCsvBtn" type="button">Dues CSV</button>
-<button class="btn small outline" id="rpCollCsvBtn" type="button">Collection CSV</button>
-<button class="btn small outline" id="rpTpCsvBtn" type="button">Teacher Pay CSV</button>
-<button class="btn small outline" id="rpExCsvBtn" type="button">Expenses CSV</button>
 </div>
-<div class="msg" id="rpMsg"></div>
-<div id="rpSummary" style="margin-top:14px"></div>
-<h4 style="color:var(--blue)">Dues Report</h4>
-<div id="rpDues"></div>
-<h4 style="color:var(--blue)">Collection Report</h4>
-<div id="rpCollection"></div>
-<h4 style="color:var(--blue)">Teacher Pay Report</h4>
-<div id="rpTeacherPay"></div>
-<p class="note">The Arrears Sheet has moved to the Finance tab. <button class="btn small outline" type="button" onclick="goAtab('fees')">Open Finance</button></p>
+<div class="msg" id="rpMsg"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Monthly Finance Summary</h4>
+<p>Income, expenses and who gets what &mdash; for the selected month.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('finance')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('finance')">Download Excel</button><button class="btn small outline" id="rpFinanceCsvBtn" type="button">Finance CSV</button></div>
+<div id="rpSummary"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Dues Report</h4>
+<p>Every student who still owes fees, with arrears by month.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('dues')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('dues')">Download Excel</button><button class="btn small outline" id="rpDuesCsvBtn" type="button">Dues CSV</button></div>
+<div id="rpDues"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Collection Report</h4>
+<p>Every payment received, newest first.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('collection')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('collection')">Download Excel</button><button class="btn small outline" id="rpCollCsvBtn" type="button">Collection CSV</button></div>
+<div id="rpCollection"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Teacher Pay Report</h4>
+<p>Teacher payments recorded this month.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('teacherpay')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('teacherpay')">Download Excel</button><button class="btn small outline" id="rpTpCsvBtn" type="button">Teacher Pay CSV</button></div>
+<div id="rpTeacherPay"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Arrears Sheet</h4>
+<p>Students with unpaid balances, highest first.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('arrears')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('arrears')">Download Excel</button><button class="btn small outline" type="button" onclick="exportReport('arrears')">Arrears CSV</button></div>
+<div id="rpArrearsRpt"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Sibling / Family Report</h4>
+<p>One row per family &mdash; head, members, each member&apos;s fee and dues, family total.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('siblings')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('siblings')">Download Excel</button></div>
+<div id="rpSiblings"></div></div>
+<div class="portal-section report-card"><h4 style="margin-top:0">Expenses Report</h4>
+<p>All expenses recorded.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn small" type="button" onclick="printReport('expenses')">Download PDF</button><button class="btn small outline" type="button" onclick="exportReportXlsx('expenses')">Download Excel</button><button class="btn small outline" id="rpExCsvBtn" type="button">Expenses CSV</button></div>
+<div id="rpExpenses"></div></div>
+<p class="note">The Arrears Sheet upload lives on the Finance tab. <button class="btn small outline" type="button" onclick="goAtab('fees')">Open Finance</button></p>
 </div>
 
 <div class="atab" id="atab-attendance">
@@ -1107,17 +1165,21 @@ table{min-width:520px}
 </div>
 
 <div class="atab" id="atab-users">
-<h4 style="margin:6px 0">Users &amp; IDs</h4>
+<div class="portal-section"><h4 style="margin-top:0">Users &amp; IDs</h4>
 <p class="note" style="margin-top:0">Every login in the academy. Students log in with their phone number or roll number. Parents log in with the father&apos;s phone number. Teachers log in with their phone number. A login is only created once the admin has entered the needed phone number &mdash; until then the person is listed as &quot;No login yet&quot;.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center"><input id="usSearch" type="text" placeholder="Search name, login ID or role&hellip;" style="flex:1;min-width:220px"><button class="btn small outline" id="usSearchClear" type="button">Clear</button></div>
+<div class="tabs" id="usTabs" style="margin-top:12px">
+<button type="button" data-ustab="students" class="on">Students</button>
+<button type="button" data-ustab="parents">Parents</button>
+<button type="button" data-ustab="teachers">Teachers</button>
+<button type="button" data-ustab="admins">Admins</button>
+</div>
 <div id="usIncomplete" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Students</h4>
-<div id="usStudents" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Parents</h4>
-<div id="usParents" style="margin-top:10px"></div>
-<h4 style="margin:22px 0 6px">Teachers</h4>
-<p class="note" style="margin-top:0">Teacher passwords can only be reset here while the teacher still uses the default password (their phone number). If a teacher changed their password, only they can reset it &mdash; or it must be done from the Firebase Console. Deleting a teacher ID removes their academy login; the Firebase sign-in account itself must be deleted from the Firebase Console.</p>
-<div id="usTeachers" style="margin-top:10px"></div>
-<div class="msg" id="usMsg"></div>
+<div id="usTab-students"><h4 style="margin:22px 0 6px">Students</h4><div id="usStudents" style="margin-top:10px"></div></div>
+<div id="usTab-parents" style="display:none"><h4 style="margin:22px 0 6px">Parents</h4><div id="usParents" style="margin-top:10px"></div></div>
+<div id="usTab-teachers" style="display:none"><h4 style="margin:22px 0 6px">Teachers</h4><p class="note" style="margin-top:0">Teacher passwords can only be reset here while the teacher still uses the default password (their phone number). If a teacher changed their password, only they can reset it &mdash; or it must be done from the Firebase Console. Deleting a teacher ID removes their academy login; the Firebase sign-in account itself must be deleted from the Firebase Console.</p><div id="usTeachers" style="margin-top:10px"></div></div>
+<div id="usTab-admins" style="display:none"><h4 style="margin:22px 0 6px">Admins</h4><p class="note" style="margin-top:0">Admin passwords cannot be changed from here. Each admin changes their own password in Settings &rarr; Change My Password, or from the Firebase Console.</p><div id="usAdmins" style="margin-top:10px"></div></div>
+<div class="msg" id="usMsg"></div></div>
 </div>
 
 <div class="atab" id="atab-challans">
@@ -1176,6 +1238,17 @@ table{min-width:520px}
 </div>
 <div class="msg" id="chEdMsg"></div>
 </div>
+<h4 style="margin:22px 0 6px">All Challans &mdash; Manager</h4>
+<div class="portal-section"><p class="note" style="margin-top:0">Every challan, all months. Settled challans can be reversed if a fee was entered by mistake &mdash; never edited in place. Void works as delete.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<button class="btn small" type="button" data-chmgr="all" onclick="setChMgrFilter('all')">All</button>
+<button class="btn small outline" type="button" data-chmgr="unsettled" onclick="setChMgrFilter('unsettled')">Unsettled</button>
+<button class="btn small outline" type="button" data-chmgr="settled" onclick="setChMgrFilter('settled')">Settled</button>
+<button class="btn small outline" type="button" data-chmgr="voided" onclick="setChMgrFilter('voided')">Voided</button>
+<input id="chMgrSearch" type="text" placeholder="Search student name or roll&hellip;" style="flex:1;min-width:200px" oninput="chMgrSearchQ=this.value;renderChallanManager()">
+</div>
+<div id="chMgrList" style="margin-top:10px"></div>
+<div class="msg" id="chMgrMsg"></div></div>
 <h4 style="margin:22px 0 6px">Challans List</h4>
 <div id="chList" style="margin-top:10px"></div>
 </div>
@@ -1282,7 +1355,8 @@ table{min-width:520px}
 <p class="note" style="margin-top:0">Make any teacher an admin, or remove admin rights. The person needs a login first (create their teacher login, then promote them here). You cannot remove your own admin rights, and at least one admin must always remain.</p>
 <div id="rolesList" style="margin-top:10px"></div>
 <div class="msg" id="rolesMsg"></div>
-<h4 style="margin:22px 0 6px">Change Password</h4>
+<h4 style="margin:22px 0 6px">Change My Password</h4>
+<p class="note" style="margin-top:0">This changes the password of the admin who is signed in right now &mdash; nobody else&apos;s. Another admin&apos;s password can only be changed by that admin themselves, or from the Firebase Console.</p>
 <div class="form-grid">
 <div><label for="pwOld">Current Password</label><input id="pwOld" type="password"></div>
 <div><label for="pwNew">New Password</label><input id="pwNew" type="password"></div>
@@ -1512,8 +1586,12 @@ function searchResult(){
 }
 
 /* ---------- Admin: login & panel ---------- */
-function lockBodyScroll(){ document.body.style.overflow = 'hidden'; }
-function unlockBodyScroll(){ var open = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'].some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); if(!open) document.body.style.overflow = ''; }
+/* v1.4.14: dashboard-open state — hide the public page + lock background scroll */
+var PORTAL_IDS = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'];
+function setPortalOpen(on){ document.body.classList.toggle('portal-open', !!on); if(document.documentElement) document.documentElement.classList.toggle('portal-open', !!on); }
+function syncPortalOpen(){ var open = PORTAL_IDS.some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); setPortalOpen(open); }
+function lockBodyScroll(){ setPortalOpen(true); }
+function unlockBodyScroll(){ syncPortalOpen(); }
 function openModal(id){ $(id).classList.add('open'); if(id === 'adminPanel' || id === 'teacherPanel' || id === 'studentPanel' || id === 'parentPanel') lockBodyScroll(); if(id === 'adminPanel' && window.innerWidth <= 900) showAdminMenu(); }
 function closeModal(id){ $(id).classList.remove('open'); unlockBodyScroll(); }
 function portalGo(panelId, secId){ var p = $(panelId); if(!p) return; var el = p.querySelector('#' + secId); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }
@@ -1541,7 +1619,7 @@ async function tryUnifiedLogin(){
   var live = fb.ready && !fb.offline && fb.db;
   if(live){
     if(n && n.length >= 10){
-      /* v1.4.13: never gate on the local student list. The public page has no phones
+      /* v1.4.14: never gate on the local student list. The public page has no phones
          (academy_contacts is admin/teacher-only and studentFromDoc carries phone:''),
          so a local findStudentByPhone can never match on a fresh load. Try the
          hash-based logins directly against Firestore instead. */
@@ -1640,8 +1718,8 @@ $('adminLogoutBtn').addEventListener('click', function(){ fbSignOut(); closeModa
 var ADMIN_GROUPS = ['academics', 'finance', 'manage'];
 function loadAdminGroups(){ try{ return JSON.parse(localStorage.getItem('fscc_admin_groups') || '{}'); }catch(e){ return {}; } }
 function saveAdminGroups(st){ try{ localStorage.setItem('fscc_admin_groups', JSON.stringify(st)); }catch(e){} }
-function applyAdminGroups(){ var st = loadAdminGroups(); ADMIN_GROUPS.forEach(function(g){ var sec = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(!sec) return; var open = (g === 'academics') ? (st[g] !== false) : (st[g] === true); sec.classList.toggle('collapsed', !open); }); }
-function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; sec.classList.toggle('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
+function applyAdminGroups(){ var st = loadAdminGroups(); var opened = null; ADMIN_GROUPS.forEach(function(g){ var sec = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(!sec) return; var open = (g === 'academics') ? (st[g] !== false) : (st[g] === true); if(open && opened){ open = false; st[g] = false; } if(open) opened = g; sec.classList.toggle('collapsed', !open); }); if(opened) saveAdminGroups(st); }
+function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; var wasCollapsed = sec.classList.contains('collapsed'); var st = loadAdminGroups(); if(wasCollapsed){ /* v1.4.14 accordion: opening one dropdown closes all the others */ ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); } sec.classList.toggle('collapsed'); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
 applyAdminGroups();
 $('adminTabs').addEventListener('click', function(e){
   var g = e.target.closest ? e.target.closest('.admin-group') : null;
@@ -2051,6 +2129,12 @@ var stuSearchEl = $('stuSearch');
 if(stuSearchEl) stuSearchEl.addEventListener('input', function(){ stuSearchQ = this.value; renderAdminStudents(); });
 var stuSearchClearEl = $('stuSearchClear');
 if(stuSearchClearEl) stuSearchClearEl.addEventListener('click', function(){ stuSearchQ = ''; if(stuSearchEl) stuSearchEl.value = ''; renderAdminStudents(); });
+var usSearchEl = $('usSearch');
+if(usSearchEl) usSearchEl.addEventListener('input', function(){ usSearchQ = this.value; renderUsers(); });
+var usSearchClearEl = $('usSearchClear');
+if(usSearchClearEl) usSearchClearEl.addEventListener('click', function(){ usSearchQ = ''; if(usSearchEl) usSearchEl.value = ''; renderUsers(); });
+var usTabsEl = $('usTabs');
+if(usTabsEl) usTabsEl.addEventListener('click', function(e){ var b = e.target.closest ? e.target.closest('button[data-ustab]') : null; if(b) switchUsTab(b.getAttribute('data-ustab')); });
 function saveGroup(){
   var name = $('grName').value.trim();
   if(!name){ alert('Please enter a group name.'); return; }
@@ -2063,7 +2147,7 @@ function saveGroup(){
     time:$('grTime').value.trim(), slotId:$('grSlot').value || '', members:grEditMembers.slice()};
   if(editing.gr >= 0){ g.sample = !!data.groups[editing.gr].sample; data.groups[editing.gr] = g; }
   else data.groups.push(g);
-  /* v1.4.13: a member's time becomes the group's time — set the student's group
+  /* v1.4.14: a member's time becomes the group's time — set the student's group
      and clear their own time_slot ('' = use group time), then save the student.
      A student removed from the group loses the group but keeps their own time. */
   (g.members || []).forEach(function(m){
@@ -2204,7 +2288,8 @@ $('btnChangePw').addEventListener('click', async function(){
   if(nw !== nw2){ setMsg('settingsMsg', 'New passwords do not match.', 'err'); return; }
   if(fb.ready && !fb.offline && fb.user){
     try{
-      await fb.auth.signInWithEmailAndPassword('admin@fscc-academy.local', old);
+      var cred = firebase.auth.EmailAuthProvider.credential(fb.user.email, old);
+      await fb.user.reauthenticateWithCredential(cred);
       await fb.user.updatePassword(nw);
       $('pwOld').value = ''; $('pwNew').value = ''; $('pwNew2').value = '';
       setMsg('settingsMsg', 'Password changed successfully.', 'ok');
@@ -2281,7 +2366,7 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.13: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.14: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
     if(r.dob && !parseAdmDate(r.dob)){ warnings.push('Line ' + r.line + ': date of birth "' + r.dob + '" is not a valid date — left blank.'); }
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
@@ -2300,7 +2385,7 @@ function importStudentsCSV(text){
       saveStudentToFb(rec);
     }
     if(phone) seenPhones[phone] = rec.roll;
-    /* v1.4.13: old dues become an automatic previous-month 'Previous dues' challan. */
+    /* v1.4.14: old dues become an automatic previous-month 'Previous dues' challan. */
     if(num(r.old_dues) > 0) ensureOldDuesChallan(found || rec, num(r.old_dues), warnings);
   });
   return {added:added, updated:updated, skipped:skippedRows.length, error:'', skippedRows:skippedRows, warnings:warnings};
@@ -2370,7 +2455,7 @@ function renderAdminStudents(){
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    /* v1.4.13: Students table — no Class column; father name + phone nest under Name; Group in small font. */
+    /* v1.4.14: Students table — no Class column; father name + phone nest under Name; Group in small font. */
     html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>DOB</th><th>Gender</th><th>Phone</th><th>Roll Number</th><th>Group</th><th>Shift</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     var cards = '';
     var shownCount = 0;
@@ -2378,7 +2463,7 @@ function renderAdminStudents(){
       if(f !== 'All' && (s.status || 'Active') !== f) return;
       if(!stuMatchesSearch(s, stuSearchQ)) return;
       shownCount++;
-      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + (s.father_name ? '<br><small>' + esc(s.father_name) + '</small>' : '') + (s.father_phone ? '<br><small>' + esc(s.father_phone) + '</small>' : '') + '</td><td>' + esc(s.dob || '—') + '</td><td>' + esc(s.gender || '—') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td><small>' + esc(s.group) + '</small></td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(effectiveFee(s)) + '</td><td><b>' + rs(studentDue(s)) + '</b></td><td>' + esc(s.status || 'Active') + '</td><td style="white-space:nowrap"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></td></tr>';
+      html += '<tr><td><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + (s.father_name ? '<br><small>' + esc(s.father_name) + '</small>' : '') + (s.father_phone ? '<br><small>' + esc(s.father_phone) + '</small>' : '') + '</td><td>' + esc(s.dob || '—') + '</td><td>' + esc(s.gender || '—') + '</td><td>' + esc(s.phone) + '</td><td>' + esc(s.roll) + '</td><td><small>' + esc(s.group) + '</small></td><td>' + esc(s.shift || 'Evening') + '</td><td>' + rs(effectiveFee(s)) + '</td><td>' + duePartsHTML(s) + '</td><td>' + esc(s.status || 'Active') + '</td><td style="white-space:nowrap"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></td></tr>';
       cards += '<div class="mcard"><div class="mcard-head"><b>' + esc(s.name) + '</b>' + (s.sample ? ' <span class="badge sample">SAMPLE</span>' : '') + '<span class="mcard-pill">' + esc(s.status || 'Active') + '</span></div>'
         + '<div class="mcard-row"><span>Roll</span><b>' + esc(s.roll) + '</b></div>'
         + '<div class="mcard-row"><span>Course</span><b>' + esc(s.course) + '</b></div>'
@@ -2389,7 +2474,7 @@ function renderAdminStudents(){
         + '<div class="mcard-row"><span>Gender</span><b>' + esc(s.gender || '—') + '</b></div>'
         + '<div class="mcard-row"><span>Shift</span><b>' + esc(s.shift || 'Evening') + '</b></div>'
         + '<div class="mcard-row"><span>Monthly Fee</span><b>' + rs(effectiveFee(s)) + '</b></div>'
-        + '<div class="mcard-row"><span>Balance Due</span><b>' + rs(studentDue(s)) + '</b></div>'
+        + '<div class="mcard-row"><span>Balance Due</span><span>' + duePartsHTML(s) + '</span></div>'
         + '<div class="mcard-actions"><button class="btn small outline icon-btn" type="button" title="Edit" onclick="editStu(' + i + ')"><span class="material-symbols-outlined">edit</span></button> <button class="btn small outline icon-btn" type="button" title="Transfer" onclick="openLifecycle(' + i + ')"><span class="material-symbols-outlined">swap_horiz</span></button> <button class="btn small outline icon-btn" type="button" title="Reset Password" onclick="resetStuPw(' + i + ')"><span class="material-symbols-outlined">key</span></button> <button class="btn small outline icon-btn" type="button" title="Delete" onclick="delStu(' + i + ')"><span class="material-symbols-outlined">delete</span></button></div></div>';
     });
     html += '</tbody></table></div>';
@@ -2527,7 +2612,7 @@ function renderStudentDash(){
   var due = studentDue(st);
   var paid = receivedThisMonth(st.roll, FB_MONTH);
   var attD = attDaysFor(st.roll, FB_MONTH);
-  /* v1.4.13: full software dashboard — header, real stat cards, action buttons, sections */
+  /* v1.4.14: full software dashboard — header, real stat cards, action buttons, sections */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(st.name) + '</h3><p>Roll ' + esc(st.roll) + ' &nbsp;·&nbsp; ' + esc(st.className) + ' &nbsp;·&nbsp; Group ' + esc(st.group || '—') + ' &nbsp;·&nbsp; ' + esc(st.shift || 'Evening') + ' Shift &nbsp;·&nbsp; ' + esc(studentTimeText(st) || 'Time not set yet') + '</p></div></div>'
     + '<div class="portal-stats">'
     + '<div class="portal-stat' + (due > 0 ? ' red' : ' green') + '"><div class="v">Rs ' + due.toLocaleString('en-US') + '</div><div class="l">Balance Due</div></div>'
@@ -2612,6 +2697,7 @@ $('studentLoginCancel').addEventListener('click', function(){ closeModal('studen
 $('stLogoutBtn').addEventListener('click', function(){
   currentStudent = null; updateStudentBtn(); closeModal('studentPanel');
 });
+$('stBackBtn').addEventListener('click', function(){ closeModal('studentPanel'); });
 $('stChangePwBtn').addEventListener('click', async function(){
   if(!currentStudent) return;
   var res = await changeStudentPw(currentStudent.phone, $('stPwOld').value, $('stPwNew').value, $('stPwNew2').value);
@@ -2873,7 +2959,7 @@ function fbLoadStudents(){
     renderAll();
   }, function(){});
 }
-/* v1.4.13: contacts merge — academy_contacts holds the real phones. The merge used to
+/* v1.4.14: contacts merge — academy_contacts holds the real phones. The merge used to
    run only from the students snapshot when the role was already known; auth can resolve
    after the snapshot (or contacts can arrive before students), so cache the contacts
    and apply them on every students snapshot too. */
@@ -3059,7 +3145,7 @@ async function changeStudentPwAsync(phone, cur, nw, nw2){
   st.passwordHash = newHash;
   return {ok:true, msg:'Password changed. It works on all devices now.'};
 }
-/* v1.4.13: reset by phoneHash directly — never depends on the local student list,
+/* v1.4.14: reset by phoneHash directly — never depends on the local student list,
    so it works right after a reload even before the contacts merge has run. */
 async function resetStudentPwFb(phone){
   var n = normPhone(phone);
@@ -3136,7 +3222,7 @@ function renderParentDash(){
   if(!parentViewRoll || !kids.some(function(k){ return k.roll === parentViewRoll; })) parentViewRoll = kids[0].roll;
   var st = null; kids.forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
   var dad = (kids[0] && kids[0].father_name) ? kids[0].father_name : ('Parent of ' + st.name);
-  /* v1.4.13: full software dashboard — header, one card per child, detail for the selected child */
+  /* v1.4.14: full software dashboard — header, one card per child, detail for the selected child */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(dad) + '</h3><p>' + kids.length + ' child' + (kids.length === 1 ? '' : 'ren') + ' enrolled at Future Star Academy &nbsp;·&nbsp; viewing ' + esc(st.name) + ' (' + esc(st.roll) + ')</p></div></div>';
   html += '<div class="portal-kids">';
   kids.forEach(function(k){
@@ -3249,6 +3335,7 @@ async function changeParentPw(){
   $('prPwOld').value = ''; $('prPwNew').value = ''; $('prPwNew2').value = '';
 }
 $('prLogoutBtn').addEventListener('click', parentLogout);
+$('prBackBtn').addEventListener('click', function(){ closeModal('parentPanel'); });
 $('prChangePwBtn').addEventListener('click', changeParentPw);
 
 /* Admin creates a teacher account (secondary app so the admin stays signed in) */
@@ -3335,7 +3422,7 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
-/* ---------- v1.4.13: carried-forward balances — every rupee counted exactly once ---------- */
+/* ---------- v1.4.14: carried-forward balances — every rupee counted exactly once ---------- */
 /* When a new challan is created, unpaid balances of earlier challans are rolled into it as
    arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
    then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
@@ -3403,7 +3490,7 @@ function studentDue(st){
   var map = carriedOutMap();
   var chs = studentChallans(st.roll);
   var fam = familyChallansFor(st.roll);
-  /* v1.4.13: no challan, no fee — the owner makes every challan himself. */
+  /* v1.4.14: no challan, no fee — the owner makes every challan himself. */
   if(!chs.length && !fam.length) return 0;
   var t = 0;
   chs.forEach(function(c){ if(!c.family) t += effectiveChallanBalance(c, map); }); /* family challans count by member share below, not in full — the head would double-count; carried-forward balances count once, inside the newer challan */
@@ -3441,7 +3528,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100};
 }
-/* ---------- v1.4.13: shifts + morning partner share ---------- */
+/* ---------- v1.4.14: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -3561,7 +3648,7 @@ function fillFeeForm(p, roll){
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.13 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.14 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -3578,7 +3665,7 @@ function challanLinesForReceipt(c){
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
 }
-/* ---------- v1.4.13: oldest-first payment allocation ---------- */
+/* ---------- v1.4.14: oldest-first payment allocation ---------- */
 /* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
    the student's own open challans, oldest first, so the amount due drops by exactly the amount
    paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
@@ -3653,7 +3740,7 @@ async function savePayment(p){
       }
       pendingChallanId = null;
     } else {
-      /* v1.4.13: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      /* v1.4.14: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
       var _alloc = allocatePaymentToChallans(st, amount, discount);
       if(_alloc.length){
         rec.challanId = _alloc[0].challanId;
@@ -3943,13 +4030,18 @@ function renderTeacherPay(){
   var html = '<div class="grid three">';
   teacherNamesAll().forEach(function(t){
     var due = s.teacherDue[t] || 0, paid = s.teacherPaid[t] || 0;
-    html += '<div class="card"><h3 style="margin-top:0;color:var(--blue)">' + esc(t) + '</h3>'
-      + '<p>Share due: <b>' + rs(due) + '</b><br>Paid: <b>' + rs(paid) + '</b><br>Balance: <b>' + rs(due - paid) + '</b></p></div>';
+    html += '<div class="portal-section" style="margin-bottom:0"><h4 style="margin-top:0;color:var(--blue)">' + esc(t) + '</h4>'
+      + '<div class="table-scroll"><table><tbody>'
+      + '<tr><td>Share due</td><td><b>' + rs(due) + '</b></td></tr>'
+      + '<tr><td>Paid</td><td><b>' + rs(paid) + '</b></td></tr>'
+      + '<tr><td>Balance</td><td><b>' + rs(due - paid) + '</b></td></tr>'
+      + '</tbody></table></div>'
+      + '<div style="margin-top:10px"><button class="btn small" type="button" onclick="payTeacherShare(\'' + esc(t).replace(/'/g, '') + '\')">Pay ' + esc(t.split(' ').pop()) + '</button></div></div>';
   });
   html += '</div>';
   var ownRows = [['Common pool income (DIT / CIT / Office / Special)', s.commonIncome], ['Expenses (paid from the common pool only)', s.expense], ['Common pool balance', s.commonRemaining], ['Distributable to owners', s.distributable], ['Each owner share (50/50)', s.ownerShare], ['Ahmed Raza taken', s.taken['Ahmed Raza']], ['Sir Sajjad Ali taken', s.taken['Sir Sajjad Ali']], ['In-hand cash', s.inHand]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
   var subjRows = [['Teacher-subject income (Eng / Maths / Bio / Chem / Phy)', s.teacherSubjectIncome], ['Teacher shares set aside', s.teacherTotal], ['Academy share (academy account — expenses never touch this)', s.academyShareTotal]].map(function(r){ return '<tr><td>' + r[0] + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
-  html += '<div class="card" style="margin-top:14px"><h3 style="margin-top:0;color:var(--blue)">Owners — Common Pool</h3>'
+  html += '<div class="portal-section" style="margin-top:14px"><h4 style="margin-top:0;color:var(--blue)">Owners — Common Pool</h4>'
     + '<div class="table-scroll"><table><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>' + ownRows + '</tbody></table></div>'
     + '<h4 style="color:var(--blue)">Teacher Subjects</h4><div class="table-scroll"><table><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>' + subjRows + '</tbody></table></div>'
     + '<h4 style="color:var(--blue)">Still To Give — Total ' + rs(s.toGiveTotal) + '</h4>'
@@ -3964,7 +4056,7 @@ function renderTeacherPay(){
       var _r = fbData.shareRules[sj.name] || {};
       _parts.push(sj.name + ': ' + sj.teacher + ' ' + num(_r.teacherPct) + '% of (' + (_r.basis === 'received+adm' ? 'Received + Admission Fee' : 'Received') + ')');
     });
-    rulesEl.innerHTML = '<p>Share rules — ' + (_parts.join(' · ') || 'none yet') + '. Subjects with no teacher go to the common pool (50/50 owners). Owner-taught courses do not use teacher shares: Programming goes 100% to Sir Sajjad Ali; Office / Graphics go to the common pool.</p>';
+    rulesEl.innerHTML = '<details><summary>How shares work</summary><p style="margin:8px 0 0">' + (_parts.join(' · ') || 'none yet') + '. Subjects with no teacher go to the common pool (50/50 owners). Owner-taught courses do not use teacher shares: Programming goes 100% to Sir Sajjad Ali; Office / Graphics go to the common pool.</p></details>';
   }
   var tpSel = $('tpTeacher');
   if(tpSel){
@@ -4141,9 +4233,9 @@ function renderExpenses(){
 /* ---------- Admin dashboard ---------- */
 function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
-  if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ sec.classList.remove('collapsed'); var st = loadAdminGroups(); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
+  if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ var st = loadAdminGroups(); ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); sec.classList.remove('collapsed'); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.13: mobile admin card menu ---------- */
+/* ---------- v1.4.14: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4215,7 +4307,7 @@ function dashBars(title, icon, rows, total, colors, money){
   });
   return html + '</div>';
 }
-/* v1.4.13: "Students at a glance" cards for the Admin Dashboard — Active students only,
+/* v1.4.14: "Students at a glance" cards for the Admin Dashboard — Active students only,
    Morning/Evening split (blank shift = Evening, same as v1.4.4), one card per
    subject/course with at least one Active student. Membership via studentHasSubject,
    so the numbers match the rest of the site. Built inside renderDashboard, so the
@@ -4308,6 +4400,297 @@ function renderDashboard(){
   q('qaFinance', function(){ goAtab('fees'); });
 }
 
+/* ---------- v1.4.14: Balance Due split, challans manager, reports, xlsx, users sub-tabs ---------- */
+var usSearchQ = '';
+var usTab = 'students';
+function applyUsTabs(){
+  ['students', 'parents', 'teachers', 'admins'].forEach(function(t){
+    var el = $('usTab-' + t); if(el) el.style.display = (t === usTab) ? '' : 'none';
+  });
+  var tabs = document.querySelectorAll('#usTabs button');
+  tabs.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-ustab') === usTab); });
+}
+function switchUsTab(t){ usTab = t; applyUsTabs(); }
+function renderUsAdmins(){
+  var el = $('usAdmins'); if(!el) return;
+  var q = (typeof usSearchQ === 'undefined' ? '' : usSearchQ).toLowerCase();
+  var list = (fbData.profiles || []).slice();
+  var admins = list.filter(function(p){ return p.role === 'admin'; });
+  if(!admins.length){ el.innerHTML = '<p class="note">No admins found.</p>'; return; }
+  var h = '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Login ID</th><th>Role</th><th>Status</th></tr></thead><tbody>';
+  admins.forEach(function(p){
+    var name = p.name || p.id || '';
+    if(q && (name + ' ' + (p.phone || '') + ' ' + (p.email || '') + ' admin').toLowerCase().indexOf(q) < 0) return;
+    var isSelf = (typeof fb !== 'undefined' && fb.user && fb.user.uid === p.id);
+    h += '<tr><td><b>' + esc(name) + '</b>' + (isSelf ? ' <small>(you)</small>' : '') + '</td><td>' + esc(p.phone || p.email || '') + '</td><td>Admin</td><td>Active</td></tr>';
+  });
+  el.innerHTML = h + '</tbody></table></div>';
+}
+/* Task 1: split the due into Old / Current; Total is exactly studentDue — never double-counted. */
+function dueParts(st){
+  var total = studentDue(st);
+  var map = carriedOutMap();
+  var old = 0;
+  studentChallans(st.roll).forEach(function(c){
+    if(c.family) return;
+    var b = effectiveChallanBalance(c, map);
+    if(b <= 0) return;
+    if(c.autoOldDues){ old += b; return; }
+    var oldAmt = 0, tot = num(c.monthlyFee);
+    (c.arrears || []).forEach(function(a){
+      tot += num(a.amount);
+      var lb = (a.label || '');
+      if(lb.indexOf('Balance of ') === 0 || lb.indexOf('Family challan balance of ') === 0 || lb.indexOf('Previous dues') === 0) oldAmt += num(a.amount);
+    });
+    if(tot <= 0) tot = num(c.total);
+    if(tot > 0 && oldAmt > 0) old += Math.round(b * oldAmt / tot);
+  });
+  familyChallansFor(st.roll).forEach(function(c){
+    var sh = familyMemberShare(c, st.roll, map);
+    if(!sh || sh.total <= 0 || sh.balance <= 0) return;
+    old += Math.round(sh.balance * num(sh.arrearsTotal) / sh.total);
+  });
+  if(old > total) old = total;
+  if(old < 0) old = 0;
+  return {old: old, current: total - old, total: total};
+}
+function duePartsHTML(st){
+  var p = dueParts(st);
+  return '<small>Old: ' + rs(p.old) + '<br>Current: ' + rs(p.current) + '</small><br><b>Total: ' + rs(p.total) + '</b>';
+}
+/* Task 2: Challans manager — filter, search, reverse a settled challan. */
+var chMgrFilter = 'all';
+var chMgrSearchQ = '';
+function challanStatusKey(c){
+  if(c.voided || c.status === 'void') return 'voided';
+  return (effectiveChallanBalance(c) <= 0 && num(c.paid) > 0) ? 'settled' : 'unsettled';
+}
+function setChMgrFilter(f){
+  chMgrFilter = f;
+  var btns = document.querySelectorAll('[data-chmgr]');
+  btns.forEach(function(b){ b.className = 'btn small' + (b.getAttribute('data-chmgr') === f ? '' : ' outline'); });
+  renderChallanManager();
+}
+function renderChallanManager(){
+  var el = $('chMgrList'); if(!el) return;
+  var q = (chMgrSearchQ || '').toLowerCase();
+  var list = (fbData.challans || []).slice().sort(function(a, b){ return (a.month < b.month ? 1 : (a.month > b.month ? -1 : 0)); });
+  var rows = list.filter(function(c){
+    var k = challanStatusKey(c);
+    if(chMgrFilter === 'settled' && k !== 'settled') return false;
+    if(chMgrFilter === 'unsettled' && k !== 'unsettled') return false;
+    if(chMgrFilter === 'voided' && k !== 'voided') return false;
+    if(q){
+      var st = studentByRoll(c.roll);
+      var hay = ((st && st.name) || '') + ' ' + (c.roll || '');
+      if(hay.toLowerCase().indexOf(q) < 0) return false;
+    }
+    return true;
+  });
+  if(!rows.length){ el.innerHTML = '<p class="note">No challans match this filter.</p>'; return; }
+  var h = '<div class="table-scroll"><table><thead><tr><th>Student / Family</th><th>Month</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+  rows.forEach(function(c){
+    var st = studentByRoll(c.roll);
+    var name = c.family ? (st ? esc(st.name) : esc(c.roll)) + ' &amp; family' : (st ? esc(st.name) : esc(c.roll));
+    var bal = effectiveChallanBalance(c);
+    var k = challanStatusKey(c);
+    var label = c.voided ? 'Voided' : (k === 'settled' ? 'Settled' : (num(c.paid) > 0 ? 'Partial' : 'Unpaid'));
+    var acts = '';
+    if(!c.voided && k !== 'settled') acts += '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ';
+    if(!c.voided && k === 'settled') acts += '<button class="btn small outline" type="button" onclick="reverseChallan(\'' + c.id + '\')">Reverse</button> ';
+    acts += '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> <button class="btn small outline" type="button" onclick="downloadChallanPDF(\'' + c.id + '\')">PDF</button> ';
+    if(!c.voided) acts += '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void / Delete</button>';
+    h += '<tr><td><b>' + name + '</b><br><small>' + esc(c.roll || '') + '</small></td><td>' + esc(c.month) + '</td><td>' + rs(c.total) + '</td><td>' + rs(c.paid) + '</td><td><b>' + rs(bal) + '</b></td><td>' + label + '</td><td style="white-space:nowrap">' + acts + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+  el.innerHTML = h;
+}
+async function reverseChallan(id){
+  var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
+  if(c.voided){ setMsg('chMgrMsg', 'This challan is already voided.', 'err'); return; }
+  if(num(c.paid) <= 0 && num(c.discount) <= 0){ setMsg('chMgrMsg', 'This challan has no payments to reverse.', 'err'); return; }
+  if(!confirm('Reverse this settled challan? Its payments will be reversed and the balance will come back.')) return;
+  if(!fbNeedLive()){ setMsg('chMgrMsg', 'Live data is unavailable — please try again when the connection returns.', 'err'); return; }
+  var allocs = [];
+  fbData.payments.forEach(function(p){
+    if(p.reversed) return;
+    if(p.challanAlloc){
+      p.challanAlloc.forEach(function(a){ if(a.challanId === id) allocs.push({p:p, a:a, kind:'alloc'}); });
+    } else if(p.challanId === id){
+      allocs.push({p:p, a:{challanId:id, amount:num(p.amount_received), discount:num(p.discount)}, kind:'direct'});
+    }
+  });
+  for(var i = 0; i < allocs.length; i++){
+    var item = allocs[i], p = item.p, a = item.a;
+    var sliceAmt = num(a.amount), sliceDisc = num(a.discount);
+    if(item.kind === 'alloc' && p.challanAlloc.length > 1){
+      p.challanAlloc = p.challanAlloc.filter(function(x){ return x.challanId !== id; });
+      p.amount_received = num(p.amount_received) - sliceAmt;
+      p.discount = num(p.discount) - sliceDisc;
+      p.challanId = p.challanAlloc.length ? p.challanAlloc[0].challanId : '';
+      try{ await fb.db.collection('academy_payments').doc(p.id).update({amount_received:p.amount_received, discount:p.discount, challanAlloc:p.challanAlloc, challanId:p.challanId}); }catch(e){}
+    } else {
+      p.reversed = true;
+      try{ await fb.db.collection('academy_payments').doc(p.id).update({reversed:true}); }catch(e){}
+    }
+    c.paid = num(c.paid) - sliceAmt;
+    c.discount = num(c.discount) - sliceDisc;
+  }
+  if(c.paid < 0) c.paid = 0;
+  if(c.discount < 0) c.discount = 0;
+  var bal = effectiveChallanBalance(c);
+  c.status = bal <= 0 ? 'paid' : (num(c.paid) > 0 || num(c.discount) > 0 ? 'partial' : 'unpaid');
+  try{ await fb.db.collection('academy_challans').doc(c.id).update({paid:c.paid, discount:c.discount, status:c.status}); }catch(e){}
+  auditLog('Challan reversed', 'Challan ' + c.id + ' (' + c.month + ') reversed — balance ' + rs(effectiveChallanBalance(c)) + ' is due again.', 'challan', c.id);
+  setMsg('chMgrMsg', 'Challan reversed — its balance of ' + rs(effectiveChallanBalance(c)) + ' is due again.', 'ok');
+  renderChallans();
+  renderChallanManager();
+  renderAdminFinance();
+}
+/* Task 3: one row-builder for every report (CSV, PDF and Excel all use it). */
+function reportRows(kind){
+  var s = financeSummary(FB_MONTH);
+  if(kind === 'finance') return {title:'Monthly Finance Summary — ' + FB_MONTH, headers:['Item', 'Amount (Rs)'], rows:[['Total received', s.income], ['Morning total', s.morningTotal], ['Evening total', s.eveningTotal], ['Expenses', s.expense], ['Sajjad gets', s.sajjadTotal], ['Ahmed gets', s.ahmedTotal], ['Teachers get', s.teacherTotal]]};
+  if(kind === 'dues'){ var rows = []; data.students.filter(function(st){ return studentDue(st) > 0; }).forEach(function(st){ rows.push([st.name, st.roll, effectiveFee(st), studentDue(st)]); }); return {title:'Dues Report — ' + FB_MONTH, headers:['Student', 'Roll', 'Monthly Fee (Rs)', 'Balance Due (Rs)'], rows:rows}; }
+  if(kind === 'collection'){ var rows = fbData.payments.filter(function(p){ return monthOf(p.date) === FB_MONTH; }).sort(function(a, b){ return (a.date < b.date ? -1 : 1); }).map(function(p){ var st = studentByRoll(p.student_roll_no); return [p.date, (st && st.name) || p.student_roll_no, p.student_roll_no, p.amount_received, p.admission_fee || 0, p.discount || 0]; }); return {title:'Collection Report — ' + FB_MONTH, headers:['Date', 'Student', 'Roll', 'Received (Rs)', 'Admission Fee (Rs)', 'Discount (Rs)'], rows:rows}; }
+  if(kind === 'teacherpay'){ var rows = fbData.teacherPayments.filter(function(t){ return monthOf(t.date) === FB_MONTH; }).map(function(t){ return [t.date, t.teacher, t.subject, t.amount_paid]; }); return {title:'Teacher Pay Report — ' + FB_MONTH, headers:['Date', 'Teacher', 'Subject', 'Amount Paid (Rs)'], rows:rows}; }
+  if(kind === 'arrears'){ var arr = arrearsSheetHTML(); return {title:'Arrears Sheet — ' + FB_MONTH, headers:['Roll', 'Name', 'Balance Due (Rs)'], rows:arr.rows.map(function(r){ return [r[0], r[1], r[2]]; })}; }
+  if(kind === 'expenses'){ var rows = fbData.expenses.map(function(e){ return [e.date || '', e.category || '', e.amount || 0, e.note || '']; }); return {title:'Expenses Report', headers:['Date', 'Category', 'Amount (Rs)', 'Note'], rows:rows}; }
+  if(kind === 'siblings'){ return {title:'Sibling / Family Report', headers:['Family Head', 'Head Roll', 'Members', 'Each Member Fee (Rs)', 'Each Member Dues (Rs)', 'Family Total (Rs)'], rows:siblingReportRows()}; }
+  return null;
+}
+function reportTableHTML(r){
+  if(!r) return '';
+  var h = '<div class="table-scroll"><table><thead><tr>' + r.headers.map(function(x){ return '<th>' + esc(x) + '</th>'; }).join('') + '</tr></thead><tbody>';
+  r.rows.forEach(function(row){ h += '<tr>' + row.map(function(v){ return '<td>' + (typeof v === 'number' ? rs(v) : esc(v)) + '</td>'; }).join('') + '</tr>'; });
+  return h + '</tbody></table></div>';
+}
+function siblingReportRows(){
+  var fams = getFamilies();
+  var rows = [];
+  fams.forEach(function(f){
+    var members = f.members.map(function(st){ return st.name + ' (' + st.roll + ')'; }).join(', ');
+    var fees = f.members.map(function(st){ return effectiveFee(st); }).join(' + ');
+    var dues = f.members.map(function(st){ return studentDue(st); }).join(' + ');
+    var total = f.members.reduce(function(a, st){ return a + studentDue(st); }, 0);
+    rows.push([f.head ? f.head.name : f.headRoll, f.headRoll, members, fees, dues, total]);
+  });
+  return rows;
+}
+function siblingReportHTML(){
+  var rows = siblingReportRows();
+  if(!rows.length) return {html:'<p class="note">No sibling families found yet — families are detected automatically from the father&apos;s phone number.</p>', count:0, total:0};
+  var tot = rows.reduce(function(a, r){ return a + num(r[5]); }, 0);
+  var h = '<div class="table-scroll"><table><thead><tr><th>Family Head</th><th>Members</th><th>Each Member&apos;s Fee</th><th>Each Member&apos;s Dues</th><th>Family Total</th></tr></thead><tbody>';
+  rows.forEach(function(r){ h += '<tr><td><b>' + esc(r[0]) + '</b><br><small>' + esc(r[1]) + '</small></td><td>' + esc(r[2]) + '</td><td>' + esc(r[3]) + '</td><td>' + esc(r[4]) + '</td><td><b>' + rs(r[5]) + '</b></td></tr>'; });
+  h += '</tbody></table></div><p>Total dues across all families: <b>' + rs(tot) + '</b></p>';
+  return {html:h, count:rows.length, total:tot};
+}
+/* Task 3: real .xlsx (stored-zip) writer — no library, no fake extension. */
+function crc32Bytes(bytes){
+  var table = crc32Bytes._t;
+  if(!table){
+    table = crc32Bytes._t = [];
+    for(var n = 0; n < 256; n++){
+      var c = n;
+      for(var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      table[n] = c >>> 0;
+    }
+  }
+  var crc = 0xFFFFFFFF;
+  for(var i = 0; i < bytes.length; i++) crc = table[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function utf8Bytes(str){
+  var out = [];
+  for(var i = 0; i < str.length; i++){
+    var c = str.charCodeAt(i);
+    if(c < 128) out.push(c);
+    else if(c < 2048){ out.push(192 | (c >> 6), 128 | (c & 63)); }
+    else if(c >= 55296 && c < 57344 && i + 1 < str.length){
+      var c2 = str.charCodeAt(i + 1);
+      if(c2 >= 56320 && c2 < 57344){ var cp = 65536 + ((c - 55296) << 10) + (c2 - 56320); out.push(240 | (cp >> 18), 128 | ((cp >> 12) & 63), 128 | ((cp >> 6) & 63), 128 | (cp & 63)); i++; }
+      else out.push(239, 191, 189);
+    } else out.push(224 | (c >> 12), 128 | ((c >> 6) & 63), 128 | (c & 63));
+  }
+  return out;
+}
+function xlsxCol(n){ var s = ''; n++; while(n > 0){ var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; }
+function buildXLSXBytes(headers, rows){
+  function escXml(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>';
+  function rowXml(r, vals){
+    var x = '<row r="' + (r + 1) + '">';
+    vals.forEach(function(v, i){
+      var ref = xlsxCol(i) + (r + 1);
+      if(typeof v === 'number' && isFinite(v)) x += '<c r="' + ref + '" t="n"' + (r === 0 ? ' s="1"' : '') + '><v>' + v + '</v></c>';
+      else x += '<c r="' + ref + '" t="inlineStr"' + (r === 0 ? ' s="1"' : '') + '><is><t>' + escXml(v == null ? '' : v) + '</t></is></c>';
+    });
+    return x + '</row>';
+  }
+  sheet += rowXml(0, headers);
+  rows.forEach(function(row, i){ sheet += rowXml(i + 1, row); });
+  sheet += '</sheetData></worksheet>';
+  var parts = [
+    {name:'[Content_Types].xml', data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+    {name:'_rels/.rels', data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {name:'xl/workbook.xml', data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Report" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+    {name:'xl/_rels/workbook.xml.rels', data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+    {name:'xl/worksheets/sheet1.xml', data:sheet},
+    {name:'xl/styles.xml', data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B3D91"/><bgColor rgb="FF0B3D91"/></patternFill></fill></fills><borders><border><left/><right/><top/><bottom/></border></borders><cellStyleXfs><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'}
+  ];
+  var out = [], central = [], offset = 0;
+  function u16(n){ return [n & 255, (n >> 8) & 255]; }
+  function u32(n){ return [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >> 24) & 255]; }
+  parts.forEach(function(p){
+    var data = utf8Bytes(p.data), name = utf8Bytes(p.name), crc = crc32Bytes(data);
+    var local = [0x50, 0x4B, 0x03, 0x04].concat(u16(20), u16(0x0800), u16(0), u16(0), u16(0), u32(crc), u32(data.length), u32(data.length), u16(name.length), u16(0));
+    central.push({name:name, crc:crc, size:data.length, offset:offset});
+    out = out.concat(local, name, data);
+    offset += local.length + name.length + data.length;
+  });
+  var centralStart = offset;
+  central.forEach(function(c){
+    var rec = [0x50, 0x4B, 0x01, 0x02].concat(u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0), u16(0), u32(c.crc), u32(c.size), u32(c.size), u16(c.name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(c.offset));
+    out = out.concat(rec, c.name);
+    offset += rec.length + c.name.length;
+  });
+  var end = [0x50, 0x4B, 0x05, 0x06].concat(u16(0), u16(0), u16(parts.length), u16(parts.length), u32(offset - centralStart), u32(centralStart), u16(0));
+  out = out.concat(end);
+  return new Uint8Array(out);
+}
+function exportReportXlsx(kind){
+  var r = reportRows(kind);
+  if(!r){ setMsg('rpMsg', 'Nothing to export for this report.', 'err'); return; }
+  var bytes = buildXLSXBytes(r.headers, r.rows);
+  downloadFile('fscc-' + kind + '-' + FB_MONTH + '.xlsx', bytes, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  setMsg('rpMsg', 'Excel file downloaded: fscc-' + kind + '-' + FB_MONTH + '.xlsx', 'ok');
+}
+function printReport(kind){
+  var r = reportRows(kind); if(!r) return;
+  var amtIdx = {dues:3, arrears:2, siblings:5, expenses:2, collection:3, teacherpay:3}[kind];
+  var tot = null;
+  if(kind !== 'finance' && amtIdx !== undefined){ tot = 0; r.rows.forEach(function(row){ var v = row[amtIdx]; if(typeof v === 'number') tot += v; }); }
+  var h = '<div class="report-print"><div class="rp-head"><h2>Future Star Computer &amp; Tuition Center</h2><p>' + esc(r.title) + ' · FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381</p></div>'
+    + reportTableHTML(r)
+    + (tot !== null ? '<p style="text-align:right">Total: <b>' + rs(tot) + '</b></p>' : '')
+    + '<p class="note">Generated on ' + todayStr() + ' · Future Star Computer &amp; Tuition Center, Shahdadpur</p></div>';
+  if($('printArea')){ $('printArea').className = ''; $('printArea').innerHTML = h; }
+  window.print();
+}
+/* Task 4: jump to the Pay-a-Teacher form with this teacher pre-selected. */
+function payTeacherShare(t){
+  var sel = $('tpTeacher');
+  if(sel){
+    var found = false;
+    for(var i = 0; i < sel.options.length; i++){ if(sel.options[i].value === t || sel.options[i].text === t){ sel.value = sel.options[i].value; found = true; } }
+    if(!found){ var o = document.createElement('option'); o.text = t; o.value = t; sel.appendChild(o); sel.value = t; }
+    if(sel.scrollIntoView) sel.scrollIntoView({block:'center'});
+  }
+  var amt = $('tpAmount'); if(amt) amt.focus();
+  setMsg('tpMsg', 'Paying ' + t + ' — enter the amount and save.', 'ok');
+}
+
 /* ---------- Reports ---------- */
 function reportRowsToCSV(headers, rows){
   var lines = [headers.map(csvEscape).join(',')];
@@ -4343,11 +4726,11 @@ function renderReports(){
     whoRows.push(['Expenses', s.expense]);
     var whoHtml = whoRows.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td><b>' + rs(r[1]) + '</b></td></tr>'; }).join('');
     el.innerHTML = '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Monthly Finance Summary — ' + FB_MONTH + '</h3>'
-      + '<div class="grid four">'
-      + '<div class="card"><h4 style="margin:0 0 4px">Total received</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.income) + '</b></p></div>'
-      + '<div class="card"><h4 style="margin:0 0 4px">Morning total</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.morningTotal) + '</b></p></div>'
-      + '<div class="card"><h4 style="margin:0 0 4px">Evening total</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.eveningTotal) + '</b></p></div>'
-      + '<div class="card"><h4 style="margin:0 0 4px">Expenses</h4><p style="font-size:1.4rem;margin:0"><b>' + rs(s.expense) + '</b></p></div>'
+      + '<div class="dash-stats">'
+      + '<div class="stat blue"><div class="num">' + rs(s.income) + '</div><div class="lbl">Total received</div></div>'
+      + '<div class="stat teal"><div class="num">' + rs(s.morningTotal) + '</div><div class="lbl">Morning total</div></div>'
+      + '<div class="stat pink"><div class="num">' + rs(s.eveningTotal) + '</div><div class="lbl">Evening total</div></div>'
+      + '<div class="stat red"><div class="num">' + rs(s.expense) + '</div><div class="lbl">Expenses</div></div>'
       + '</div>'
       + '<h4>Where the money goes</h4>' + barHtml
       + '<div class="grid two">'
@@ -4373,7 +4756,8 @@ function renderReports(){
   var aEl = $('rpArrears');
   if(aEl){
     var arr = arrearsSheetHTML();
-    aEl.innerHTML = arr.html + '<p style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small outline" type="button" onclick="exportReport(\'arrears\')">Arrears CSV</button> <button class="btn small outline" type="button" onclick="printArrears()">Print Arrears Sheet</button><button class="btn small outline" type="button" onclick="downloadArrearsSheet()">Download Arrears Sheet</button><label class="btn small outline" for="arrCsvFile" style="cursor:pointer">Upload Arrears Sheet</label><input id="arrCsvFile" type="file" accept=".csv,text/csv" style="display:none" onchange="uploadArrearsSheet(event)"></p>';
+    aEl.innerHTML = arr.html + '<p style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small outline" type="button" onclick="downloadArrearsSheet()">Download Arrears Sheet</button><label class="btn small outline" for="arrCsvFile" style="cursor:pointer">Upload Arrears Sheet</label><input id="arrCsvFile" type="file" accept=".csv,text/csv" style="display:none" onchange="uploadArrearsSheet(event)"></p>';
+    var a2El = $('rpArrearsRpt'); if(a2El) a2El.innerHTML = arr.html;
   }
   var coll = fbData.payments.slice().sort(function(a, b){ return (a.date < b.date ? 1 : -1); });
   var cEl = $('rpCollection');
@@ -4394,8 +4778,10 @@ function renderReports(){
     html += '</tbody></table></div>';
     tEl.innerHTML = html;
   }
+  var sibEl = $('rpSiblings'); if(sibEl) sibEl.innerHTML = siblingReportHTML().html;
+  var exEl = $('rpExpenses'); if(exEl){ var xr = reportRows('expenses'); exEl.innerHTML = reportTableHTML(xr); }
 }
-/* ---------- v1.4.13: morning partner share ---------- */
+/* ---------- v1.4.14: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -4413,7 +4799,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.13: fee per subject + scholarship ---------- */
+/* ---------- v1.4.14: fee per subject + scholarship ---------- */
 function saveFeePerSubject(){
   var v = num($('feePerSubject').value);
   if(v <= 0){ setMsg('fpsMsg', 'Enter a fee above 0.', 'err'); return; }
@@ -4426,7 +4812,7 @@ function bindFeePerSubject(){
   var b = $('btnFeePerSubject'); if(b) b.addEventListener('click', saveFeePerSubject);
   var fps = $('feePerSubject'); if(fps) fps.value = num(fbData.feePerSubject) || 2000;
 }
-/* ---------- v1.4.13: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.14: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -4471,7 +4857,7 @@ function applyArrearsSheet(text){
     found.old_dues = num(v);
     updated++;
     saveStudentToFb(found);
-    /* v1.4.13: corrected old dues create/update the automatic previous-dues challan. */
+    /* v1.4.14: corrected old dues create/update the automatic previous-dues challan. */
     if(num(v) > 0) ensureOldDuesChallan(found, num(v), warnings);
   });
   return {updated:updated, notFound:notFound, skipped:skipped, warnings:warnings};
@@ -4852,7 +5238,7 @@ function renderTeacherPanel(){
   var myStudents = teacherStudents(t);
   var s = financeSummary(FB_MONTH);
   var due = s.teacherDue[t.name] || 0, paid = s.teacherPaid[t.name] || 0;
-  /* v1.4.13: full software dashboard — header, real stat cards, today's classes */
+  /* v1.4.14: full software dashboard — header, real stat cards, today's classes */
   var el = $('teacherPanelBody');
   if(el){
     var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(t.name) + '</h3><p>' + esc(subs.join(', ')) + ' &nbsp;·&nbsp; ' + esc(todayName) + '</p></div></div>'
@@ -5110,7 +5496,7 @@ var editingExam = null, openExamId = null;
 function examStudents(exam){
   return data.students.filter(function(s){ return (s.status || 'Active') !== 'Left' && studentHasSubject(s, exam.subject); });
 }
-/* ---------- v1.4.13: marks publishing — students/parents see only published marks ---------- */
+/* ---------- v1.4.14: marks publishing — students/parents see only published marks ---------- */
 function normRoll(r){ return String(r || '').trim().toUpperCase(); }
 function publishedRollsOf(ex){ return (ex.publishedRolls || []).map(function(r){ return normRoll(r); }); }
 function isMarkPublished(ex, roll){ return publishedRollsOf(ex).indexOf(normRoll(roll)) >= 0; }
@@ -5389,7 +5775,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.13: result cards ---------- */
+/* ---------- v1.4.14: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -5511,7 +5897,7 @@ function renderTeacherResults(){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printTeacherResults()">Print Results</button></div>';
   el.innerHTML = h;
 }
-/* ---------- v1.4.13: teacher marks entry (their subjects only, no publish controls) ---------- */
+/* ---------- v1.4.14: teacher marks entry (their subjects only, no publish controls) ---------- */
 function teacherExamList(t){
   var subs = (t.subjects && t.subjects.length ? t.subjects : [t.subject || t.course || '']);
   return (fbData.exams || []).filter(function(x){ return subs.indexOf(x.subject) >= 0; });
@@ -5557,7 +5943,7 @@ function challanArrearsFor(st, month){
   if(!hasAny && !familyChallansFor(st.roll).length && num(st.old_dues) > 0) lines.push({month:'', amount:num(st.old_dues), label:'Previous dues'});
   return lines;
 }
-/* v1.4.13: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
+/* v1.4.14: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
 function prevMonthOf(month){
   var m = String(month || '').match(/^(\d{4})-(\d{2})$/);
   if(!m) return '';
@@ -5565,7 +5951,7 @@ function prevMonthOf(month){
   if(mo === 0){ y--; mo = 12; }
   return y + '-' + ('0' + mo).slice(-2);
 }
-/* v1.4.13: old dues from a CSV import / arrears upload become an automatic custom
+/* v1.4.14: old dues from a CSV import / arrears upload become an automatic custom
    challan for the PREVIOUS month with a single 'Previous dues' line. Create-or-update:
    an unpaid auto challan for the same student+month is updated in place, never
    duplicated; if payments were already recorded on it, it is left untouched and the
@@ -5685,7 +6071,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.13 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.14 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -5745,7 +6131,7 @@ async function voidChallan(id){
     renderChallans(); renderAdminFinance();
   }catch(e){ setMsg('chMsg', 'Could not void: ' + fbErrText(e), 'err'); }
 }
-function challanSlipHTML(c){
+function challanSlipHTML(c, logoSrc){
   var st = studentByRoll(c.roll);
   var chNo = 'CH-' + c.month + '-' + String(c.id || '').slice(-6).toUpperCase();
   var sch = c.scholarship;
@@ -5767,25 +6153,30 @@ function challanSlipHTML(c){
       rows += '<tr><td>' + lbl + '</td><td>' + rs(a.amount) + '</td></tr>';
     });
   }
-  rows += '<tr><td><b>Total payable</b></td><td><b>' + rs(c.total) + '</b></td></tr>'
+  rows += '<tr class="ch-total"><td><b>Total payable</b></td><td><b>' + rs(c.total) + '</b></td></tr>'
     + (num(c.discount) > 0 ? '<tr><td>Discount</td><td>' + rs(c.discount) + '</td></tr>' : '')
     + '<tr><td>Paid so far</td><td>' + rs(c.paid) + '</td></tr>'
     + '<tr><td><b>Balance</b></td><td><b>' + rs(effectiveChallanBalance(c)) + '</b></td></tr>';
-  return '<div class="receipt"><h3 style="margin:0;color:var(--blue)">Future Star Computer &amp; Tuition Center</h3>'
-    + '<p style="margin:2px 0 12px">FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381</p>'
-    + '<h3 style="margin:0;color:var(--blue)">Fee Challan — ' + esc(c.month) + '</h3>'
+  return '<div class="challan-print">'
+    + '<div class="ch-head">' + (logoSrc ? '<img src="' + esc(logoSrc) + '" alt="FSCC logo">' : '') + '<div><h2>Future Star Computer &amp; Tuition Center</h2><p>FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur · 0307-0158381</p></div></div>'
+    + '<h3 style="margin:14px 0 4px;color:var(--blue)">Fee Challan — ' + esc(c.month) + '</h3>'
     + '<p><b>Challan No:</b> ' + esc(chNo) + ' &nbsp;·&nbsp; <b>Due date:</b> end of ' + esc(c.month) + '</p>'
     + '<p><b>Student:</b> ' + esc(c.studentName || (st ? st.name : '')) + ' &nbsp;·&nbsp; <b>Roll:</b> ' + esc(c.roll) + ' &nbsp;·&nbsp; <b>Course:</b> ' + esc(st ? (st.course || st.className || '') : '') + ' &nbsp;·&nbsp; <b>Status:</b> ' + esc(challanDisplayStatus(c)) + '</p>'
     + schNote
-    + '<table class="marks"><tbody>' + rows + '</tbody></table>'
+    + '<table><thead><tr><th>Particulars</th><th style="text-align:right">Amount</th></tr></thead><tbody>' + rows + '</tbody></table>'
     + (c.note ? '<p>Note: ' + esc(c.note) + '</p>' : '')
     + '<p style="margin-top:14px">Please pay before the end of the month. Thank you.</p>'
-    + '<p style="display:flex;justify-content:space-between;margin-top:26px"><span>Student Signature: ____________</span><span>Received by: ____________</span></p></div>';
+    + '<div class="ch-sign"><span>Student Signature: ____________</span><span>Received by: ____________</span></div></div>';
 }
+function challanLogoSrc(){ var im = document.querySelector('header.site .logo'); return im ? im.src : ''; }
 function printChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
-  if($('printArea')){ $('printArea').className = ''; $('printArea').innerHTML = challanSlipHTML(c); }
+  if($('printArea')){ $('printArea').className = 'challan'; $('printArea').innerHTML = challanSlipHTML(c, challanLogoSrc()); }
   window.print();
+}
+function downloadChallanPDF(id){
+  printChallan(id);
+  setMsg('chMsg', 'Challan opened for printing — choose "Save as PDF" in the print dialog to download it.', 'ok');
 }
 function collectForChallan(id){
   var c = fbData.challans.find(function(x){ return x.id === id; }); if(!c) return;
@@ -5821,7 +6212,7 @@ function renderChallans(){
       var arrTxt = (c.arrears || []).map(function(a){ var nm = (a.label && a.label.indexOf('Balance of') !== 0) ? a.label : (a.month || 'Previous'); return nm + ': ' + rs(a.amount); }).join(' · ') || '—';
       h += '<tr><td><b>' + esc(c.studentName || c.roll) + '</b>' + (c.custom ? ' <span class="badge sample">custom</span>' : '') + (c.family ? ' <span class="badge sample">family</span>' : '') + '</td><td>' + esc(c.roll) + '</td><td>' + rs(c.monthlyFee) + '</td><td>' + esc(arrTxt) + '</td><td><b>' + rs(c.total) + '</b></td><td>' + rs(c.paid) + '</td><td>' + rs(c.discount) + '</td><td><b>' + rs(bal) + '</b></td><td>' + esc(challanDisplayStatus(c, map)) + '</td><td style="white-space:nowrap">'
         + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
-        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
+        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> <button class="btn small outline" type="button" onclick="downloadChallanPDF(\'' + c.id + '\')">PDF</button> '
         + (c.status !== 'void' && c.status !== 'closed' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
         + (c.status !== 'void' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
         + '</td></tr>';
@@ -5834,7 +6225,7 @@ function renderChallans(){
         + '<div class="mcard-row"><span>Balance</span><b>' + rs(bal) + '</b></div>'
         + '<div class="mcard-actions">'
         + (c.status !== 'void' && bal > 0 ? '<button class="btn small" type="button" onclick="collectForChallan(\'' + c.id + '\')">Collect</button> ' : '')
-        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> '
+        + '<button class="btn small outline" type="button" onclick="printChallan(\'' + c.id + '\')">Print</button> <button class="btn small outline" type="button" onclick="downloadChallanPDF(\'' + c.id + '\')">PDF</button> '
         + (c.status !== 'void' && c.status !== 'closed' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="openChallanEdit(\'' + c.id + '\')">Edit</button> ' : '')
         + (c.status !== 'void' && !isFullyCarried(c, map) && num(c.paid) <= 0 ? '<button class="btn small outline" type="button" onclick="voidChallan(\'' + c.id + '\')">Void</button>' : '')
         + '</div></div>';
@@ -5844,6 +6235,7 @@ function renderChallans(){
   }
   el.innerHTML = h;
   renderFamilies();
+  renderChallanManager();
 }
 /* ---------- v1.2.6: Activity Log ---------- */
 function renderActivityLog(){
@@ -5960,6 +6352,7 @@ function bindV12(){
   b = $('tcPw'); if(b) b.addEventListener('keydown', function(e){ if(e.key === 'Enter') tryTeacherLogin(); });
   b = $('teacherLoginCancel'); if(b) b.addEventListener('click', function(){ closeModal('teacherModal'); });
   b = $('tcLogoutBtn'); if(b) b.addEventListener('click', function(){ fbSignOut(); closeModal('teacherPanel'); });
+  b = $('tcBackBtn'); if(b) b.addEventListener('click', function(){ closeModal('teacherPanel'); });
   var tt = $('teacherTabs');
   if(tt) tt.addEventListener('click', function(e){
     var btn = e.target.closest ? e.target.closest('button[data-ttab]') : null; if(!btn) return;
@@ -6208,7 +6601,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.13: group dropdown ---------- */
+/* ---------- v1.4.14: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -6236,7 +6629,7 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* ---------- v1.4.13: scholarship ---------- */
+/* ---------- v1.4.14: scholarship ---------- */
 function scholarshipInfo(st){
   var rate = num(st && st.scholarship_fee);
   if(rate <= 0) return null;
@@ -6258,7 +6651,7 @@ function suggestFee(){
   var sch = num($('seScholarship').value);
   feeEl.value = n * (sch > 0 ? sch : (num(fbData.feePerSubject) || 2000));
 }
-/* ---------- v1.4.13: time slots ---------- */
+/* ---------- v1.4.14: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -6297,7 +6690,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.13: new student flow ---------- */
+/* ---------- v1.4.14: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -6339,7 +6732,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.13: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.14: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -6496,7 +6889,7 @@ async function leaveStudent(){
   var sch = $('seScholarship'); if(sch) sch.addEventListener('input', suggestFee);
 })();
 
-/* ---------- v1.4.13: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.14: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -6543,7 +6936,7 @@ function waReminderBtn(st, amount){
 /* --- families (item A) --- */
 function familyKeyOf(st){ var f = normPhone(st.father_phone || ''); return f || ''; }
 function parseAdmDateNum(s){ var d = parseAdmDate(s); return d ? d : '9999-99-99'; }
-/* v1.4.13: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
+/* v1.4.14: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
    only the fallback when a member has no usable DOB. elderKey ranks DOB ('0') ahead of
    admission date ('1') ahead of no date ('2'), so within a rank the earliest date wins and
    a member with a DOB always beats one known only by admission date. If neither member has
@@ -6625,7 +7018,7 @@ function familyMemberShare(c, roll, map){
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
   var balance = Math.max(0, total - paid);
-  /* v1.4.13: a member share already rolled into a later family challan is not owed twice. */
+  /* v1.4.14: a member share already rolled into a later family challan is not owed twice. */
   balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
   return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
@@ -6947,7 +7340,7 @@ function renderBoardFeeList(){
   el.innerHTML = h;
 }
 
-/* ---------- v1.4.13: students per fee period ---------- */
+/* ---------- v1.4.14: students per fee period ---------- */
 /* How many students were enrolled in a period. The current period counts live: Active students
    whose feePeriod is this period, or blank (created before periods existed — they belong to the
    current period). Old periods keep the snapshot taken at migration time (the Active students who
@@ -7017,7 +7410,7 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
-    /* v1.4.13: snapshot the old period's enrolment before the students move — after migration
+    /* v1.4.14: snapshot the old period's enrolment before the students move — after migration
        every student carries the new period, so without this the old row would show 0 students. */
     fbData.feePeriodStudents = fbData.feePeriodStudents || {};
     fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
@@ -7031,7 +7424,7 @@ async function migrateFeePeriod(){
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.13', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.14', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
     fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
@@ -7102,6 +7495,7 @@ async function restoreFullBackup(file){
 
 /* --- users & IDs (item G) --- */
 function renderUsers(){
+  var usQ = (typeof usSearchQ === 'undefined' ? '' : usSearchQ).toLowerCase();
   var inc = $('usIncomplete');
   if(inc){
     var n = incompleteLogins().length;
@@ -7114,6 +7508,7 @@ function renderUsers(){
     rows.forEach(function(s){
       var idx = data.students.indexOf(s);
       var has = studentHasLogin(s);
+      if(usQ && (s.name + ' ' + (s.phone || '') + ' ' + (s.roll || '') + ' student').toLowerCase().indexOf(usQ) < 0) return;
       h += '<tr><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.roll) + '</td><td>' + (has ? esc(s.phone) : '—') + '</td><td>' + (has ? 'Active' : 'No login yet') + '</td><td style="white-space:nowrap">'
         + (has ? '<button class="btn small outline" type="button" onclick="adminSetStudentPw(' + idx + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="deleteStudentLogin(' + idx + ')">Delete ID</button>' : '<button class="btn small outline" type="button" onclick="enableStudentLogin(' + idx + ')">Complete Details</button>')
         + '</td></tr>';
@@ -7128,6 +7523,7 @@ function renderUsers(){
     rows2.forEach(function(s){
       var idx = data.students.indexOf(s);
       var has = parentHasLogin(s);
+      if(usQ && ((s.father_name || '') + ' ' + (s.father_phone || '') + ' ' + (s.name || '') + ' parent').toLowerCase().indexOf(usQ) < 0) return;
       h2 += '<tr><td><b>' + esc(s.father_name || 'Parent of ' + s.name) + '</b></td><td>' + esc(s.name) + ' (' + esc(s.roll) + ')</td><td>' + (has ? esc(s.father_phone) : '—') + '</td><td>' + (has ? 'Active' : 'No login yet') + '</td><td style="white-space:nowrap">'
         + (has ? '<button class="btn small outline" type="button" onclick="adminSetParentPw(' + idx + ')">Reset Password</button> <button class="btn small outline" type="button" onclick="deleteParentLogin(' + idx + ')">Delete ID</button>' : '<button class="btn small outline" type="button" onclick="enableStudentLogin(' + idx + ')">Complete Details</button>')
         + '</td></tr>';
@@ -7140,6 +7536,7 @@ function renderUsers(){
     var h3 = '<div class="table-scroll"><table><thead><tr><th>Name</th><th>Login ID</th><th>Subjects</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     if(!(fbData.teachers || []).length) h3 += '<tr><td colspan="5"><span class="note">No teacher logins yet.</span></td></tr>';
     (fbData.teachers || []).forEach(function(t){
+      if(usQ && ((t.name || '') + ' ' + (t.phone || '') + ' teacher').toLowerCase().indexOf(usQ) < 0) return;
       h3 += '<tr><td><b>' + esc(t.name || '') + '</b></td><td>' + esc(t.phone || '') + '</td><td>' + esc((t.subjects || []).join(', ')) + '</td><td>Active</td><td style="white-space:nowrap">'
         + '<button class="btn small outline" type="button" onclick="resetTeacherPw(\'' + esc(t.id).replace(/'/g, '') + '\')">Reset Password</button> '
         + '<button class="btn small outline" type="button" onclick="deleteTeacherLogin(\'' + esc(t.id).replace(/'/g, '') + '\')">Delete ID</button>'
@@ -7148,6 +7545,8 @@ function renderUsers(){
     h3 += '</tbody></table></div>';
     tEl.innerHTML = h3;
   }
+  renderUsAdmins();
+  applyUsTabs();
 }
 async function adminSetStudentPw(i){
   var s = data.students[i]; if(!s) return;
@@ -7275,7 +7674,7 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.13 wiring --- */
+/* --- v1.4.14 wiring --- */
 (function(){
   var b;
   b = $('fsSaveBtn'); if(b) b.addEventListener('click', saveFeeSettings);
