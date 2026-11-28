@@ -85,6 +85,30 @@ tbody tr:nth-child(even){background:#f7fafd}
 .video-card h4{margin:10px 0 4px;font-size:.98rem;line-height:1.4}
 .video-card a{font-size:.9rem}
 .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+/* v1.4.20: main-page polish — reveal on scroll, hero entrance, card hover lift, quotes, courses, slider */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-in{animation:heroIn .8s ease-out both}
+.card{transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(11,61,145,.14)}
+.quote-card{text-align:center;padding:28px 22px}
+.quote-text{font-size:1.25rem;font-style:italic;color:var(--blue);margin:0;transition:opacity .3s ease;line-height:1.5}
+.quote-nav{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.course-card ul{margin:10px 0 0;padding-left:20px}
+.course-card li{margin:4px 0}
+.slider{position:relative;max-width:860px;margin:0 auto}
+.slides{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:14px;background:#0b3d91}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+.slide.on{opacity:1}
+.slide img{width:100%;height:100%;object-fit:cover;display:block}
+.slider-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(11,61,145,.75);color:#fff;border:0;width:42px;height:42px;border-radius:50%;font-size:1.4rem;cursor:pointer;line-height:1}
+.slider-arrow.prev{left:12px}
+.slider-arrow.next{right:12px}
+.slider-dots{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:8px;justify-content:center}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.6);border:0;cursor:pointer;padding:0}
+.dot.on{background:#fff}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1 !important;transform:none !important;transition:none !important}.hero-in{animation:none !important}.card{transition:none !important}.card:hover{transform:none}.slide{transition:none}.quote-text{transition:none}}
 footer{background:var(--blue);color:#cfe0ff;text-align:center;padding:22px 18px;font-size:.92rem}
 footer b{color:#fff}
 .modal{position:fixed;inset:0;background:rgba(10,20,40,.6);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:24px 12px;overflow-y:auto}
@@ -180,7 +204,7 @@ body *{visibility:hidden}
 .stat.pink{background:linear-gradient(135deg,#a4137a,#e0529b)}
 .stat.amber{background:linear-gradient(135deg,#b45309,#f59e0b)}
 .stat.red{background:linear-gradient(135deg,#b91c1c,#ef4444)}
-/* ---------- v1.4.19: portal dashboards (student / parent / teacher) ---------- */
+/* ---------- v1.4.20: portal dashboards (student / parent / teacher) ---------- */
 #studentPanel .modal-box.portal-box,#parentPanel .modal-box.portal-box,#teacherPanel .modal-box.portal-box{max-width:1180px;padding:0;min-height:calc(100vh - 48px);overflow:hidden}
 .portal-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;padding:20px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .portal-head .portal-logo{width:56px;height:56px;border-radius:50%;background:#fff;padding:3px;flex-shrink:0}
@@ -189,15 +213,15 @@ body *{visibility:hidden}
 .portal-head .btn{margin-left:auto}
 .portal-head .btn.outline{background:#fff;border-color:#fff;color:var(--blue) !important}
 .portal-head{position:relative}
-/* v1.4.19: dashboard-open state — public page disappears, background scroll locks */
+/* v1.4.20: dashboard-open state — public page disappears, background scroll locks */
 html.portal-open,body.portal-open{overflow:hidden !important;height:100%}
 body.portal-open>*:not(.modal):not(#printArea){display:none !important}
 body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.portal-open .modal#parentPanel,body.portal-open .modal#teacherPanel{background:#eef2f8}
-/* v1.4.19: red-circle-X close control, top right of each dashboard header */
+/* v1.4.20: red-circle-X close control, top right of each dashboard header */
 .dash-close{width:34px;height:34px;min-width:34px;border-radius:50%;background:#b91c1c;color:#fff;border:2px solid rgba(255,255,255,.9);font-size:17px;font-weight:800;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.3);flex-shrink:0}
 .dash-close:hover{background:#991b1b}
 .portal-head .dash-close{align-self:flex-start;margin-top:2px}
-/* v1.4.19: one unified admin theme — same language as the dashboard */
+/* v1.4.20: one unified admin theme — same language as the dashboard */
 #adminPanel .admin-main h4{color:var(--blue);font-size:1.05rem;margin:22px 0 8px}
 #adminPanel .admin-main h4:first-child{margin-top:6px}
 #adminPanel .admin-main .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(11,61,145,.05)}
@@ -216,7 +240,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .tt-menu button:hover{background:#eef3fb}
 .report-card p{color:var(--muted);margin:4px 0 12px}
 .report-card h4{margin-bottom:2px}
-/* v1.4.19: beautiful challan (A4) print layout */
+/* v1.4.20: beautiful challan (A4) print layout */
 @page challanA4{size:A4;margin:12mm}
 #printArea.challan{page:challanA4;padding:0}
 .challan-print{font-size:14px;color:#111}
@@ -230,7 +254,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .challan-print td:nth-child(2){text-align:right}
 .challan-print .ch-total td{font-weight:800;background:#eef4ff}
 .challan-print .ch-sign{display:flex;justify-content:space-between;margin-top:34px}
-/* v1.4.19: beautiful report print layout (A4) */
+/* v1.4.20: beautiful report print layout (A4) */
 .report-print{font-size:13px;color:#111}
 .report-print .rp-head{background:linear-gradient(120deg,#0b3d91,#1565d8 55%,#0aa5a0);color:#fff;border-radius:12px;padding:14px 18px;margin-bottom:14px}
 .report-print .rp-head h2{margin:0;color:#fff;font-size:1.2rem}
@@ -260,7 +284,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .portal-kid .kid-nums{display:flex;gap:16px;margin:8px 0;font-size:.92rem;flex-wrap:wrap}
 .portal-kid .kid-nums b{color:var(--blue)}
 .portal-kid .kid-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-/* v1.4.19: table-style label/value rows for portal cards — label left, value right, aligned */
+/* v1.4.20: table-style label/value rows for portal cards — label left, value right, aligned */
 .kv-table{width:100%;border-collapse:collapse}
 .kv-table td{padding:8px 10px;border-bottom:1px solid #eef2f8}
 .kv-table td:first-child{color:var(--muted)}
@@ -336,7 +360,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .admin-side-foot{margin-top:0;padding-top:8px}
 .admin-side-foot .btn{width:auto}
 }
-/* ---------- v1.4.19: mobile admin card system ---------- */
+/* ---------- v1.4.20: mobile admin card system ---------- */
 #adminBackBtn{display:none}
 #adminCardMenu{display:none}
 .mob-cards{display:none}
@@ -386,7 +410,7 @@ body.portal-open .modal#adminPanel,body.portal-open .modal#studentPanel,body.por
 .tt-grp{font-size:.8rem;color:#33475e}
 .tt-compact table{min-width:0}
 .tt-compact th,.tt-compact td{padding:8px 10px;font-size:.88rem}
-/* v1.4.19: weekly timetable grid (dashboard theme) + shared branded print header */
+/* v1.4.20: weekly timetable grid (dashboard theme) + shared branded print header */
 .tt-grid{width:100%;border-collapse:collapse;table-layout:fixed}
 .tt-grid th,.tt-grid td{border:1px solid #dbe4f0;padding:8px;vertical-align:top;text-align:left;overflow-wrap:break-word}
 .tt-grid thead th{background:linear-gradient(90deg,#0b3d91,#1256b8);color:#fff;text-align:center;font-size:.85rem;padding:10px 6px}
@@ -433,11 +457,10 @@ table{min-width:520px}
 <div class="brand">Future Star Computer &amp; Tuition Center<small>FSCC · SHAHDADPUR</small></div>
 <nav class="main" id="mainNav">
 <a href="#home">Home</a>
-<a href="#timetable">Timetable</a>
-<a href="#announcements">Announcements</a>
-<a href="#results">Results</a>
-<a href="#notes">Notes</a>
+<a href="#courses">Courses</a>
 <a href="#videos">Videos</a>
+<a href="#gallery">Gallery</a>
+<a href="#quotes">Quotes</a>
 <a href="#contact">Contact</a>
 </nav>
 <div class="head-actions">
@@ -456,8 +479,8 @@ table{min-width:520px}
 <h1>Future Star Computer &amp; Tuition Center</h1>
 <p class="tag">Learn Programming, English, Science &amp; Mathematics — Evening Classes from 4:00 PM</p>
 <div class="cta">
-<a class="btn gold" href="#timetable">View Timetable</a>
-<a class="btn outline" href="#results" style="background:transparent;color:#fff !important;border-color:#fff">Check Result</a>
+<a class="btn gold" href="#courses">Our Courses</a>
+<a class="btn outline" href="#videos" style="background:transparent;color:#fff !important;border-color:#fff">Watch Videos</a>
 <a class="btn whatsapp" href="https://wa.me/923070158381?text=Assalam-o-Alaikum!%20I%20want%20to%20ask%20about%20admission%20at%20FSCC%20Shahdadpur." target="_blank" rel="noopener">WhatsApp Us</a>
 </div>
 </div>
@@ -473,62 +496,34 @@ table{min-width:520px}
 <div class="card owner"><h3>Sir Sajjad Ali</h3><div class="role">Co-owner · Programming</div><p>Teaches Programming to boys (Monday–Wednesday) and girls (Thursday–Saturday), and one-to-one special Programming courses.</p></div>
 <div class="card owner"><h3>Sir Ahmed Raza</h3><div class="role">Co-owner · Office Automation &amp; Graphics</div><p>Teaches Office Automation and Graphics, and one-to-one special courses in Graphics and Office.</p></div>
 </div>
-<p class="note">Address: FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur &nbsp;·&nbsp; Phone: <a href="tel:+923070158381">0307-0158381</a> &nbsp;·&nbsp; Email: <a href="mailto:sirsajjadofficials@gmail.com">sirsajjadofficials@gmail.com</a></p>
+<p class="note" id="aboutContactLine">Address: FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur &nbsp;·&nbsp; Phone: <a href="tel:+923070158381">0307-0158381</a> &nbsp;·&nbsp; Email: <a href="mailto:sirsajjadofficials@gmail.com">sirsajjadofficials@gmail.com</a></p>
 </div>
 </section>
 
-<section id="timetable">
+<section id="quotes" class="reveal">
 <div class="wrap">
-<h2 class="sec">Timetable</h2>
+<h2 class="sec">Words to Study By</h2>
+<div class="bar"></div>
+<div class="card quote-card">
+<p id="quoteText" class="quote-text"></p>
+<div class="quote-nav">
+<button class="btn small outline" id="quotePrev" type="button" onclick="quoteStep(-1)">&#8249; Prev</button>
+<button class="btn small outline" id="quoteNext" type="button" onclick="quoteStep(1)">Next &#8250;</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="courses" class="reveal">
+<div class="wrap">
+<h2 class="sec">Our Courses</h2>
 <div class="bar"></div>
 <p class="sec-sub">Evening classes, Monday to Saturday from 4:00 PM. Sunday is closed.</p>
-<div id="timetableSlots"></div>
-<p class="note">Exact class times are set by the admin. Only student names are shown here — phone numbers are never published.</p>
-<p><button class="btn small outline" id="ttPrintBtnPublic" type="button">Print Timetable / PDF</button></p>
-<div class="grid three" style="margin-top:18px">
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Special Courses</h3><p>One-to-one courses with a single teacher: Programming with Sir Sajjad Ali, and Graphics &amp; Office with Sir Ahmed Raza.</p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Science &amp; Maths</h3><p>Biology, Chemistry and Physics with Sir Waqar Abbasi, English with Sir Sumair, and Mathematics with Sir Mohsin. Timings are scheduled by the admin.</p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Small Groups</h3><p>Computer Science and English are taught in small groups (about 5 students per group), each group with its own time. The admin manages groups below.</p></div>
-</div>
-<h3 style="color:var(--blue);margin:26px 0 10px">Groups</h3>
-<div class="grid two" id="groupsList"></div>
+<div class="grid three" id="coursesGrid"></div>
 </div>
 </section>
 
-<section id="announcements">
-<div class="wrap">
-<h2 class="sec">Announcements</h2>
-<div class="bar"></div>
-<p class="sec-sub">Latest news from the center, newest first.</p>
-<div class="card"><div id="announcementsList"></div></div>
-</div>
-</section>
-
-<section id="results">
-<div class="wrap">
-<h2 class="sec">Check Your Result</h2>
-<div class="bar"></div>
-<p class="sec-sub">Enter your roll number to see your result. Results are private — only your roll number shows your marks.</p>
-<div class="card">
-<div class="search-row">
-<input id="rollInput" type="text" placeholder="Enter your roll number, e.g. DIT01" autocomplete="off">
-<button class="btn" id="btnResultSearch" type="button">Search</button>
-</div>
-<div id="resultBox"></div>
-</div>
-</div>
-</section>
-
-<section id="notes">
-<div class="wrap">
-<h2 class="sec">Notes &amp; Books</h2>
-<div class="bar"></div>
-<p class="sec-sub">Download the center notes and books as PDF files.</p>
-<div class="grid three" id="notesList"></div>
-</div>
-</section>
-
-<section id="videos">
+<section id="videos" class="reveal">
 <div class="wrap">
 <h2 class="sec">Videos</h2>
 <div class="bar"></div>
@@ -547,17 +542,25 @@ table{min-width:520px}
 </div>
 </section>
 
-<section id="contact">
+<section id="gallery" class="reveal">
+<div class="wrap">
+<h2 class="sec">Life at FSCC</h2>
+<div class="bar"></div>
+<div class="slider" id="sliderBox">
+<div class="slides" id="sliderSlides"></div>
+<button class="slider-arrow prev" id="sliderPrev" type="button" onclick="sliderStep(-1)" aria-label="Previous photo">&#8249;</button>
+<button class="slider-arrow next" id="sliderNext" type="button" onclick="sliderStep(1)" aria-label="Next photo">&#8250;</button>
+<div class="slider-dots" id="sliderDots"></div>
+</div>
+<p class="note" id="sliderCaption" style="text-align:center"></p>
+</div>
+</section>
+
+<section id="contact" class="reveal">
 <div class="wrap">
 <h2 class="sec">Contact</h2>
 <div class="bar"></div>
-<div class="contact-grid">
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Visit Us</h3><p>FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur</p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Call</h3><p><a href="tel:+923070158381">0307-0158381</a></p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Email</h3><p><a href="mailto:sirsajjadofficials@gmail.com">sirsajjadofficials@gmail.com</a></p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">Hours</h3><p>Monday–Saturday from 4:00 PM<br>Sunday: Closed</p></div>
-<div class="card"><h3 style="margin-top:0;color:var(--blue)">WhatsApp</h3><p><a href="https://wa.me/923070158381?text=Assalam-o-Alaikum!%20I%20want%20to%20ask%20about%20admission%20at%20FSCC%20Shahdadpur." target="_blank" rel="noopener">Chat on WhatsApp — 0307-0158381</a></p></div>
-</div>
+<div class="contact-grid" id="contactGrid"></div>
 <p class="note" style="margin-top:16px">Admissions are open for evening classes. Visit the center or call us.</p>
 </div>
 </section>
@@ -1416,6 +1419,38 @@ table{min-width:520px}
 </div>
 <div style="margin-top:10px"><button class="btn small" id="subjAddBtn" type="button">Add Subject</button></div>
 <div class="msg" id="subjMsg"></div>
+<h4 style="margin:22px 0 6px">Contact Details (shown on the main page)</h4>
+<p class="note" style="margin-top:0">The phone, email and address shown in the Contact section — and the WhatsApp button — come from here.</p>
+<div class="form-grid">
+<div><label for="ctPhone">Phone</label><input id="ctPhone" type="tel" placeholder="0307-0158381"></div>
+<div><label for="ctEmail">Email</label><input id="ctEmail" type="email" placeholder="sirsajjadofficials@gmail.com"></div>
+<div class="full"><label for="ctAddress">Address</label><input id="ctAddress" type="text" placeholder="FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur"></div>
+</div>
+<div style="margin-top:10px"><button class="btn small" id="btnContactSave" type="button">Save Contact Details</button></div>
+<div class="msg" id="ctMsg"></div>
+<h4 style="margin:22px 0 6px">Motivational Quotes (shown on the main page)</h4>
+<p class="note" style="margin-top:0">Quotes rotate on the main page every few seconds. Add your own, or leave the defaults.</p>
+<div class="form-grid">
+<div class="full"><label for="qdText">New Quote</label><input id="qdText" type="text" placeholder="e.g. Small steps every day lead to big success."></div>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small" id="qdAddBtn" type="button">Add Quote</button><button class="btn small outline" id="qdCancelEdit" type="button" style="display:none">Cancel Edit</button></div>
+<div id="qdList" style="margin-top:10px"></div>
+<h4 style="margin:22px 0 6px">Our Courses (shown on the main page)</h4>
+<p class="note" style="margin-top:0">One card per course on the main page. Add outline points one per line — leave them empty until the outlines are ready.</p>
+<div class="form-grid">
+<div><label for="csName">Course Name</label><input id="csName" type="text" placeholder="e.g. DIT"></div>
+<div class="full"><label for="csPoints">Outline Points (one per line)</label><textarea id="csPoints" rows="3" style="width:100%" placeholder="e.g. Computer Fundamentals"></textarea></div>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small" id="csAddBtn" type="button">Add Course</button><button class="btn small outline" id="csCancelEdit" type="button" style="display:none">Cancel Edit</button></div>
+<div id="csList" style="margin-top:10px"></div>
+<h4 style="margin:22px 0 6px">Main Page Images (photo slider)</h4>
+<p class="note" style="margin-top:0">Photos for the slider on the main page. Paste an image URL — a Google Drive share link works too. Use the arrows to reorder. If no images are set, the slider stays hidden.</p>
+<div class="form-grid">
+<div><label for="imUrl">Image URL (or Google Drive share link)</label><input id="imUrl" type="text" placeholder="https://..."></div>
+<div><label for="imCaption">Caption (optional)</label><input id="imCaption" type="text" placeholder="e.g. Morning batch at work"></div>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small" id="imAddBtn" type="button">Add Image</button><button class="btn small outline" id="imCancelEdit" type="button" style="display:none">Cancel Edit</button></div>
+<div id="imList" style="margin-top:10px"></div>
 <h4 style="margin:22px 0 6px">Roles &amp; Admins</h4>
 <p class="note" style="margin-top:0">Make any teacher an admin, or remove admin rights. The person needs a login first (create their teacher login, then promote them here). You cannot remove your own admin rights, and at least one admin must always remain.</p>
 <div id="rolesList" style="margin-top:10px"></div>
@@ -1472,7 +1507,7 @@ var DEFAULT_DATA = {
   timeSlots: [],
   students: [],
   announcements: [
-    {date:'16 Nov 2026', text:'Welcome to the new FSCC website — timetable, results, notes and videos are now available here.'}
+    {date:'16 Nov 2026', text:'Welcome to the new FSCC website — courses, videos and admissions information are now available here.'}
   ],
   results: [],
   notes: [
@@ -1481,19 +1516,40 @@ var DEFAULT_DATA = {
     {title:'English Learning Book', pages:'120 pages', desc:'English language learning', file:'english-learning-book.pdf'}
   ],
   videos: [
-    {id:'Rm9Y4YhnsKg', title:'Eraser Tool | Photoshop Series | Sajjad Ali | Urdu / Hindi'},
-    {id:'kuvF2yDzHgk', title:'Red Eye | Brush | Pencil | Mixer Brush | Photoshop | Hindi / Urdu'},
-    {id:'NBPAnvg5z2c', title:'Spot Healing | Healing tool | Patch tool | Content Aware Scale tool | Urdu/Hindi'},
-    {id:'c1jhEUAnuIo', title:'Create PDF inside Photoshop | Urdu | Hindi'},
-    {id:'AuVOclfKSQI', title:'Make a flower in Adobe Illustrator | Hindi/Urdu'},
-    {id:'kEtvFAXmn1c', title:'Live Wallpaper in HTML & CSS'},
-    {id:'97XOOpGKZjQ', title:'No is Not Acceptable :-)'},
-    {id:'Ba1ldij0-bk', title:'A small clip from C++ video'},
-    {id:'-mzCD2CucfU', title:'Open External Program in C++ (Shorts)'},
-    {id:'6CeiYCaC2T4', title:'Photoshop Knockout'},
-    {id:'xqZcQd5wTXc', title:'Mug designing in Photoshop'},
-    {id:'sgcqu4zoWNQ', title:'knockout effect in Photoshop'}
-  ]
+    {id:'Rm9Y4YhnsKg', title:'Eraser Tool | Photoshop Series | Sajjad Ali | Urdu / Hindi', showOnMain:true},
+    {id:'kuvF2yDzHgk', title:'Red Eye | Brush | Pencil | Mixer Brush | Photoshop | Hindi / Urdu', showOnMain:true},
+    {id:'NBPAnvg5z2c', title:'Spot Healing | Healing tool | Patch tool | Content Aware Scale tool | Urdu/Hindi', showOnMain:true},
+    {id:'c1jhEUAnuIo', title:'Create PDF inside Photoshop | Urdu | Hindi', showOnMain:true},
+    {id:'AuVOclfKSQI', title:'Make a flower in Adobe Illustrator | Hindi/Urdu', showOnMain:true},
+    {id:'kEtvFAXmn1c', title:'Live Wallpaper in HTML & CSS', showOnMain:false},
+    {id:'97XOOpGKZjQ', title:'No is Not Acceptable :-)', showOnMain:false},
+    {id:'Ba1ldij0-bk', title:'A small clip from C++ video', showOnMain:false},
+    {id:'-mzCD2CucfU', title:'Open External Program in C++ (Shorts)', showOnMain:false},
+    {id:'6CeiYCaC2T4', title:'Photoshop Knockout', showOnMain:false},
+    {id:'xqZcQd5wTXc', title:'Mug designing in Photoshop', showOnMain:false},
+    {id:'sgcqu4zoWNQ', title:'knockout effect in Photoshop', showOnMain:false}
+  ],
+  contact: {phone:'0307-0158381', email:'sirsajjadofficials@gmail.com', address:'FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur'},
+  quotes: [
+    {text:'Small steps every day lead to big success.'},
+    {text:'Hard work beats talent when talent does not work hard.'},
+    {text:'The expert in anything was once a beginner.'},
+    {text:'Study today, shine tomorrow.'},
+    {text:'Success comes to those who never stop learning.'}
+  ],
+  courses: [
+    {name:'DIT', points:[]},
+    {name:'CIT', points:[]},
+    {name:'English', points:[]},
+    {name:'Programming (C++ / HTML/CSS/JS)', points:[]},
+    {name:'Office Automation', points:[]},
+    {name:'Graphics', points:[]},
+    {name:'Maths', points:[]},
+    {name:'Biology', points:[]},
+    {name:'Chemistry', points:[]},
+    {name:'Physics', points:[]}
+  ],
+  sliderImages: []
 };
 
 var LS_KEY = 'fscc_data_v2';
@@ -1501,7 +1557,7 @@ var ST_PW_KEY = 'fscc_student_pw_v1';
 var currentStudent = null;
 var currentParent = null;
 var PW_KEY = 'fscc_admin_pw';
-var editing = {tt:-1, an:-1, rs:-1, gr:-1, nt:-1, vd:-1};
+var editing = {tt:-1, an:-1, rs:-1, gr:-1, nt:-1, vd:-1, qd:-1, cs:-1, im:-1};
 
 function $(id){ return document.getElementById(id); }
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
@@ -1509,26 +1565,54 @@ function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace
 function loadData(){
   try{
     var s = localStorage.getItem(LS_KEY);
-    if(s){ var d = JSON.parse(s); if(d && d.slots && d.groups && d.results){ /* v1.4.19: never delete the owner's data on load — no sample/FSCC- filtering here. Only the strict one-time cleanSeededTimeSlotsOnce may remove anything, and only untouched seeds. */ d.students = d.students || []; d.slots = d.slots || []; d.groups = d.groups || []; d.results = d.results || []; d.slots.forEach(function(x){ x.students = x.students || []; }); d.groups.forEach(function(g){ g.members = g.members || []; }); return d; } }
+    if(s){ var d = JSON.parse(s); if(d && d.slots && d.groups && d.results){ /* v1.4.20: never delete the owner's data on load — no sample/FSCC- filtering here. Only the strict one-time cleanSeededTimeSlotsOnce may remove anything, and only untouched seeds. */ d.students = d.students || []; d.slots = d.slots || []; d.groups = d.groups || []; d.results = d.results || []; d.slots.forEach(function(x){ x.students = x.students || []; }); d.groups.forEach(function(g){ g.members = g.members || []; }); if(!d.contact) d.contact = {phone:'0307-0158381', email:'sirsajjadofficials@gmail.com', address:'FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur'}; if(!d.quotes) d.quotes = [{text:'Small steps every day lead to big success.'},{text:'Hard work beats talent when talent does not work hard.'},{text:'The expert in anything was once a beginner.'},{text:'Study today, shine tomorrow.'},{text:'Success comes to those who never stop learning.'}]; if(!d.courses) d.courses = [{name:'DIT', points:[]},{name:'CIT', points:[]},{name:'English', points:[]},{name:'Programming (C++ / HTML/CSS/JS)', points:[]},{name:'Office Automation', points:[]},{name:'Graphics', points:[]},{name:'Maths', points:[]},{name:'Biology', points:[]},{name:'Chemistry', points:[]},{name:'Physics', points:[]}]; if(!d.sliderImages) d.sliderImages = []; return d; } }
   }catch(e){}
   return clone(DEFAULT_DATA);
 }
 var data = loadData();
 if(!data.timeSlots) data.timeSlots = [];
-/* v1.4.19: the legacy purge is GONE. It matched the owner's own slots against 12 old
+/* v1.4.20: the legacy purge is GONE. It matched the owner's own slots against 12 old
    seed shapes (any 4:00–5:00 PM Programming class looked like a "seed") and deleted
    sample-flagged groups/students/results on load — that is how updates ate the owner's
    data. No auto-deletion on load, ever again. The only cleanup that may ever remove
    anything is the strict one-time cleanSeededTimeSlotsOnce (untouched ts1/ts2 seeds
    only, behind the seededSlotsCleaned flag). purgeLegacyDefaults below now only runs
    that cleanup and records the legacyDefaultsPurged flag; it filters nothing. */
-/* v1.4.19: morning shift belongs to Sir Ahmed Raza only — no Sajjad in the morning. */
+/* v1.4.20: morning shift belongs to Sir Ahmed Raza only — no Sajjad in the morning. */
 function ttMorningBlocked(teacher, start){
   return ttMin(start) < 12 * 60 && /sajjad/i.test(teacher || '');
 }
 function isSampleRoll(r){ return /^FSCC-/i.test(String(r || '')); }
+/* v1.4.20: sample signature — sample:true OR an FSCC- roll. ONLY these records
+   are ever removed by cleanSamplesOnce; real rolls (DIT/ENG/BIO/DM) and real
+   groups/slots never match. */
+function isSampleRecord(x){ if(!x) return false; if(x.sample) return true; return isSampleRoll(x.roll); }
+/* v1.4.20: STRICT one-time sample cleanup. Older versions saved FSCC- sample
+   students/results (and sample-flagged groups/slots) into stored data, and
+   v1.4.20's merge resurrected them from the site doc on every snapshot. This
+   removes ONLY sample-signature records from students/results/slots/groups/
+   timeSlots, locally AND (via saveData -> fbPushSite) from the site doc. Runs
+   once behind the samplesCleaned flag — but if the flag is set while samples
+   are still present (e.g. adopted from another device's site doc before this
+   device cleaned), it still cleans them. Editing a record clears its sample
+   flag, so an edited former-sample record with a real roll survives. */
+function cleanSamplesOnce(){
+  var has = (data.students || []).some(isSampleRecord) || (data.results || []).some(isSampleRecord) || (data.slots || []).some(isSampleRecord) || (data.groups || []).some(isSampleRecord) || (data.timeSlots || []).some(isSampleRecord);
+  if(data.samplesCleaned && !has) return false;
+  var n0 = (data.students || []).length + (data.results || []).length + (data.slots || []).length + (data.groups || []).length + (data.timeSlots || []).length;
+  data.students = (data.students || []).filter(function(x){ return !isSampleRecord(x); });
+  data.results = (data.results || []).filter(function(x){ return !isSampleRecord(x); });
+  data.slots = (data.slots || []).filter(function(x){ return !isSampleRecord(x); });
+  data.groups = (data.groups || []).filter(function(x){ return !isSampleRecord(x); });
+  data.timeSlots = (data.timeSlots || []).filter(function(x){ return !isSampleRecord(x); });
+  var n1 = (data.students || []).length + (data.results || []).length + (data.slots || []).length + (data.groups || []).length + (data.timeSlots || []).length;
+  data.samplesCleaned = true;
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){}
+  saveData();
+  return n1 !== n0;
+}
 
-/* v1.4.19: the two seeded time slots from DEFAULT_DATA (ts1/ts2) that the owner
+/* v1.4.20: the two seeded time slots from DEFAULT_DATA (ts1/ts2) that the owner
    never created. Older versions deleted ANY slot whose id+label matched the seed —
    but editing a seeded slot keeps its id, so the owner's own edited slot was
    deleted as a "seed". Now a slot counts as an untouched seed ONLY when it is
@@ -1569,6 +1653,7 @@ function cleanSeededTimeSlotsOnce(){
 }
 function purgeLegacyDefaults(){
   var changed = cleanSeededTimeSlotsOnce();
+  if(cleanSamplesOnce()) changed = true;
   if(!data.legacyDefaultsPurged){
     data.legacyDefaultsPurged = true;
     try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){}
@@ -1589,70 +1674,156 @@ function saveData(){
   fbPushSite();
   renderAll();
 }
-/* v1.4.19: flush local state on tab close — localStorage is synchronous, so a
+/* v1.4.20: flush local state on tab close — localStorage is synchronous, so a
    reload right after an edit can never lose it (the Firestore push is async). */
 window.addEventListener('beforeunload', function(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){} });
 
 /* ---------- Public rendering ---------- */
 var DAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-function renderTimetable(){
-  var html = '';
-  DAY_ORDER.forEach(function(day){
-    if(day === 'Sunday'){
-      html += '<h3 class="slot-day">Sunday</h3><p class="note" style="margin-top:0">Closed — no classes on Sunday.</p>';
-      return;
-    }
-    var slots = data.slots.filter(function(x){ return x.day === day; });
-    if(!slots.length) return;
-    html += '<h3 class="slot-day">' + esc(day) + '</h3>';
-    slots.forEach(function(x){
-      html += '<div class="card slot"><div class="t">' + esc(fmtTime12(x.start)) + ' – ' + esc(fmtTime12(x.end)) + '</div>'
-        + '<div class="meta"><b>' + esc(x.subject) + '</b> · ' + esc(x.teacher) + ' · ' + esc(x.section)
-        + (x.group ? ' · ' + esc(x.group) : '') + '</div>'
-        + (x.sample ? '<span class="badge sample">SAMPLE — edit or delete in Admin</span>' : '') + '</div>';
-    });
-  });
-  $('timetableSlots').innerHTML = html || '<p class="note">No classes scheduled yet.</p>';
-}
-function renderGroups(){
-  var html = '';
-  data.groups.forEach(function(g){
-    var members = (g.members || []).join(', ');
-    html += '<div class="card"><h3 style="margin-top:0;color:var(--blue)">' + esc(g.name)
-      + (g.sample ? ' <span class="badge sample">SAMPLE — edit or delete in Admin</span>' : '') + '</h3>'
-      + '<p><b>Subject:</b> ' + esc(g.subject) + '<br><b>Teacher:</b> ' + esc(g.teacher)
-      + '<br><b>Time:</b> ' + esc(groupTimeText(g)) + '<br><b>Members:</b> ' + (members ? esc(members) : 'No members yet.') + '</p></div>';
-  });
-  $('groupsList').innerHTML = html || '<p class="note">No groups yet. The admin can add groups from the Admin panel.</p>';
-}
-function renderAnnouncements(){
-  var html = '';
-  data.announcements.forEach(function(a){
-    html += '<div class="ann-item"><div class="ann-date">' + esc(a.date) + '</div><div>' + esc(a.text) + '</div></div>';
-  });
-  $('announcementsList').innerHTML = html || '<p class="note">No announcements yet.</p>';
-}
-function renderNotes(){
-  var html = '';
-  data.notes.forEach(function(n){
-    html += '<div class="card"><h3 style="margin-top:0;color:var(--blue)">' + esc(n.title) + '</h3><p>'
-      + esc(n.pages) + (n.desc ? ' · ' + esc(n.desc) : '') + '</p>'
-      + '<a class="btn small" href="' + esc(n.file) + '" download>Download PDF</a></div>';
-  });
-  $('notesList').innerHTML = html;
+/* ---------- v1.4.20: public videos — admin-picked, at most 5 ---------- */
+function mainVideos(){
+  var all = data.videos || [];
+  if(currentStudent || currentParent || currentTeacher) return all;
+  return all.filter(function(v){ return v.showOnMain; }).slice(0, 5);
 }
 function renderVideos(){
   var fp = $('featuredPlayer');
   if(fp) fp.src = 'https://www.youtube.com/embed/videoseries?list=' + encodeURIComponent(data.featuredPlaylist || 'UUDY0UpWofnK0IDvvkgLeitg');
+  var list = mainVideos();
   var html = '';
-  data.videos.forEach(function(v){
+  list.forEach(function(v){
     html += '<div class="card video-card"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/' + esc(v.id)
       + '" title="' + esc(v.title) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>'
       + '<h4>' + esc(v.title) + '</h4><a href="https://www.youtube.com/watch?v=' + esc(v.id) + '" target="_blank" rel="noopener">Watch on YouTube</a></div>';
   });
   $('videosGrid').innerHTML = html;
+  var sec = $('videos');
+  if(sec) sec.style.display = (!list.length && !(currentStudent || currentParent || currentTeacher)) ? 'none' : '';
 }
 
+/* ---------- v1.4.20: motivational quotes (rotating, admin-editable) ---------- */
+var quoteIdx = 0, sliderIdx = 0, sliderPaused = false;
+function reducedMotion(){ try{ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }catch(e){ return false; } }
+function renderQuotes(){
+  var list = (data.quotes && data.quotes.length) ? data.quotes : [];
+  var sec = $('quotes');
+  if(sec) sec.style.display = list.length ? '' : 'none';
+  quoteShow(quoteIdx);
+}
+function quoteShow(i){
+  var list = (data.quotes && data.quotes.length) ? data.quotes : [];
+  var el = $('quoteText');
+  if(!el) return;
+  if(!list.length){ el.textContent = ''; return; }
+  quoteIdx = ((i % list.length) + list.length) % list.length;
+  var txt = list[quoteIdx].text || '';
+  if(reducedMotion()){ el.textContent = txt; return; }
+  el.style.opacity = 0;
+  setTimeout(function(){ el.textContent = txt; el.style.opacity = 1; }, 250);
+}
+function quoteStep(d){ quoteShow(quoteIdx + d); }
+
+/* ---------- v1.4.20: Our Courses (admin-editable outlines) ---------- */
+function renderCourses(){
+  var html = '';
+  (data.courses || []).forEach(function(c){
+    var pts = c.points || [];
+    html += '<div class="card course-card"><h3 style="margin-top:0;color:var(--blue)">' + esc(c.name) + '</h3>';
+    if(pts.length){
+      html += '<ul>';
+      pts.forEach(function(p){ html += '<li>' + esc(p) + '</li>'; });
+      html += '</ul>';
+    } else {
+      html += '<p class="note">Outline coming soon — ask the academy office for details.</p>';
+    }
+    html += '</div>';
+  });
+  var g = $('coursesGrid');
+  if(g) g.innerHTML = html || '<p class="note">Course outlines are being prepared.</p>';
+}
+
+/* ---------- v1.4.20: photo slider (admin-managed images) ---------- */
+function driveImgUrl(u){
+  u = (u || '').trim();
+  var m = u.match(/\/file\/d\/([A-Za-z0-9_-]+)/) || u.match(/[?&]id=([A-Za-z0-9_-]+)/);
+  if(m) return 'https://drive.google.com/uc?export=view&id=' + m[1];
+  return u;
+}
+function renderSlider(){
+  var list = data.sliderImages || [];
+  var sec = $('gallery');
+  if(sec) sec.style.display = list.length ? '' : 'none';
+  if(!list.length) return;
+  if(sliderIdx >= list.length) sliderIdx = 0;
+  var sh = '';
+  list.forEach(function(im, i){
+    sh += '<div class="slide' + (i === sliderIdx ? ' on' : '') + '"><img src="' + esc(driveImgUrl(im.url)) + '" alt="' + esc(im.caption || 'FSCC photo') + '" loading="lazy"></div>';
+  });
+  var sl = $('sliderSlides');
+  if(sl) sl.innerHTML = sh;
+  var dh = '';
+  list.forEach(function(im, i){
+    dh += '<button class="dot' + (i === sliderIdx ? ' on' : '') + '" type="button" onclick="sliderGo(' + i + ')" aria-label="Photo ' + (i + 1) + '"></button>';
+  });
+  var dt = $('sliderDots');
+  if(dt) dt.innerHTML = dh;
+  var cap = $('sliderCaption');
+  if(cap) cap.textContent = list[sliderIdx].caption || '';
+}
+function sliderGo(i){ sliderIdx = i; renderSlider(); }
+function sliderStep(d){ var list = data.sliderImages || []; if(!list.length) return; sliderGo((sliderIdx + d + list.length) % list.length); }
+
+/* ---------- v1.4.20: contact section (admin-editable values) ---------- */
+function contactInfo(){
+  var c = data.contact || {};
+  return {phone: c.phone || '0307-0158381', email: c.email || 'sirsajjadofficials@gmail.com', address: c.address || 'FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur'};
+}
+function waPhone(p){
+  var d = String(p || '').replace(/\D/g, '');
+  if(d.charAt(0) === '0') d = '92' + d.slice(1);
+  return d;
+}
+function renderContact(){
+  var c = contactInfo();
+  var wa = waPhone(c.phone);
+  var html = '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Visit Us</h3><p>' + esc(c.address) + '</p></div>'
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Call</h3><p><a href="tel:+' + esc(wa) + '">' + esc(c.phone) + '</a></p></div>'
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Email</h3><p><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></p></div>'
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">Hours</h3><p>Monday–Saturday from 4:00 PM<br>Sunday: Closed</p></div>'
+    + '<div class="card"><h3 style="margin-top:0;color:var(--blue)">WhatsApp</h3><p><a href="https://wa.me/' + esc(wa) + '?text=Assalam-o-Alaikum!%20I%20want%20to%20ask%20about%20admission%20at%20FSCC%20Shahdadpur." target="_blank" rel="noopener">Chat on WhatsApp — ' + esc(c.phone) + '</a></p></div>';
+  var g = $('contactGrid');
+  if(g) g.innerHTML = html;
+  var ac = $('aboutContactLine');
+  if(ac) ac.innerHTML = 'Address: ' + esc(c.address) + ' &nbsp;·&nbsp; Phone: <a href="tel:+' + esc(wa) + '">' + esc(c.phone) + '</a> &nbsp;·&nbsp; Email: <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>';
+}
+
+/* ---------- v1.4.20: student portal study material (notes inline) ---------- */
+function studentMaterialHTML(){
+  var html = '<div class="portal-section"><h4>Study Material</h4>';
+  var notes = data.notes || [];
+  if(!notes.length) html += '<p class="note">No notes yet.</p>';
+  else notes.forEach(function(n){
+    html += '<div class="card"><h3 style="margin-top:0;color:var(--blue)">' + esc(n.title) + '</h3><p>'
+      + esc(n.pages) + (n.desc ? ' · ' + esc(n.desc) : '') + '</p><a class="btn small" href="' + esc(n.file) + '" download>Download PDF</a></div>';
+  });
+  html += '<p><a class="btn small outline" href="#videos" onclick="renderVideos();closeModal(\'studentPanel\')">Videos</a></p></div>';
+  return html;
+}
+
+/* ---------- v1.4.20: main-page motion — timers + scroll reveal ---------- */
+function initMainPage(){
+  var sb = $('sliderBox');
+  if(sb && sb.addEventListener){ sb.addEventListener('mouseenter', function(){ sliderPaused = true; }); sb.addEventListener('mouseleave', function(){ sliderPaused = false; }); }
+  if(!reducedMotion()){
+    if($('quoteText')) setInterval(function(){ quoteStep(1); }, 6000);
+    if($('sliderSlides')) setInterval(function(){ if(!sliderPaused) sliderStep(1); }, 5000);
+  }
+  var els = (document && document.querySelectorAll) ? document.querySelectorAll('.reveal') : [];
+  if(els && els.length){
+    if(window.IntersectionObserver){ var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:0.15}); els.forEach(function(el){ io.observe(el); }); }
+    else { els.forEach(function(el){ el.classList.add('in'); }); }
+  }
+}
 /* ---------- Results search ---------- */
 function resultStats(r){
   var obt = 0, tot = 0;
@@ -1660,44 +1831,9 @@ function resultStats(r){
   var pct = tot ? Math.round(obt / tot * 100) : 0;
   return {obt:obt, tot:tot, pct:pct, status: pct >= 40 ? 'Pass' : 'Fail'};
 }
-function resultCardHTML(found){
-  var st = resultStats(found);
-  var rows = '';
-  found.marks.forEach(function(m){
-    rows += '<tr><td>' + esc(m.subject) + '</td><td>' + esc(m.obtained) + '</td><td>' + esc(m.total) + '</td></tr>';
-  });
-  return '<div class="result-card"><h3 style="color:var(--blue);margin:0 0 4px">' + esc(found.name)
-    + (found.sample ? ' <span class="badge sample">SAMPLE — delete in Admin</span>' : '') + '</h3>'
-    + '<p style="margin:0 0 12px"><b>Roll Number:</b> ' + esc(found.roll) + ' &nbsp;·&nbsp; <b>Class:</b> ' + esc(found.className) + '</p>'
-    + '<div class="table-scroll"><table class="marks"><thead><tr><th>Subject</th><th>Obtained</th><th>Total</th></tr></thead><tbody>' + rows
-    + '<tr><td><b>Total</b></td><td><b>' + st.obt + '</b></td><td><b>' + st.tot + '</b></td></tr></tbody></table></div>'
-    + '<p style="margin:12px 0 0"><b>Percentage:</b> ' + st.pct + '% &nbsp;·&nbsp; <b>Status:</b> <span class="' + (st.status === 'Pass' ? 'pass' : 'fail') + '">' + st.status + '</span></p></div>';
-}
-function searchResult(){
-  var q = $('rollInput').value.trim().toUpperCase();
-  var box = $('resultBox');
-  if(!q){ box.innerHTML = '<p class="note">Please enter a roll number.</p>'; return; }
-  var found = null;
-  data.results.forEach(function(r){ if(String(r.roll).trim().toUpperCase() === q) found = r; });
-  if(!found){
-    box.innerHTML = '<p class="msg err">No result found for this roll number. Please check the number and try again.</p>';
-    return;
-  }
-  var st = resultStats(found);
-  var rows = '';
-  found.marks.forEach(function(m){
-    rows += '<tr><td>' + esc(m.subject) + '</td><td>' + esc(m.obtained) + '</td><td>' + esc(m.total) + '</td></tr>';
-  });
-  box.innerHTML = '<div class="result-card"><h3 style="color:var(--blue);margin:0 0 4px">' + esc(found.name)
-    + (found.sample ? ' <span class="badge sample">SAMPLE — delete in Admin</span>' : '') + '</h3>'
-    + '<p style="margin:0 0 12px"><b>Roll Number:</b> ' + esc(found.roll) + ' &nbsp;·&nbsp; <b>Class:</b> ' + esc(found.className) + '</p>'
-    + '<div class="table-scroll"><table class="marks"><thead><tr><th>Subject</th><th>Obtained</th><th>Total</th></tr></thead><tbody>' + rows
-    + '<tr><td><b>Total</b></td><td><b>' + st.obt + '</b></td><td><b>' + st.tot + '</b></td></tr></tbody></table></div>'
-    + '<p style="margin:12px 0 0"><b>Percentage:</b> ' + st.pct + '% &nbsp;·&nbsp; <b>Status:</b> <span class="' + (st.status === 'Pass' ? 'pass' : 'fail') + '">' + st.status + '</span></p></div>';
-}
 
 /* ---------- Admin: login & panel ---------- */
-/* v1.4.19: dashboard-open state — hide the public page + lock background scroll */
+/* v1.4.20: dashboard-open state — hide the public page + lock background scroll */
 var PORTAL_IDS = ['adminPanel', 'teacherPanel', 'studentPanel', 'parentPanel'];
 function setPortalOpen(on){ document.body.classList.toggle('portal-open', !!on); if(document.documentElement) document.documentElement.classList.toggle('portal-open', !!on); }
 function syncPortalOpen(){ var open = PORTAL_IDS.some(function(id){ var el = $(id); return el && el.classList.contains('open'); }); setPortalOpen(open); }
@@ -1730,7 +1866,7 @@ async function tryUnifiedLogin(){
   var live = fb.ready && !fb.offline && fb.db;
   if(live){
     if(n && n.length >= 10){
-      /* v1.4.19: never gate on the local student list. The public page has no phones
+      /* v1.4.20: never gate on the local student list. The public page has no phones
          (academy_contacts is admin/teacher-only and studentFromDoc carries phone:''),
          so a local findStudentByPhone can never match on a fresh load. Try the
          hash-based logins directly against Firestore instead. */
@@ -1831,7 +1967,7 @@ var ADMIN_GROUPS = ['academics', 'finance', 'manage'];
 function loadAdminGroups(){ try{ return JSON.parse(localStorage.getItem('fscc_admin_groups') || '{}'); }catch(e){ return {}; } }
 function saveAdminGroups(st){ try{ localStorage.setItem('fscc_admin_groups', JSON.stringify(st)); }catch(e){} }
 function applyAdminGroups(){ var st = loadAdminGroups(); var opened = null; ADMIN_GROUPS.forEach(function(g){ var sec = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(!sec) return; var open = (g === 'academics') ? (st[g] !== false) : (st[g] === true); if(open && opened){ open = false; st[g] = false; } if(open) opened = g; sec.classList.toggle('collapsed', !open); }); if(opened) saveAdminGroups(st); }
-function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; var wasCollapsed = sec.classList.contains('collapsed'); var st = loadAdminGroups(); if(wasCollapsed){ /* v1.4.19 accordion: opening one dropdown closes all the others */ ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); } sec.classList.toggle('collapsed'); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
+function toggleAdminGroup(btn){ var sec = btn.closest ? btn.closest('.admin-sec') : null; if(!sec) return; var wasCollapsed = sec.classList.contains('collapsed'); var st = loadAdminGroups(); if(wasCollapsed){ /* v1.4.20 accordion: opening one dropdown closes all the others */ ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); } sec.classList.toggle('collapsed'); st[sec.getAttribute('data-sec')] = !sec.classList.contains('collapsed'); saveAdminGroups(st); }
 applyAdminGroups();
 $('adminTabs').addEventListener('click', function(e){
   var g = e.target.closest ? e.target.closest('.admin-group') : null;
@@ -1850,8 +1986,8 @@ document.querySelectorAll('.modal').forEach(function(m){
 });
 
 /* ---------- Admin: timetable ---------- */
-/* v1.4.19: timetables are per shift — Morning belongs to Sir Ahmed Raza only,
-   Evening is the main timetable. Entries saved before v1.4.19 have no shift
+/* v1.4.20: timetables are per shift — Morning belongs to Sir Ahmed Raza only,
+   Evening is the main timetable. Entries saved before v1.4.20 have no shift
    and count as Evening. */
 var ttShift = 'Evening';
 function slotShift(x){ return (x && x.shift) || 'Evening'; }
@@ -1919,7 +2055,7 @@ function tsCheckedGroups(){
   document.querySelectorAll('#tsGroupList input[data-tsgroup]:checked').forEach(function(cb){ out.push(cb.getAttribute('data-tsgroup')); });
   return out;
 }
-/* v1.4.19: assigning a group to a slot sets that group's slotId. A group can only
+/* v1.4.20: assigning a group to a slot sets that group's slotId. A group can only
    be on one slot, so ticking it here moves it off any other slot automatically. */
 function assignGroupsToSlot(slotId, names){
   (data.groups || []).forEach(function(g){
@@ -2043,7 +2179,7 @@ function delTt(i){
   if(!confirm('Delete this timetable slot?')) return;
   data.slots.splice(i, 1); saveData();
 }
-/* v1.4.19: Copy from Day — duplicate one day's classes (current shift) onto
+/* v1.4.20: Copy from Day — duplicate one day's classes (current shift) onto
    another day. Appends, never replaces; exact duplicates are skipped, so
    copying twice adds nothing the second time. */
 function copyTtDay(){
@@ -2077,12 +2213,12 @@ $('ttAddBtn').addEventListener('click', function(){
   var slot = slotFromForm();
   var err = slotFormError(slot);
   if(err){ alert(err); return; }
-  if(editing.tt >= 0){ data.slots[editing.tt] = slot; } /* v1.4.19: editing clears the sample flag. */
+  if(editing.tt >= 0){ data.slots[editing.tt] = slot; } /* v1.4.20: editing clears the sample flag. */
   else data.slots.push(slot);
   cancelTt(); saveData();
 });
 $('ttCancelEdit').addEventListener('click', cancelTt);
-/* v1.4.19: RISE-style grid "+ Add" — tap a cell, the Add Class modal opens
+/* v1.4.20: RISE-style grid "+ Add" — tap a cell, the Add Class modal opens
    pre-filled with that cell's day + row times; saving uses the same validation
    (subject, times, end after start, morning guard) and the entry appears in
    the grid at once and persists via saveData. */
@@ -2127,7 +2263,7 @@ function ttModalSave(){
   var tsq = $('tsGroupSearch'); if(tsq) tsq.addEventListener('input', renderTsGroupList);
   var tsc = $('tsCancelEdit'); if(tsc) tsc.addEventListener('click', cancelTsEdit);
   renderTsGroupList();
-/* v1.4.19: the Add Class form takes a GROUP (dropdown), never students — a
+/* v1.4.20: the Add Class form takes a GROUP (dropdown), never students — a
    class's students are simply the selected group's members. A native <select>
    is keyboard-searchable: typing the first letters jumps to the group. */
 function renderTtGroupOptions(selected){
@@ -2161,7 +2297,7 @@ function academyPrintInfo(){
 function ownersLineText(){
   return academyPrintInfo().owners.map(function(o){ return o.name + (o.phone ? ' — ' + o.phone : ''); }).join(' · ');
 }
-/* v1.4.19: one shared branded header for every print layout — logo + academy
+/* v1.4.20: one shared branded header for every print layout — logo + academy
    name + address + academy phone/email + BOTH owners. Owner phones come only
    from the stored teacher records; a missing phone is simply omitted, never
    invented. */
@@ -2172,7 +2308,7 @@ function printHeaderHTML(subtitle){
   return '<div class="print-head">' + (logo ? '<img src="' + esc(logo) + '" alt="FSCC logo">' : '') + '<div><h2>' + esc(info.name) + '</h2><p>' + esc(info.address) + ' · ' + esc(info.phone) + ' · ' + esc(info.email) + '</p><p>' + ownersLine + '</p></div></div>'
     + (subtitle ? '<h3 style="margin:12px 0 4px;color:var(--blue)">' + esc(subtitle) + '</h3>' : '');
 }
-/* v1.4.19: the timetable print header is minimal — logo + academy name +
+/* v1.4.20: the timetable print header is minimal — logo + academy name +
    "Time Table for (X) Shift" only. No address, email, phone or owners here;
    every other print keeps the full branded header (printHeaderHTML). */
 function timetablePrintHeaderHTML(label){
@@ -2215,12 +2351,12 @@ function printTimetable(section, shift){
   area.innerHTML = timetablePrintHTML(section || null, shift || null);
   window.print();
 }
-/* v1.4.19: Download PDF uses the same print-ready timetable view — the
+/* v1.4.20: Download PDF uses the same print-ready timetable view — the
    browser's Save as PDF produces the PDF file. */
 function downloadTimetablePDF(section, shift){
   printTimetable(section, shift);
 }
-/* v1.4.19: ONE Download button + menu replaces the row of print/download
+/* v1.4.20: ONE Download button + menu replaces the row of print/download
    icons (they looked like a glitch). Options: PDF (this shift), PDF (master
    — both shifts), Excel (.xlsx), Print. The menu closes when an option is
    picked or when clicking anywhere outside it. */
@@ -2340,7 +2476,7 @@ $('rsAddBtn').addEventListener('click', function(){
   if(!name){ alert('Please enter the student name.'); return; }
   if(!marks.length){ alert('Please enter at least one subject mark, e.g. English: 78/100'); return; }
   var rec = {roll:roll, name:name, className:$('rsClass').value.trim(), marks:marks};
-  if(editing.rs >= 0){ data.results[editing.rs] = rec; } /* v1.4.19: editing clears the sample flag — an edited item is the owner's, never auto-deleted. */
+  if(editing.rs >= 0){ data.results[editing.rs] = rec; } /* v1.4.20: editing clears the sample flag — an edited item is the owner's, never auto-deleted. */
   else data.results.push(rec);
   cancelRs(); saveData();
 });
@@ -2454,9 +2590,9 @@ function saveGroup(){
   var g = {id: editing.gr >= 0 ? (data.groups[editing.gr].id || ('g' + Date.now())) : ('g' + Date.now()),
     name:name, subject:subj, teacher:$('grTeacher').value.trim(),
     time:$('grTime').value.trim(), slotId:$('grSlot').value || '', members:grEditMembers.slice()};
-  if(editing.gr >= 0){ data.groups[editing.gr] = g; } /* v1.4.19: editing clears the sample flag. */
+  if(editing.gr >= 0){ data.groups[editing.gr] = g; } /* v1.4.20: editing clears the sample flag. */
   else data.groups.push(g);
-  /* v1.4.19: a member's time becomes the group's time — set the student's group
+  /* v1.4.20: a member's time becomes the group's time — set the student's group
      and clear their own time_slot ('' = use group time), then save the student.
      A student removed from the group loses the group but keeps their own time. */
   (g.members || []).forEach(function(m){
@@ -2519,14 +2655,18 @@ function cleanVideoId(v){
 }
 function renderAdminVideos(){
   var html = '';
+  var checked = 0;
   data.videos.forEach(function(v, i){
-    html += '<div class="admin-row"><div><b>' + esc(v.title) + '</b><small>' + esc(v.id) + '</small></div>'
+    if(v.showOnMain) checked++;
+    html += '<div class="admin-row"><div><b>' + esc(v.title) + '</b><small>' + esc(v.id) + '</small><label style="display:block;margin-top:4px;font-weight:400"><input type="checkbox" ' + (v.showOnMain ? 'checked' : '') + ' onchange="toggleVdMain(' + i + ',this.checked)"> Show on main page</label></div>'
       + '<div><button class="btn small outline" type="button" onclick="editVd(' + i + ')">Edit</button> '
       + '<button class="btn small outline" type="button" onclick="delVd(' + i + ')">Delete</button></div></div>';
   });
+  if(checked > 5) html += '<p class="note">Only the first 5 checked videos appear on the main page — uncheck some to choose which 5 show.</p>';
   $('vdList').innerHTML = html;
   $('vdPlaylist').value = data.featuredPlaylist || '';
 }
+function toggleVdMain(i, on){ var v = (data.videos || [])[i]; if(!v) return; v.showOnMain = !!on; saveData(); }
 function editVd(i){
   var v = data.videos[i];
   $('vdId').value = v.id; $('vdTitle').value = v.title;
@@ -2546,7 +2686,7 @@ $('vdAddBtn').addEventListener('click', function(){
   var title = $('vdTitle').value.trim();
   if(!id){ alert('Please enter a YouTube video ID.'); return; }
   if(!title) title = id;
-  if(editing.vd >= 0) data.videos[editing.vd] = {id:id, title:title}; else data.videos.push({id:id, title:title});
+  if(editing.vd >= 0){ var _old = data.videos[editing.vd] || {}; data.videos[editing.vd] = {id:id, title:title, showOnMain:!!_old.showOnMain}; } else data.videos.push({id:id, title:title, showOnMain:false});
   cancelVd(); saveData();
 });
 $('vdCancelEdit').addEventListener('click', cancelVd);
@@ -2557,6 +2697,85 @@ $('vdPlaylistBtn').addEventListener('click', function(){
   saveData();
   setMsg('settingsMsg', 'Playlist ID saved.', 'ok');
 });
+
+/* ---------- v1.4.20: admin managers for the main page ---------- */
+function renderContactSettings(){
+  var c = contactInfo();
+  var p = $('ctPhone'); if(p) p.value = c.phone;
+  var e = $('ctEmail'); if(e) e.value = c.email;
+  var a = $('ctAddress'); if(a) a.value = c.address;
+}
+function saveContactDetails(){
+  data.contact = {phone: ($('ctPhone') ? $('ctPhone').value.trim() : '') || '0307-0158381', email: ($('ctEmail') ? $('ctEmail').value.trim() : '') || 'sirsajjadofficials@gmail.com', address: ($('ctAddress') ? $('ctAddress').value.trim() : '') || 'FSCC, Near Maria Shopping Mall, Syed Muhallah, Shahdadpur'};
+  saveData();
+  setMsg('ctMsg', 'Contact details saved — the main page shows them now.', 'ok');
+}
+$('btnContactSave').addEventListener('click', saveContactDetails);
+function renderAdminQuotes(){
+  var html = '';
+  (data.quotes || []).forEach(function(q, i){
+    html += '<div class="admin-row"><div><b>' + esc(q.text) + '</b></div>'
+      + '<div><button class="btn small outline" type="button" onclick="editQd(' + i + ')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="delQd(' + i + ')">Delete</button></div></div>';
+  });
+  $('qdList').innerHTML = html;
+}
+function editQd(i){ var q = (data.quotes || [])[i]; if(!q) return; $('qdText').value = q.text; editing.qd = i; $('qdAddBtn').textContent = 'Save Changes'; $('qdCancelEdit').style.display = ''; }
+function delQd(i){ if(!confirm('Delete this quote?')) return; data.quotes.splice(i, 1); saveData(); }
+function cancelQd(){ editing.qd = -1; $('qdText').value = ''; $('qdAddBtn').textContent = 'Add Quote'; $('qdCancelEdit').style.display = 'none'; }
+$('qdAddBtn').addEventListener('click', function(){
+  var t = $('qdText').value.trim();
+  if(!t){ alert('Please write a quote first.'); return; }
+  if(editing.qd >= 0) data.quotes[editing.qd] = {text:t}; else (data.quotes = data.quotes || []).push({text:t});
+  cancelQd(); saveData();
+});
+$('qdCancelEdit').addEventListener('click', cancelQd);
+function renderAdminCourses(){
+  var html = '';
+  (data.courses || []).forEach(function(c, i){
+    var n = (c.points || []).length;
+    html += '<div class="admin-row"><div><b>' + esc(c.name) + '</b><small>' + (n ? n + ' outline point' + (n === 1 ? '' : 's') : 'No outline points yet') + '</small></div>'
+      + '<div><button class="btn small outline" type="button" onclick="editCs(' + i + ')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="delCs(' + i + ')">Delete</button></div></div>';
+  });
+  $('csList').innerHTML = html;
+}
+function editCs(i){ var c = (data.courses || [])[i]; if(!c) return; $('csName').value = c.name; $('csPoints').value = (c.points || []).join('\n'); editing.cs = i; $('csAddBtn').textContent = 'Save Changes'; $('csCancelEdit').style.display = ''; }
+function delCs(i){ if(!confirm('Delete this course?')) return; data.courses.splice(i, 1); saveData(); }
+function cancelCs(){ editing.cs = -1; $('csName').value = ''; $('csPoints').value = ''; $('csAddBtn').textContent = 'Add Course'; $('csCancelEdit').style.display = 'none'; }
+$('csAddBtn').addEventListener('click', function(){
+  var nm = $('csName').value.trim();
+  if(!nm){ alert('Please enter a course name.'); return; }
+  var pts = $('csPoints').value.split('\n').map(function(x){ return x.trim(); }).filter(function(x){ return x; });
+  var rec = {name:nm, points:pts};
+  if(editing.cs >= 0) data.courses[editing.cs] = rec; else (data.courses = data.courses || []).push(rec);
+  cancelCs(); saveData();
+});
+$('csCancelEdit').addEventListener('click', cancelCs);
+function renderAdminImages(){
+  var html = '';
+  (data.sliderImages || []).forEach(function(im, i){
+    html += '<div class="admin-row"><div><img src="' + esc(driveImgUrl(im.url)) + '" alt="" style="width:90px;height:60px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px"><b>' + esc(im.caption || im.url) + '</b><small>' + esc(im.url) + '</small></div>'
+      + '<div><button class="btn small outline" type="button" onclick="moveIm(' + i + ',-1)">&#8593;</button> '
+      + '<button class="btn small outline" type="button" onclick="moveIm(' + i + ',1)">&#8595;</button> '
+      + '<button class="btn small outline" type="button" onclick="editIm(' + i + ')">Edit</button> '
+      + '<button class="btn small outline" type="button" onclick="delIm(' + i + ')">Delete</button></div></div>';
+  });
+  $('imList').innerHTML = html;
+}
+function moveIm(i, d){ var a = data.sliderImages || []; var j = i + d; if(j < 0 || j >= a.length) return; var t = a[i]; a[i] = a[j]; a[j] = t; saveData(); }
+function editIm(i){ var im = (data.sliderImages || [])[i]; if(!im) return; $('imUrl').value = im.url; $('imCaption').value = im.caption || ''; editing.im = i; $('imAddBtn').textContent = 'Save Changes'; $('imCancelEdit').style.display = ''; }
+function delIm(i){ if(!confirm('Delete this image?')) return; data.sliderImages.splice(i, 1); saveData(); }
+function cancelIm(){ editing.im = -1; $('imUrl').value = ''; $('imCaption').value = ''; $('imAddBtn').textContent = 'Add Image'; $('imCancelEdit').style.display = 'none'; }
+$('imAddBtn').addEventListener('click', function(){
+  var u = $('imUrl').value.trim();
+  if(!u){ alert('Please paste an image URL first.'); return; }
+  var cap = $('imCaption').value.trim();
+  var rec = {url:u, caption:cap};
+  if(editing.im >= 0) data.sliderImages[editing.im] = rec; else (data.sliderImages = data.sliderImages || []).push(rec);
+  cancelIm(); saveData();
+});
+$('imCancelEdit').addEventListener('click', cancelIm);
 
 /* ---------- Admin: settings ---------- */
 $('btnExport').addEventListener('click', function(){
@@ -2675,7 +2894,7 @@ function importStudentsCSV(text){
     if(phone && seenPhones[phone] && String(seenPhones[phone]).toUpperCase() !== String(r.roll).toUpperCase()){ warnings.push('Line ' + r.line + ': phone ' + phone + ' is already used by roll ' + seenPhones[phone] + ' — check if they are siblings.'); }
     var found = null;
     data.students.forEach(function(s){ if(String(s.roll || '').toUpperCase() === String(r.roll).toUpperCase()) found = s; });
-    /* v1.4.19: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
+    /* v1.4.20: match by roll ONLY. Never match by phone — siblings share one phone (DIT16/DIT17),
        and a phone match would overwrite one sibling with the other's row. A new roll is always a new student. */
     if(r.dob && !parseAdmDate(r.dob)){ warnings.push('Line ' + r.line + ': date of birth "' + r.dob + '" is not a valid date — left blank.'); }
     var rec = {name:r.name, phone:phone, roll:String(r.roll).toUpperCase(), className:r.className, group:r.group,
@@ -2694,7 +2913,7 @@ function importStudentsCSV(text){
       saveStudentToFb(rec);
     }
     if(phone) seenPhones[phone] = rec.roll;
-    /* v1.4.19: old dues become an automatic previous-month 'Previous dues' challan. */
+    /* v1.4.20: old dues become an automatic previous-month 'Previous dues' challan. */
     if(num(r.old_dues) > 0) ensureOldDuesChallan(found || rec, num(r.old_dues), warnings);
   });
   return {added:added, updated:updated, skipped:skippedRows.length, error:'', skippedRows:skippedRows, warnings:warnings};
@@ -2764,7 +2983,7 @@ function renderAdminStudents(){
   if(!data.students.length){
     html += '<p class="note">No students yet. Import a Students CSV to add students.</p>';
   } else {
-    /* v1.4.19: Students table — no Class column; father name + phone nest under Name; Group in small font. */
+    /* v1.4.20: Students table — no Class column; father name + phone nest under Name; Group in small font. */
     html += '<div class="table-scroll admin-table"><table><thead><tr><th>Name</th><th>DOB</th><th>Gender</th><th>Phone</th><th>Roll Number</th><th>Group</th><th>Shift</th><th>Monthly Fee</th><th>Balance Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     var cards = '';
     var shownCount = 0;
@@ -2793,7 +3012,7 @@ function renderAdminStudents(){
   if(stuCnt) stuCnt.textContent = (stuSearchQ || '').trim() ? ('Showing ' + shownCount + ' of ' + data.students.length + ' students') : '';
   $('stList').innerHTML = html;
 }
-/* v1.4.19: print / PDF of the students list (respects the status filter + search). */
+/* v1.4.20: print / PDF of the students list (respects the status filter + search). */
 function printStudentsList(){
   var f = stStatusFilterQ;
   var rows = data.students.filter(function(s){ if(f !== 'All' && (s.status || 'Active') !== f) return false; return stuMatchesSearch(s, stuSearchQ); });
@@ -2933,7 +3152,7 @@ function renderStudentDash(){
   var due = studentDue(st);
   var paid = receivedThisMonth(st.roll, FB_MONTH);
   var attD = attDaysFor(st.roll, FB_MONTH);
-  /* v1.4.19: full software dashboard — header, real stat cards, action buttons, sections */
+  /* v1.4.20: full software dashboard — header, real stat cards, action buttons, sections */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(st.name) + '</h3><p>Roll ' + esc(st.roll) + ' &nbsp;·&nbsp; ' + esc(st.className) + ' &nbsp;·&nbsp; Group ' + esc(st.group || '—') + ' &nbsp;·&nbsp; ' + esc(st.shift || 'Evening') + ' Shift &nbsp;·&nbsp; ' + esc(studentTimeText(st) || 'Time not set yet') + '</p></div></div>'
     + '<div class="portal-stats">'
     + '<div class="portal-stat' + (due > 0 ? ' red' : ' green') + '"><div class="v">Rs ' + due.toLocaleString('en-US') + '</div><div class="l">Balance Due</div></div>'
@@ -2971,7 +3190,7 @@ function renderStudentDash(){
     + studentFeeHTML(st, 'st-')
     + studentHomeworkHTML(st, 'st-')
     + studentDetailsHTML(st)
-    + '<div class="portal-section"><h4>Study Material</h4><p><a class="btn small" href="#notes" onclick="closeModal(\'studentPanel\')">Notes &amp; PDFs</a> <a class="btn small outline" href="#videos" onclick="closeModal(\'studentPanel\')">Videos</a></p></div>';
+    + studentMaterialHTML();
   $('studentDash').innerHTML = html;
   var dtb = $('dtSaveBtn'); if(dtb) dtb.addEventListener('click', saveDailyTopic);
 }
@@ -2998,7 +3217,7 @@ async function saveDailyTopic(){
   }catch(e){ setMsg('dtMsg', 'Could not save: ' + fbErrText(e), 'err'); }
 }
 
-/* ---------- v1.4.19: portal self-service — My Details ---------- */
+/* ---------- v1.4.20: portal self-service — My Details ---------- */
 /* Students, parents and teachers can update their OWN basic details from their
    portal. Nothing here touches money or identity: no subjects/courses, no
    monthly fee, no roll number, no phone number (login ID), no old dues.
@@ -3188,13 +3407,17 @@ function renderAdminAll(){
   renderAdminFinance();
   renderRolesPermissions();
   applyRolePermissions();
+  renderContactSettings();
+  renderAdminQuotes();
+  renderAdminCourses();
+  renderAdminImages();
 }
 function renderAll(){
-  renderTimetable();
-  renderGroups();
-  renderAnnouncements();
-  renderNotes();
   renderVideos();
+  renderQuotes();
+  renderCourses();
+  renderSlider();
+  renderContact();
   if($('adminPanel').classList.contains('open')) renderAdminAll();
   if(currentStudent && $('studentPanel').classList.contains('open')) renderStudentDash();
   if(currentTeacher && $('teacherPanel').classList.contains('open')) renderTeacherPanel();
@@ -3378,7 +3601,7 @@ function studentFromDoc(doc){
     monthly_fee:num(d.monthly_fee), admission_fee:num(d.admission_fee), old_dues:num(d.old_dues), scholarship_fee:num(d.scholarship_fee), shift:d.shift || 'Evening', gender:d.gender || '', status:d.status || 'Active', phoneHash:d.phoneHash || '', passwordHash:d.passwordHash || '',
     subjects:Array.isArray(d.subjects) ? d.subjects.slice() : [], slotIds:Array.isArray(d.slotIds) ? d.slotIds.slice() : [], feePeriod:d.feePeriod || '', loginDisabled:!!d.loginDisabled, parentLoginDisabled:!!d.parentLoginDisabled};
 }
-/* v1.4.19: MERGE, never overwrite. The site doc can be stale (a push not yet
+/* v1.4.20: MERGE, never overwrite. The site doc can be stale (a push not yet
    landed, an old tab's push, a failed save) — overwriting local slots/groups
    with it deleted the owner's newest items on every update. Union by key:
    local-only items survive, the doc wins on conflict, doc-only items are added.
@@ -3402,8 +3625,14 @@ function timeSlotMergeKey(x){ return x.id; }
 function resultMergeKey(x){ return String(x.roll || '').toUpperCase(); }
 function applySiteDoc(d){
   if(!d) return;
+  /* v1.4.20: drop sample-signature records from the incoming doc BEFORE merging —
+     a stale site doc saved by an older version must never resurrect samples. */
+  if(d.slots) d.slots = d.slots.filter(function(x){ return !isSampleRecord(x); });
+  if(d.groups) d.groups = d.groups.filter(function(x){ return !isSampleRecord(x); });
+  if(d.timeSlots) d.timeSlots = d.timeSlots.filter(function(x){ return !isSampleRecord(x); });
+  if(d.results) d.results = d.results.filter(function(x){ return !isSampleRecord(x); });
   if(d.slots) data.slots = mergeByKey(data.slots, d.slots, slotMergeKey);
-  if(d.groups){ var _lg = data.groups; data.groups = mergeByKey(data.groups, d.groups, groupMergeKey); data.groups.forEach(function(g){ var lg = null; _lg.forEach(function(x){ if(groupMergeKey(x) === groupMergeKey(g)) lg = x; }); if(lg && lg.members){ var _m = lg.members.slice(); (g.members || []).forEach(function(m){ if(_m.indexOf(m) < 0) _m.push(m); }); g.members = _m; } }); } /* v1.4.19: on conflict the doc wins every field except members, which are unioned — a stale doc must never drop students out of a group. */
+  if(d.groups){ var _lg = data.groups; data.groups = mergeByKey(data.groups, d.groups, groupMergeKey); data.groups.forEach(function(g){ var lg = null; _lg.forEach(function(x){ if(groupMergeKey(x) === groupMergeKey(g)) lg = x; }); if(lg && lg.members){ var _m = lg.members.slice(); (g.members || []).forEach(function(m){ if(_m.indexOf(m) < 0) _m.push(m); }); g.members = _m; } }); } /* v1.4.20: on conflict the doc wins every field except members, which are unioned — a stale doc must never drop students out of a group. */
   if(d.timeSlots) data.timeSlots = mergeByKey(data.timeSlots, d.timeSlots, timeSlotMergeKey);
   if(d.announcements) data.announcements = d.announcements;
   if(d.results) data.results = mergeByKey(data.results, d.results, resultMergeKey);
@@ -3425,6 +3654,11 @@ function applySiteDoc(d){
   if(d.familyOverrides) data.familyOverrides = d.familyOverrides;
   if(d.legacyDefaultsPurged) data.legacyDefaultsPurged = true;
   if(d.seededSlotsCleaned) data.seededSlotsCleaned = true;
+  if(d.samplesCleaned) data.samplesCleaned = true;
+  if(d.contact) data.contact = d.contact;
+  if(d.quotes) data.quotes = d.quotes;
+  if(d.courses) data.courses = d.courses;
+  if(d.sliderImages) data.sliderImages = d.sliderImages;
   var _purged = purgeLegacyDefaults();
   if(d.subjects){ var _sj = normSubjects(d.subjects); if(_sj.length){ fbData.subjects = _sj; try{ localStorage.setItem(SUBJ_LS_KEY, JSON.stringify(_sj)); }catch(e){} } }
   if(d.migrated_v11) fbData.migrated = true;
@@ -3453,7 +3687,7 @@ function fbLoadStudents(){
     renderAll();
   }, function(){});
 }
-/* v1.4.19: contacts merge — academy_contacts holds the real phones. The merge used to
+/* v1.4.20: contacts merge — academy_contacts holds the real phones. The merge used to
    run only from the students snapshot when the role was already known; auth can resolve
    after the snapshot (or contacts can arrive before students), so cache the contacts
    and apply them on every students snapshot too. */
@@ -3477,7 +3711,7 @@ function fbLoadContacts(){
 }
 function fbPushSite(){
   if(!fb.ready || !fb.db || fb.role !== 'admin' || !fb.siteReady) return Promise.resolve();
-  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, legacyDefaultsPurged:!!data.legacyDefaultsPurged, seededSlotsCleaned:!!data.seededSlotsCleaned, updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  var doc = {slots:data.slots, groups:data.groups, timeSlots:data.timeSlots, announcements:data.announcements, results:data.results, notes:data.notes, videos:data.videos, featuredPlaylist:data.featuredPlaylist, receiptNote:data.receiptNote || '', receiptInstructions:data.receiptInstructions || '', subjects:fbData.subjects, shareRules:fbData.shareRules, morningPartnerPct:num(fbData.morningPartnerPct || 0), feePerSubject:num(fbData.feePerSubject || 2000), feePeriod:fbData.feePeriod || currentFeePeriod(), feePeriods:feePeriodList(), feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), manualFamilies:data.manualFamilies || [], familyOverrides:data.familyOverrides || {}, legacyDefaultsPurged:!!data.legacyDefaultsPurged, seededSlotsCleaned:!!data.seededSlotsCleaned, samplesCleaned:!!data.samplesCleaned, contact:data.contact || {}, quotes:data.quotes || [], courses:data.courses || [], sliderImages:data.sliderImages || [], updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
   return fb.db.collection('academy_settings').doc('site').set(doc, {merge:true}).catch(function(e){ setMsg('settingsMsg', 'Live save failed: ' + fbErrText(e) + ' Your changes are still saved in this browser.', 'err'); });
 }
 function saveReceiptNote(){
@@ -3641,7 +3875,7 @@ async function changeStudentPwAsync(phone, cur, nw, nw2){
   st.passwordHash = newHash;
   return {ok:true, msg:'Password changed. It works on all devices now.'};
 }
-/* v1.4.19: reset by phoneHash directly — never depends on the local student list,
+/* v1.4.20: reset by phoneHash directly — never depends on the local student list,
    so it works right after a reload even before the contacts merge has run. */
 async function resetStudentPwFb(phone){
   var n = normPhone(phone);
@@ -3718,7 +3952,7 @@ function renderParentDash(){
   if(!parentViewRoll || !kids.some(function(k){ return k.roll === parentViewRoll; })) parentViewRoll = kids[0].roll;
   var st = null; kids.forEach(function(k){ if(k.roll === parentViewRoll) st = k; });
   var dad = (kids[0] && kids[0].father_name) ? kids[0].father_name : ('Parent of ' + st.name);
-  /* v1.4.19: full software dashboard — header, one card per child, detail for the selected child */
+  /* v1.4.20: full software dashboard — header, one card per child, detail for the selected child */
   var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(dad) + '</h3><p>' + kids.length + ' child' + (kids.length === 1 ? '' : 'ren') + ' enrolled at Future Star Academy &nbsp;·&nbsp; viewing ' + esc(st.name) + ' (' + esc(st.roll) + ')</p></div></div>';
   html += '<div class="portal-kids">';
   kids.forEach(function(k){
@@ -3924,7 +4158,7 @@ function challanBalance(c){
   if(!c || c.status === 'void' || c.status === 'closed') return 0;
   return Math.max(0, num(c.total) - num(c.paid) - num(c.discount));
 }
-/* ---------- v1.4.19: carried-forward balances — every rupee counted exactly once ---------- */
+/* ---------- v1.4.20: carried-forward balances — every rupee counted exactly once ---------- */
 /* When a new challan is created, unpaid balances of earlier challans are rolled into it as
    arrears lines ('Balance of <month>' / 'Family challan balance of <month>'). That money is
    then owed INSIDE the new challan, so the old challan must not count it again. carriedOutMap()
@@ -3992,7 +4226,7 @@ function studentDue(st){
   var map = carriedOutMap();
   var chs = studentChallans(st.roll);
   var fam = familyChallansFor(st.roll);
-  /* v1.4.19: no challan, no fee — the owner makes every challan himself. */
+  /* v1.4.20: no challan, no fee — the owner makes every challan himself. */
   if(!chs.length && !fam.length) return 0;
   var t = 0;
   chs.forEach(function(c){ if(!c.family) t += effectiveChallanBalance(c, map); }); /* family challans count by member share below, not in full — the head would double-count; carried-forward balances count once, inside the newer challan */
@@ -4030,7 +4264,7 @@ function teacherShareFor(p){
   var pct = num(rule.teacherPct), base = shareBase(p, rule.basis);
   return {teacher:subj.teacher, subject:course, share:base * pct / 100, academy:base * (100 - pct) / 100, rules:{basis:rule.basis, pct:pct}};
 }
-/* ---------- v1.4.19: shifts + morning partner share ---------- */
+/* ---------- v1.4.20: shifts + morning partner share ---------- */
 function studentShift(st){ return (st && st.shift === 'Morning') ? 'Morning' : 'Evening'; }
 function isSajjadTeacher(name){ return name === 'Sir Sajjad Ali' || name === 'Sajjad Ali'; }
 function isAhmedTeacher(name){ return name === 'Sir Ahmed Raza' || name === 'Ahmed Raza'; }
@@ -4154,7 +4388,7 @@ function fillFeeForm(p, roll){
   if(g('Amount')) g('Amount').value = bal > 0 ? bal : '';
   return st;
 }
-/* v1.4.19 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
+/* v1.4.20 admission-fee: the challan's own lines (monthly fee + each extra line) for the payment receipt. */
 function challanLinesForReceipt(c){
   var lines = [];
   if(c.family){
@@ -4171,7 +4405,7 @@ function challanLinesForReceipt(c){
   }
   return lines.filter(function(l){ return num(l.amount) > 0; });
 }
-/* ---------- v1.4.19: oldest-first payment allocation ---------- */
+/* ---------- v1.4.20: oldest-first payment allocation ---------- */
 /* When a fee is saved without a challan selected (the Fees tab on its own), apply the money to
    the student's own open challans, oldest first, so the amount due drops by exactly the amount
    paid. Returns [{challanId, amount, discount}] and updates each challan's paid/discount/status
@@ -4246,7 +4480,7 @@ async function savePayment(p){
       }
       pendingChallanId = null;
     } else {
-      /* v1.4.19: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
+      /* v1.4.20: no challan selected — apply the payment to the student's own open challans, oldest first, so the due drops by exactly the amount paid. */
       var _alloc = allocatePaymentToChallans(st, amount, discount);
       if(_alloc.length){
         rec.challanId = _alloc[0].challanId;
@@ -4533,7 +4767,7 @@ function renderTopics(){
 var tpPaySelected = '';
 function renderTeacherPay(){
   var s = financeSummary(FB_MONTH);
-  /* v1.4.19: ONE teacher at a time — pick from the dropdown, only that teacher's
+  /* v1.4.20: ONE teacher at a time — pick from the dropdown, only that teacher's
      pay table renders. Share math unchanged. */
   var _names = teacherNamesAll();
   if(!tpPaySelected || _names.indexOf(tpPaySelected) < 0) tpPaySelected = _names[0] || '';
@@ -4744,7 +4978,7 @@ function goAtab(name){
   var b = document.querySelector('#adminTabs button[data-atab="' + name + '"]');
   if(b){ var sec = b.closest ? b.closest('.admin-sec') : null; if(sec && sec.classList.contains('collapsed')){ var st = loadAdminGroups(); ADMIN_GROUPS.forEach(function(g){ var other = document.querySelector('.admin-sec[data-sec="' + g + '"]'); if(other && other !== sec) other.classList.add('collapsed'); st[g] = false; }); sec.classList.remove('collapsed'); st[sec.getAttribute('data-sec')] = true; saveAdminGroups(st); } b.click(); }
 }
-/* ---------- v1.4.19: mobile admin card menu ---------- */
+/* ---------- v1.4.20: mobile admin card menu ---------- */
 var ADMIN_SECTIONS = [
   ['dashboard', 'dashboard', 'Dashboard', 'Today at a glance'],
   ['timetable', 'schedule', 'Timetable', 'Class times and groups'],
@@ -4815,7 +5049,7 @@ function dashBars(title, icon, rows, total, colors, money){
   });
   return html + '</div>';
 }
-/* v1.4.19: "Students at a glance" cards for the Admin Dashboard — Active students only,
+/* v1.4.20: "Students at a glance" cards for the Admin Dashboard — Active students only,
    Morning/Evening split (blank shift = Evening, same as v1.4.4), one card per
    subject/course with at least one Active student. Membership via studentHasSubject,
    so the numbers match the rest of the site. Built inside renderDashboard, so the
@@ -4907,7 +5141,7 @@ function renderDashboard(){
   q('qaFinance', function(){ goAtab('fees'); });
 }
 
-/* ---------- v1.4.19: Balance Due split, challans manager, reports, xlsx, users sub-tabs ---------- */
+/* ---------- v1.4.20: Balance Due split, challans manager, reports, xlsx, users sub-tabs ---------- */
 var usSearchQ = '';
 var usTab = 'students';
 function applyUsTabs(){
@@ -5288,7 +5522,7 @@ function renderReports(){
   var sibEl = $('rpSiblings'); if(sibEl) sibEl.innerHTML = siblingReportHTML().html;
   var exEl = $('rpExpenses'); if(exEl){ var xr = reportRows('expenses'); exEl.innerHTML = reportTableHTML(xr); }
 }
-/* ---------- v1.4.19: morning partner share ---------- */
+/* ---------- v1.4.20: morning partner share ---------- */
 async function saveMorningPct(){
   var el = $('morningPct'); if(!el) return;
   var v = Number(el.value);
@@ -5306,7 +5540,7 @@ async function saveMorningPct(){
     setMsg('rpMsg', 'Morning share saved: Sajjad gets ' + v + '% of morning income.', 'ok');
   }catch(e){ setMsg('rpMsg', 'Saved in this browser, but the live save failed: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.19: bulk arrears sheet (download / upload) ---------- */
+/* ---------- v1.4.20: bulk arrears sheet (download / upload) ---------- */
 function downloadArrearsSheet(){
   var rows = [];
   data.students.forEach(function(st){
@@ -5351,7 +5585,7 @@ function applyArrearsSheet(text){
     found.old_dues = num(v);
     updated++;
     saveStudentToFb(found);
-    /* v1.4.19: corrected old dues create/update the automatic previous-dues challan. */
+    /* v1.4.20: corrected old dues create/update the automatic previous-dues challan. */
     if(num(v) > 0) ensureOldDuesChallan(found, num(v), warnings);
   });
   return {updated:updated, notFound:notFound, skipped:skipped, warnings:warnings};
@@ -5461,7 +5695,7 @@ function attGroupsFor(viewer){
       return (currentTeacher.subjects || []).indexOf(g.subject) >= 0 || g.teacher === currentTeacher.name;
     });
   }
-  /* v1.4.19: a group with 0 Active students must not appear as a selectable group. */
+  /* v1.4.20: a group with 0 Active students must not appear as a selectable group. */
   list = list.filter(function(g){ return attGroupStudents(g.name).length > 0; });
   return list;
 }
@@ -5650,7 +5884,7 @@ async function demoteAdmin(uid){
     renderRoles();
   }catch(e){ setMsg('rolesMsg', 'Could not change role: ' + fbErrText(e), 'err'); }
 }
-/* ---------- v1.4.19: roles & permissions ---------- */
+/* ---------- v1.4.20: roles & permissions ---------- */
 var ROLE_SECTIONS = [
   {key:'dashboard', label:'Dashboard'}, {key:'students', label:'Students'}, {key:'fees', label:'Finance'},
   {key:'exams', label:'Exams'}, {key:'attendance', label:'Attendance'}, {key:'reports', label:'Reports'},
@@ -5897,7 +6131,7 @@ function renderTeacherPanel(){
   var myStudents = teacherStudents(t);
   var s = financeSummary(FB_MONTH);
   var due = s.teacherDue[t.name] || 0, paid = s.teacherPaid[t.name] || 0;
-  /* v1.4.19: full software dashboard — header, real stat cards, today's classes */
+  /* v1.4.20: full software dashboard — header, real stat cards, today's classes */
   var el = $('teacherPanelBody');
   if(el){
     var html = '<div class="portal-head" style="border-radius:14px;margin-bottom:16px"><img class="portal-logo" alt="Future Star Academy logo"><div><h3>Welcome, ' + esc(t.name) + '</h3><p>' + esc(subs.join(', ')) + ' &nbsp;·&nbsp; ' + esc(todayName) + '</p></div></div>'
@@ -6156,7 +6390,7 @@ var editingExam = null, openExamId = null;
 function examStudents(exam){
   return data.students.filter(function(s){ return (s.status || 'Active') !== 'Left' && studentHasSubject(s, exam.subject); });
 }
-/* ---------- v1.4.19: marks publishing — students/parents see only published marks ---------- */
+/* ---------- v1.4.20: marks publishing — students/parents see only published marks ---------- */
 function normRoll(r){ return String(r || '').trim().toUpperCase(); }
 function publishedRollsOf(ex){ return (ex.publishedRolls || []).map(function(r){ return normRoll(r); }); }
 function isMarkPublished(ex, roll){ return publishedRollsOf(ex).indexOf(normRoll(roll)) >= 0; }
@@ -6435,7 +6669,7 @@ function examResultsHTML(ex){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printExamResults(\'' + ex.id + '\')">Print Results</button></div>';
   return h;
 }
-/* ---------- v1.4.19: result cards ---------- */
+/* ---------- v1.4.20: result cards ---------- */
 function gradeFor(pct){
   pct = num(pct);
   if(pct >= 90) return 'A+';
@@ -6557,7 +6791,7 @@ function renderTeacherResults(){
   h += '</tbody></table></div><div class="no-print" style="margin-top:10px"><button class="btn small outline" type="button" onclick="printTeacherResults()">Print Results</button></div>';
   el.innerHTML = h;
 }
-/* ---------- v1.4.19: teacher marks entry (their subjects only, no publish controls) ---------- */
+/* ---------- v1.4.20: teacher marks entry (their subjects only, no publish controls) ---------- */
 function teacherExamList(t){
   var subs = (t.subjects && t.subjects.length ? t.subjects : [t.subject || t.course || '']);
   return (fbData.exams || []).filter(function(x){ return subs.indexOf(x.subject) >= 0; });
@@ -6603,7 +6837,7 @@ function challanArrearsFor(st, month){
   if(!hasAny && !familyChallansFor(st.roll).length && num(st.old_dues) > 0) lines.push({month:'', amount:num(st.old_dues), label:'Previous dues'});
   return lines;
 }
-/* v1.4.19: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
+/* v1.4.20: the previous month of a YYYY-MM month string (2026-11 -> 2026-10). */
 function prevMonthOf(month){
   var m = String(month || '').match(/^(\d{4})-(\d{2})$/);
   if(!m) return '';
@@ -6611,7 +6845,7 @@ function prevMonthOf(month){
   if(mo === 0){ y--; mo = 12; }
   return y + '-' + ('0' + mo).slice(-2);
 }
-/* v1.4.19: old dues from a CSV import / arrears upload become an automatic custom
+/* v1.4.20: old dues from a CSV import / arrears upload become an automatic custom
    challan for the PREVIOUS month with a single 'Previous dues' line. Create-or-update:
    an unpaid auto challan for the same student+month is updated in place, never
    duplicated; if payments were already recorded on it, it is left untouched and the
@@ -6731,7 +6965,7 @@ function readCustomLines(){
   });
   return out.filter(function(l){ return l && num(l.amount) > 0; });
 }
-/* v1.4.19 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
+/* v1.4.20 admission-fee: keep typed lines (even a labelled Rs 0 line) while adding/removing rows. */
 function syncCustomLines(){
   var out = [];
   document.querySelectorAll('[data-culine]').forEach(function(inp){
@@ -7073,7 +7307,6 @@ function pickFeeStudent(roll){ $('feeRoll').value = roll; fillFeeForm('fee', rol
   b = $('ttDlXlsx'); if(b) b.addEventListener('click', function(){ exportTimetableXlsx(ttShift); });
   b = $('ttDlPrint'); if(b) b.addEventListener('click', function(){ closeTtDownloadMenu(); printTimetable(null, ttShift); });
   document.addEventListener('click', ttDownloadDocClick);
-  b = $('ttPrintBtnPublic'); if(b) b.addEventListener('click', function(){ printTimetable(null, null); });
   b = $('ttShiftMorning'); if(b) b.addEventListener('click', function(){ setTtShift('Morning'); });
   b = $('ttShiftEvening'); if(b) b.addEventListener('click', function(){ setTtShift('Evening'); });
   b = $('ttCopyBtn'); if(b) b.addEventListener('click', copyTtDay);
@@ -7158,7 +7391,7 @@ function cancelStuEdit(){
   editingStu = -1;
   $('stEditForm').style.display = 'none';
 }
-/* v1.4.19: reset the Edit Student form to a fresh blank "Add New Student" state.
+/* v1.4.20: reset the Edit Student form to a fresh blank "Add New Student" state.
    After save, cancel or any Student Lifecycle action the form must never show
    a stale edit — the editing state is cleared and every field is blanked, so
    switching tabs and coming back cannot resurrect the old student's data. */
@@ -7277,7 +7510,7 @@ function renderSeSubChecks(checked){
     return '<label style="display:inline-block;font-weight:400;margin:4px 10px 4px 0"><input type="checkbox" data-sesub="' + esc(n) + '"' + (checked.indexOf(n) >= 0 ? ' checked' : '') + '> ' + esc(n) + '</label>';
   }).join('');
 }
-/* ---------- v1.4.19: group dropdown ---------- */
+/* ---------- v1.4.20: group dropdown ---------- */
 function groupNames(){
   var names = [];
   (data.groups || []).forEach(function(g){ if(g.name && names.indexOf(g.name) < 0) names.push(g.name); });
@@ -7305,14 +7538,14 @@ function renderTrGroupOptions(selected){
   el.innerHTML = groupOptionsHTML(selected, false);
   if(selected) el.value = selected;
 }
-/* v1.4.19: fees are per-student only — the old per-subject fee tab and its
+/* v1.4.20: fees are per-student only — the old per-subject fee tab and its
    scholarship logic are removed. effectiveFee is always the stored monthly_fee;
    a stored scholarship_fee (if any) is ignored, never billed. */
 function effectiveFee(st){
   if(!st) return 0;
   return num(st.monthly_fee);
 }
-/* ---------- v1.4.19: time slots ---------- */
+/* ---------- v1.4.20: time slots ---------- */
 function timeSlotById(id){
   var found = null;
   (data.timeSlots || []).forEach(function(t){ if(t.id === id) found = t; });
@@ -7351,7 +7584,7 @@ function renderGrSlotOptions(selected){
   el.innerHTML = '<option value="">— No slot (use the time text) —</option>' + (data.timeSlots || []).map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === cur ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
   if(cur) el.value = cur;
 }
-/* ---------- v1.4.19: new student flow ---------- */
+/* ---------- v1.4.20: new student flow ---------- */
 var newStudentChallanFlow = null;
 function afterNewStudentSaved(s){
   var has = fbData.challans.some(function(c){ return c.roll === s.roll && c.month === FB_MONTH && c.status !== 'void'; });
@@ -7393,7 +7626,7 @@ function newStudentPayYes(challanId){
 function newStudentPayNo(){
   var el = $('chCuPayPrompt'); if(el){ el.style.display = 'none'; el.innerHTML = ''; }
 }
-/* ---------- v1.4.19: student lifecycle — transfer course, drop subject, leave academy ---------- */
+/* ---------- v1.4.20: student lifecycle — transfer course, drop subject, leave academy ---------- */
 function lifecycleStudent(){ return (editingStu >= 0 && data.students[editingStu]) ? data.students[editingStu] : null; }
 function effectiveSubjects(st){
   var subs = (st.subjects || []).slice();
@@ -7548,7 +7781,7 @@ async function leaveStudent(){
   var sg = $('seGroup'); if(sg) sg.addEventListener('change', toggleSeGroupNew);
 })();
 
-/* ---------- v1.4.19: fee periods, families, fee structure, users, backup ---------- */
+/* ---------- v1.4.20: fee periods, families, fee structure, users, backup ---------- */
 function currentFeePeriod(){
   var y = new Date().getFullYear();
   return y + '-' + String((y + 1) % 100).padStart(2, '0');
@@ -7595,7 +7828,7 @@ function waReminderBtn(st, amount){
 /* --- families (item A) --- */
 function familyKeyOf(st){ var f = normPhone(st.father_phone || ''); return f || ''; }
 function parseAdmDateNum(s){ var d = parseAdmDate(s); return d ? d : '9999-99-99'; }
-/* v1.4.19: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
+/* v1.4.20: eldest sibling by DATE OF BIRTH (earliest birth date = eldest). Admission date is
    only the fallback when a member has no usable DOB. elderKey ranks DOB ('0') ahead of
    admission date ('1') ahead of no date ('2'), so within a rank the earliest date wins and
    a member with a DOB always beats one known only by admission date. If neither member has
@@ -7677,7 +7910,7 @@ function familyMemberShare(c, roll, map){
   var paid = settled[r] || 0;
   var total = num(m.monthlyFee) + num(m.arrearsTotal);
   var balance = Math.max(0, total - paid);
-  /* v1.4.19: a member share already rolled into a later family challan is not owed twice. */
+  /* v1.4.20: a member share already rolled into a later family challan is not owed twice. */
   balance = Math.max(0, balance - carriedOutFor(roll, c.month, 'fam', map));
   return {total:total, monthlyFee:num(m.monthlyFee), arrearsTotal:num(m.arrearsTotal), paid:paid, balance:balance};
 }
@@ -7717,7 +7950,7 @@ function removeMemberFromFamilyChallan(c, roll){
 }
 function suggestedSiblings(){
   var out = [], seen = {};
-  /* v1.4.19: never suggest a pair that is already in the same family (linked by hand
+  /* v1.4.20: never suggest a pair that is already in the same family (linked by hand
      or by the same father phone). Drop any member already linked to another member of
      this candidate group; suggest only the genuinely unlinked remainder. */
   var linkedFam = {};
@@ -7943,7 +8176,7 @@ async function saveChallanEdit(){
 function cancelChallanEdit(){ editingChallanId = null; $('chEditForm').style.display = 'none'; }
 
 
-/* ---------- v1.4.19: students per fee period ---------- */
+/* ---------- v1.4.20: students per fee period ---------- */
 /* How many students were enrolled in a period. The current period counts live: Active students
    whose feePeriod is this period, or blank (created before periods existed — they belong to the
    current period). Old periods keep the snapshot taken at migration time (the Active students who
@@ -8014,7 +8247,7 @@ async function migrateFeePeriod(){
     await batch.commit();
     fbData.feePeriod = np;
     fbData.feePeriods = feePeriodList();
-    /* v1.4.19: snapshot the old period's enrolment before the students move — after migration
+    /* v1.4.20: snapshot the old period's enrolment before the students move — after migration
        every student carries the new period, so without this the old row would show 0 students. */
     fbData.feePeriodStudents = fbData.feePeriodStudents || {};
     fbData.feePeriodStudents[old] = plan.students.map(function(s){ return s.roll; });
@@ -8028,7 +8261,7 @@ async function migrateFeePeriod(){
 
 /* --- backup / restore (item H) --- */
 function buildFullBackup(){
-  return {app:'FSCC Academy', version:'v1.4.19', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
+  return {app:'FSCC Academy', version:'v1.4.20', exportedAt:new Date().toISOString(), feePeriod:fbData.feePeriod || currentFeePeriod(),
     data:data,
     fbData:{payments:fbData.payments || [], teacherPayments:fbData.teacherPayments || [], drawings:fbData.drawings || [], expenses:fbData.expenses || [], attendance:fbData.attendance || [], homework:fbData.homework || [], challans:fbData.challans || [], exams:fbData.exams || [], marks:fbData.marks || [], audit:fbData.audit || [], profiles:fbData.profiles || [], leaves:fbData.leaves || [], topics:fbData.topics || [], teachers:fbData.teachers || [], settings:{feePeriod:fbData.feePeriod || '', feePeriods:fbData.feePeriods || [], feePeriodStudents:fbData.feePeriodStudents || {}, boardFee:num(fbData.boardFee || 0), feePerSubject:num(fbData.feePerSubject || 2000), morningPartnerPct:num(fbData.morningPartnerPct || 0)}}};
 }
@@ -8274,7 +8507,7 @@ function todayTopicsHTML(){
   return h;
 }
 
-/* --- v1.4.19 wiring --- */
+/* --- v1.4.20 wiring --- */
 (function(){
   var b;
   b = $('fpMigrateBtn'); if(b) b.addEventListener('click', migrateFeePeriod);
@@ -8303,9 +8536,8 @@ function todayTopicsHTML(){
 })();
 bindV12();
 fbInit();
-$('btnResultSearch').addEventListener('click', searchResult);
-$('rollInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') searchResult(); });
 renderAll();
+initMainPage();
 /* v1.3.3: always land at the top on arrival — a #videos (or any) hash saved
    in a bookmark, or the browser restoring the old scroll position, used to
    drop visitors mid-page on arrival. Nav links still scroll normally. */
